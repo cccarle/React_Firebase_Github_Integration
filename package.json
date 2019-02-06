@@ -1,0 +1,27 @@
+{
+  "name": "fastify-oauth2",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/fastify/fastify-oauth2.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/fastify/fastify-oauth2/issues"
+  },
+  "homepage": "https://github.com/fastify/fastify-oauth2#readme",
+  "dependencies": {
+    "dotenv": "^6.2.0",
+    "mongoose": "^5.4.10",
+    "querystring": "^0.2.0",
+    "restify": "^7.7.0",
+    "restify-jwt-community": "^1.0.9",
+    "restify-redirect": "^1.0.0"
+  }
+}
