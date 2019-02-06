@@ -4,21 +4,24 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "nodemon index.js"
+    "client-install": "npm install --prefix client",
+    "start": "node index.js",
+    "server": "nodemon index.js",
+    "client": "npm start --prefix client",
+    "dev": "concurrently \"npm run server\" \"npm run client\""
   },
   "repository": {
     "type": "git"
   },
-  "author": "",
+  "author": "Carl Ejnarsson",
   "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/fastify/fastify-oauth2/issues"
-  },
   "homepage": "https://github.com/fastify/fastify-oauth2#readme",
   "dependencies": {
+    "concurrently": "^4.1.0",
     "dotenv": "^6.2.0",
+    "install": "^0.12.2",
     "mongoose": "^5.4.10",
+    "npm": "^6.7.0",
     "querystring": "^0.2.0",
     "request": "^2.88.0",
     "restify": "^7.7.0",

@@ -35,7 +35,8 @@ module.exports = server => {
         if (err) throw err
 
         let accessToken = body.access_token
-        res.redirect('http://localhost:9000?access_token=' + accessToken, next)
+        let uri = 'http://localhost:3000'
+        res.redirect(uri + '?access_token=' + accessToken, next)
       }
     )
 
