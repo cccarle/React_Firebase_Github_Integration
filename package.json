@@ -1,14 +1,14 @@
 {
-  "name": "fastify-oauth2",
+  "name": "ce222qw-examination",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "nodemon index.js"
   },
   "repository": {
-    "type": "git",
-    "url": "git+https://github.com/fastify/fastify-oauth2.git"
+    "type": "git"
   },
   "author": "",
   "license": "ISC",
@@ -20,8 +20,13 @@
     "dotenv": "^6.2.0",
     "mongoose": "^5.4.10",
     "querystring": "^0.2.0",
+    "request": "^2.88.0",
     "restify": "^7.7.0",
     "restify-jwt-community": "^1.0.9",
-    "restify-redirect": "^1.0.0"
+    "restify-redirect": "^1.0.0",
+    "superagent": "^4.1.0"
+  },
+  "devDependencies": {
+    "nodemon": "^1.18.9"
   }
 }
