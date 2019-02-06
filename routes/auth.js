@@ -12,7 +12,8 @@ module.exports = server => {
       'https://github.com/login/oauth/authorize?' +
         querystring.stringify({
           client_id: process.env.CLIENT_ID,
-          redirect_uri: process.env.REDIRECT_URI
+          redirect_uri: process.env.REDIRECT_URI,
+          scope: 'admin:repo_hook'
         }),
       next
     )
