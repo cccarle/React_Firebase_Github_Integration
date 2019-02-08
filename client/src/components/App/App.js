@@ -1,8 +1,12 @@
 import React, { Component } from 'react'
 import './App.css'
+import { BrowserRouter as Router, Route } from 'react-router-dom'
+import { Provider } from 'react-redux'
+import store from '../../store'
 import NotSignedIn from '../NotSignedIn/NotSignedIn'
 import Dashboard from '../Dashboard/Dashboard'
-import queryString from 'query-string'
+
+
 
 class App extends Component {
   constructor (props) {
@@ -10,25 +14,6 @@ class App extends Component {
     this.state = {
       isLoggedIn: false
     }
-  }
-
-  componentDidMount () {
-    let parsed = queryString.parse(window.location.search)
-    let accessToken = parsed.access_token
-
-    if (accessToken) {
-      this.setState({ isLoggedIn: true })
-    } else {
-      this.setState({ isLoggedIn: false })
-    }
-    window
-      .fetch('https://api.github.com/user', {
-        headers: { Authorization: 'token ' + accessToken }
-      })
-      .then(response => response.json())
-      .then(data => {
-        console.log(data)
-      })
   }
 
   isLoggedIn () {
@@ -41,9 +26,11 @@ class App extends Component {
 
   render () {
     return (
-      <div className='App'>
-      {this.isLoggedIn()}
-      </div>
+      <Provider store={store}>
+        <Router>
+          <div className='App'>{this.isLoggedIn()}</div>
+        </Router>
+      </Provider>
     )
   }
 }

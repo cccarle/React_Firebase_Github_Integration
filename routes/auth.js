@@ -1,6 +1,7 @@
 require('dotenv').config()
 let request = require('request')
 let querystring = require('querystring')
+let fetch = require('fetch-node')
 
 module.exports = server => {
   server.get('/', (req, res, next) => {
@@ -36,11 +37,17 @@ module.exports = server => {
         if (err) throw err
 
         let accessToken = body.access_token
+
         let uri = 'http://localhost:3000'
+
+        // res.send(a)
         res.redirect(uri + '?access_token=' + accessToken, next)
       }
     )
-
     return next()
+  })
+
+  server.get('/signout', (req, res, next) => {
+    req.logout()
   })
 }

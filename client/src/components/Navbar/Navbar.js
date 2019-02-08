@@ -41,7 +41,11 @@ function Navbar (props) {
           <Typography variant='h6' color='inherit' className={classes.grow}>
             Dashboard
           </Typography>
-          <Button color='inherit'>SIGN Out</Button>
+          <Button color='inherit'>
+            <a href='http://localhost:9000/signout' rel='noopener noreferrer'>
+              SIGN Out
+            </a>
+          </Button>
         </Toolbar>
       </AppBar>
     </div>
