@@ -6,13 +6,11 @@ import store from '../../store'
 import NotSignedIn from '../NotSignedIn/NotSignedIn'
 import Dashboard from '../Dashboard/Dashboard'
 
-
-
 class App extends Component {
   constructor (props) {
     super(props)
     this.state = {
-      isLoggedIn: false
+      isLoggedIn: true
     }
   }
 
@@ -28,7 +26,10 @@ class App extends Component {
     return (
       <Provider store={store}>
         <Router>
-          <div className='App'>{this.isLoggedIn()}</div>
+          <div className='App'>
+            <Dashboard />
+            <NotSignedIn />
+          </div>
         </Router>
       </Provider>
     )

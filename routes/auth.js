@@ -2,7 +2,6 @@ require('dotenv').config()
 let request = require('request')
 let querystring = require('querystring')
 let fetch = require('fetch-node')
-
 module.exports = server => {
   server.get('/', (req, res, next) => {
     res.send({ msg: 'hello' })
@@ -45,9 +44,5 @@ module.exports = server => {
       }
     )
     return next()
-  })
-
-  server.get('/signout', (req, res, next) => {
-    req.logout()
   })
 }
