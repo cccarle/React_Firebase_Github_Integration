@@ -5,3 +5,6 @@ export const SIGN_OUT = 'SIGN_OUT'
 
 // profile
 export const GET_USER_PROFILE_DATA = 'GET_USER_PROFILE_DATA'
+
+// Repos
+export const GET_REPOS_DATA = 'GET_REPOS_DATA'

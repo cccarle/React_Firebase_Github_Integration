@@ -1,4 +1,4 @@
-import { LOGGED_IN_SUCCES, SIGN_OUT, GET_USER_PROFILE_DATA } from './types'
+import { LOGGED_IN_SUCCES, SIGN_OUT } from './types'
 import firebase from '../config/firebase'
 import Firebase from 'firebase'
 import history from '../config/history'
@@ -27,20 +27,8 @@ export const signInUser = userData => {
         dispatch({ type: LOGGED_IN_SUCCES, payload: true })
         let accessToken = result.credential.accessToken
 
-        window
-          .fetch('https://api.github.com/user', {
-            headers: { Authorization: 'token ' + accessToken }
-          })
-          .then(response => response.json())
-          .then(data => {
-            dispatch({ type: GET_USER_PROFILE_DATA, payload: data })
-
-            history.push('/dashboard')
-            console.log(data)
-          })
-
-        fetchUserDataFromGithubAPI(accessToken)
-        fetchReposDataGithubAPI(accessToken)
+        window.localStorage.setItem('token', accessToken)
+        history.push('/dashboard')
       })
       .catch(function (error) {
         let { errorCode, errorMessage } = error
@@ -65,33 +53,4 @@ export const signOutUser = userData => {
         console.log('error accurred' + error)
       })
   }
-}
-
-export const fetchUserDataFromGithubAPI = accessToken => {
-  return dispatch => {
-    window
-      .fetch('https://api.github.com/user', {
-        headers: { Authorization: 'token ' + accessToken }
-      })
-      .then(response => response.json())
-      .then(data => {
-        dispatch({ type: GET_USER_PROFILE_DATA, payload: data })
-
-        history.push('/dashboard')
-        console.log(data)
-      })
-  }
-}
-
-export const fetchReposDataGithubAPI = accessToken => {
-  window
-    .fetch('https://api.github.com/user/repos', {
-      headers: { Authorization: 'token ' + accessToken }
-    })
-    .then(response => response.json())
-    .then(data => {
-      history.push('/dashboard')
-
-      console.log(data)
-    })
 }

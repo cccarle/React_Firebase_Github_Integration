@@ -1,15 +1,23 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
+import { fetchUserDataFromGithubAPI } from '../../actions'
+
+// Material-UI components
 import { withStyles } from '@material-ui/core/styles'
 import Card from '@material-ui/core/Card'
 import CardHeader from '@material-ui/core/CardHeader'
 import CardMedia from '@material-ui/core/CardMedia'
 import Avatar from '@material-ui/core/Avatar'
 
+// Styles
 import styles from './CardProfile.style'
 
 class CardProfile extends React.Component {
+  componentDidMount () {
+    this.props.fetchUserDataFromGithubAPI()
+  }
+
   render () {
     const { classes } = this.props
 
@@ -21,7 +29,7 @@ class CardProfile extends React.Component {
               {this.props.profileName.charAt(0)}
             </Avatar>
           }
-          title={this.props.githubURL}
+          title={this.props.profileName}
         />
         <CardMedia className={classes.media} image={this.props.profileAvatar} />
       </Card>
@@ -40,5 +48,5 @@ const mapStateToProps = state => {
 }
 export default connect(
   mapStateToProps,
-  {}
+  { fetchUserDataFromGithubAPI }
 )(withStyles(styles)(CardProfile))

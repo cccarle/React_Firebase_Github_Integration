@@ -1,0 +1,6 @@
+{
+  "projects": {
+    "githubdashboard": "guthubdashboard",
+    "default": "guthubdashboard"
+  }
+}
