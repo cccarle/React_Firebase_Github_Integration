@@ -20,6 +20,9 @@ export const signInUser = userData => {
   return dispatch => {
     let provider = new Firebase.auth.GithubAuthProvider()
 
+    provider.addScope('admin:repo_hook')
+
+    console.log(provider.dc)
     firebase
       .auth()
       .signInWithPopup(provider)

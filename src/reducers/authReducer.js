@@ -1,4 +1,4 @@
-import { TEST_DISPATCH, LOGGED_IN_SUCCES, SIGN_OUT } from '../actions/types'
+import { LOGGED_IN_SUCCES, SIGN_OUT } from '../actions/types'
 
 const initialState = {
   isAuthenticated: false

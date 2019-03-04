@@ -1,5 +1,4 @@
 import { GET_USER_PROFILE_DATA, GET_REPOS_DATA } from './types'
-import _ from 'lodash'
 
 export const fetchUserDataFromGithubAPI = () => {
   return dispatch => {
@@ -11,8 +10,6 @@ export const fetchUserDataFromGithubAPI = () => {
       .then(response => response.json())
       .then(data => {
         dispatch({ type: GET_USER_PROFILE_DATA, payload: data })
-
-        console.log(data)
       })
   }
 }
@@ -52,7 +49,6 @@ export const fetchReposDataGithubAPI = () => {
           arrayToFilter.push(repos)
         }
 
-        console.log(arrayToFilter)
         dispatch({ type: GET_REPOS_DATA, payload: arrayToFilter })
       })
   }

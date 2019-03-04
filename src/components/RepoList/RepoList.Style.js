@@ -10,7 +10,8 @@ const styles = {
     height: 650
   },
   button: {
-    backgroundColor: '#FFF'
+    backgroundColor: '#FFF',
+    marginRight: 20
   },
   headerText: {
     textAlign: 'center'
