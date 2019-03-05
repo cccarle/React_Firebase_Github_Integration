@@ -35,22 +35,5 @@ export const addWebhook = webhookURL => {
 export const deleteWebhook = webhookURL => {
   return dispatch => {
     const accessToken = window.localStorage.getItem('token')
-
-    window
-      .fetch(webhookURL, {
-        method: 'POST',
-        headers: {
-          Authorization: 'token ' + accessToken,
-          'Content-Type': 'application/json'
-        }
-      })
-      .then(response => response.json())
-      .then(data => {
-        dispatch({ type: ADD_WEBHOOK, payload: data })
-        console.log(data)
-      })
-      .catch(err => {
-        console.log(err)
-      })
   }
 }

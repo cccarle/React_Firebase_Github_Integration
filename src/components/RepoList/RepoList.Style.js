@@ -7,7 +7,7 @@ const styles = {
   },
   gridList: {
     width: 800,
-    height: 650
+    height: 750
   },
   button: {
     backgroundColor: '#FFF',

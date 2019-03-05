@@ -22,14 +22,12 @@ export const signInUser = userData => {
 
     provider.addScope('admin:repo_hook')
 
-    console.log(provider.dc)
     firebase
       .auth()
       .signInWithPopup(provider)
       .then(function (result) {
         dispatch({ type: LOGGED_IN_SUCCES, payload: true })
         let accessToken = result.credential.accessToken
-
         window.localStorage.setItem('token', accessToken)
         history.push('/dashboard')
       })

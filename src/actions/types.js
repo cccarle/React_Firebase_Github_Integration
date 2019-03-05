@@ -11,3 +11,10 @@ export const GET_REPOS_DATA = 'GET_REPOS_DATA'
 
 // Webhook
 export const ADD_WEBHOOK = 'ADD_WEBHOOK'
+
+// Notifications
+export const FETCH_NOTIFICATIONS = 'FETCH_NOTIFICATIONS'
+
+// Toggel
+export const TOGGEL_ON = 'TOGGEL_ON'
+export const TOGGEL_OFF = 'TOGGEL_OFF'

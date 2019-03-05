@@ -1,6 +1,7 @@
 const functions = require('firebase-functions')
 const admin = require('firebase-admin')
 admin.initializeApp()
+const sgMail = require('@sendgrid/mail')
 
 exports.events = functions.https.onRequest((req, res) => {
   var webhookData = {}
@@ -25,3 +26,23 @@ exports.events = functions.https.onRequest((req, res) => {
       return res.json({ result: `Message with ID: ${writeResult} added.` })
     })
 })
+
+exports.sendNotification = functions.firestore
+  .document('notifications/{notification}')
+  .onCreate((snap, context) => {
+    const newValue = snap.data()
+
+    sgMail.setApiKey(
+      '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'
+    )
+    const msg = {
+      to: 'ce222qw@student.lnu.se',
+      from: 'test@example.com',
+      subject: 'This is a notification from githubdashboard',
+      text: JSON.stringify(newValue),
+      html: JSON.stringify(newValue)
+    }
+    sgMail.send(msg)
+
+    console.log(newValue)
+  })

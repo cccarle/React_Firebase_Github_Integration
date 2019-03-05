@@ -26,7 +26,6 @@ export const fetchReposDataGithubAPI = () => {
       .then(data => {
         let keys = Object.keys(data)
 
-        //  iterate the key
         for (var i = 0; i < keys.length; i++) {
           let k = keys[i]
           let name = data[k].name
