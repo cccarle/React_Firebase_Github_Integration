@@ -6,8 +6,13 @@ import Navbar from '../Navbar/Navbar'
 import RepoList from '../RepoList/RepoList'
 import Notifcations from '../Notifications/Notifications'
 import _ from 'lodash'
+import firebase from '../../config/firebase'
+import { checkIfUserIsLoggedIn } from '../../actions'
 
 class Dashboard extends Component {
+  componentDidMount () {
+    this.props.checkIfUserIsLoggedIn()
+  }
   renderRepoOrNotificatin = () => {
     if (this.props.toggel === true) {
       return <Notifcations />
@@ -31,5 +36,5 @@ const mapStateToProps = state => {
 
 export default connect(
   mapStateToProps,
-  {}
+  { checkIfUserIsLoggedIn }
 )(Dashboard)

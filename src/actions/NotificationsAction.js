@@ -1,4 +1,4 @@
-import { FETCH_NOTIFICATIONS } from './types'
+import { FETCH_NOTIFICATIONS, DELETE_NOTIFICATIONS } from './types'
 
 import firebase from '../config/firebase'
 var db = firebase.firestore()
@@ -20,6 +20,21 @@ export const fetchNotifications = () => {
           notificationArray.push(notification)
         })
         dispatch({ type: FETCH_NOTIFICATIONS, payload: notificationArray })
+      })
+  }
+}
+
+export const deleteNotifications = () => {
+  return dispatch => {
+    db.collection('notifications')
+      .doc('{notification}')
+      .delete()
+      .then(() => {
+        console.log('Document successfully deleted!')
+        dispatch({ type: DELETE_NOTIFICATIONS })
+      })
+      .catch(error => {
+        console.error('Error removing document: ', error)
       })
   }
 }

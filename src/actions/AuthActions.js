@@ -1,12 +1,18 @@
 import { LOGGED_IN_SUCCES, SIGN_OUT } from './types'
 import firebase from '../config/firebase'
-import Firebase from 'firebase'
 import history from '../config/history'
+
+import * as Firebase from 'firebase'
+
+const db = firebase.firestore()
+var database = firebase.database()
 
 export const checkIfUserIsLoggedIn = () => {
   return dispatch => {
     firebase.auth().onAuthStateChanged(function (user) {
       if (user) {
+        let userID = user.providerData[0].uid
+        checkIfUserOnline(userID)
         dispatch({ type: LOGGED_IN_SUCCES, payload: true })
         history.push('/dashboard')
       } else {
@@ -15,6 +21,9 @@ export const checkIfUserIsLoggedIn = () => {
     })
   }
 }
+
+// Set the specific user's online status to true
+const setUserToOnline = userID => {}
 
 export const signInUser = userData => {
   return dispatch => {
@@ -54,4 +63,34 @@ export const signOutUser = userData => {
         console.log('error accurred' + error)
       })
   }
+}
+
+export const checkIfUserOnline = uid => {
+  var userStatusDatabaseRef = firebase.database().ref('/status/' + uid)
+
+  var isOfflineForDatabase = {
+    state: 'offline',
+    last_changed: Firebase.database.ServerValue.TIMESTAMP
+  }
+
+  var isOnlineForDatabase = {
+    state: 'online',
+    last_changed: Firebase.database.ServerValue.TIMESTAMP
+  }
+
+  firebase
+    .database()
+    .ref('.info/connected')
+    .on('value', function (snapshot) {
+      // If we're not currently connected, don't do anything.
+      if (snapshot.val() == false) {
+        return
+      }
+      userStatusDatabaseRef
+        .onDisconnect()
+        .set(isOfflineForDatabase)
+        .then(function () {
+          userStatusDatabaseRef.set(isOnlineForDatabase)
+        })
+    })
 }

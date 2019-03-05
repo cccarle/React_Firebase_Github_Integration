@@ -1,4 +1,6 @@
 import React from 'react'
+import { connect } from 'react-redux'
+import { deleteNotifications } from '../../actions'
 import PropTypes from 'prop-types'
 import { withStyles } from '@material-ui/core/styles'
 import List from '@material-ui/core/List'
@@ -8,29 +10,37 @@ import Avatar from '@material-ui/core/Avatar'
 import ImageIcon from '@material-ui/icons/Image'
 import Typography from '@material-ui/core/Typography'
 import ListSubheader from '@material-ui/core/ListSubheader'
+import Button from '@material-ui/core/Button'
 
 import _ from 'lodash'
-
-import { connect } from 'react-redux'
-import {} from '../../actions'
 
 const styles = theme => ({
   root: {
     width: '100%',
     maxWidth: 360,
+    marginTop: '3%',
+    margin: 'auto',
+    width: '50‰',
     textAlign: 'center',
     backgroundColor: theme.palette.background.paper
+  },
+  Button:{
+    marginTop:10,
+    marginRight: 110
   }
 })
 
 class FolderList extends React.Component {
+  deleteNotificationsButton = () => {
+    this.props.deleteNotifications()
+  }
   render () {
     const { classes } = this.props
 
     return (
-      <div>
+      <div className={classes.root}>
         {this.props.notifications.map(repos => (
-          <List className={classes.root}>
+          <List>
             <ListItem>
               <Avatar>
                 <ImageIcon />
@@ -39,6 +49,14 @@ class FolderList extends React.Component {
             </ListItem>
           </List>
         ))}
+        <Button
+          onClick={this.deleteNotificationsButton}
+          variant='contained'
+          color='primary'
+          className={classes.Button}
+        >
+          Delete Notifications
+        </Button>
       </div>
     )
   }
@@ -58,5 +76,5 @@ const mapStateToProps = state => {
 
 export default connect(
   mapStateToProps,
-  {}
+  { deleteNotifications }
 )(withStyles(styles)(FolderList))

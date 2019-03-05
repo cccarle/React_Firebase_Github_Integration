@@ -14,6 +14,7 @@ export const ADD_WEBHOOK = 'ADD_WEBHOOK'
 
 // Notifications
 export const FETCH_NOTIFICATIONS = 'FETCH_NOTIFICATIONS'
+export const DELETE_NOTIFICATIONS = 'DELETE_NOTIFICATIONS'
 
 // Toggel
 export const TOGGEL_ON = 'TOGGEL_ON'
