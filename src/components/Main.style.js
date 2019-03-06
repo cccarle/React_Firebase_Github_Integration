@@ -1,8 +1,17 @@
 const styles = {
   containerStyle: {
-    backgroundColor: 'red',
+    marginTop: '20%',
     textAlign: 'center',
-    fontSize: '200px'
+    width: '100%'
+  },
+  root: {
+    width: '100%',
+    maxWidth: 500
+  },
+  text: {
+    fontSize: 100,
+    color: 'black',
+    textAlign: 'center'
   }
 }
 

@@ -14,7 +14,7 @@ const styles = {
     textAlign: 'right'
   },
   navbarColor: {
-    backgroundColor: '#6699CC'
+    backgroundColor: '#98c1d9'
   }
 }
 

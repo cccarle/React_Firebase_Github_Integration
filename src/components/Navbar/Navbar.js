@@ -7,7 +7,6 @@ import {
   showNotification,
   showOrganizations
 } from '../../actions'
-import history from '../../config/history'
 
 // Styles
 import { withStyles } from '@material-ui/core/styles'
@@ -35,20 +34,17 @@ class Navbar extends Component {
     this.props.showOrganizations()
   }
 
-  toggelLandingPage = () => {
-    // this.showLandingPage()
-  }
   render () {
     const { classes } = this.props
 
     return (
       <div className={classes.root}>
-        <AppBar className={classes.navbarColor} position='static'>
+        <AppBar color='primary' className={classes.navbarColor} position='static'>
           <Toolbar>
             <div>
               <Typography className={classes.grow} variant='h6' color='inherit'>
                 Github Dashboard
-              </Typography>{' '}
+              </Typography>
             </div>
             <SideNav />
 
