@@ -18,7 +18,7 @@ import ListHeader from '@material-ui/core/ListSubheader'
 import Button from '@material-ui/core/Button'
 
 // Styles
-import styles from './RepoList.Style'
+import styles from './OrgsList.style'
 
 class RepoList extends React.Component {
   componentDidMount () {
@@ -38,19 +38,19 @@ class RepoList extends React.Component {
         <GridList cellHeight={180} className={classes.gridList}>
           <GridListTile key='header' cols={2} style={{ height: 'auto' }}>
             <ListHeader className={classes.headerText} component='div'>
-              Github Repositories
+              Github Organizations
             </ListHeader>
           </GridListTile>
-          {this.props.repos.map(repos => (
-            <GridListTile key={repos.name}>
-              <img src={examplePic} alt={repos.name} />
+          {this.props.orgs.map(orgs => (
+            <GridListTile key={orgs.name}>
+              <img src={orgs.avatar_url} alt={'avatar'} />
               <GridListTileBar
-                title={repos.name}
-                key={repos.name}
-                subtitle={<span>by: {repos.owner}</span>}
+                title={orgs.name}
+                key={orgs.name}
+                subtitle={<span> {orgs.url}</span>}
                 actionIcon={
                   <Button
-                    onClick={() => this.addWebHooks(repos.hooks_url)}
+                    onClick={() => this.addWebHooks(orgs.hooks_url)}
                     variant='contained'
                     className={classes.button}
                   >
@@ -71,11 +71,11 @@ RepoList.propTypes = {
 }
 
 const mapStateToProps = state => {
-  const repos = _.map(state.repos, val => {
+  const orgs = _.map(state.orgs, val => {
     return { ...val }
   })
 
-  return { repos }
+  return { orgs }
 }
 
 export default connect(

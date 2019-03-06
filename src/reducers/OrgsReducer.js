@@ -1,12 +1,10 @@
-import { GET_REPOS_DATA } from '../actions/types'
+import { GET_ORGS_DATA } from '../actions/types'
 
-const initialState = {
-  name: ''
-}
+const initialState = {}
 
 export default function (state = initialState, action) {
   switch (action.type) {
-    case GET_REPOS_DATA:
+    case GET_ORGS_DATA:
       return action.payload
     default:
       return state

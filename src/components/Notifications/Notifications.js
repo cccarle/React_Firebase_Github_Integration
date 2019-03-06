@@ -1,6 +1,6 @@
 import React from 'react'
 import { connect } from 'react-redux'
-import { deleteNotifications } from '../../actions'
+import { deleteNotifications, fetchNotifications } from '../../actions'
 import PropTypes from 'prop-types'
 import { withStyles } from '@material-ui/core/styles'
 import List from '@material-ui/core/List'
@@ -24,19 +24,22 @@ const styles = theme => ({
     textAlign: 'center',
     backgroundColor: theme.palette.background.paper
   },
-  Button:{
-    marginTop:10,
+  Button: {
+    marginTop: 10,
     marginRight: 110
   }
 })
 
 class FolderList extends React.Component {
+  componentDidMount () {
+    this.props.fetchNotifications()
+  }
   deleteNotificationsButton = () => {
     this.props.deleteNotifications()
   }
   render () {
     const { classes } = this.props
-
+    console.log(this.props)
     return (
       <div className={classes.root}>
         {this.props.notifications.map(repos => (
@@ -76,5 +79,5 @@ const mapStateToProps = state => {
 
 export default connect(
   mapStateToProps,
-  { deleteNotifications }
+  { deleteNotifications, fetchNotifications }
 )(withStyles(styles)(FolderList))

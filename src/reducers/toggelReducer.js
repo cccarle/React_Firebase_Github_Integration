@@ -1,21 +1,33 @@
-import { TOGGEL_ON, TOGGEL_OFF } from '../actions/types'
+import {
+  SHOW_NOTIFICATIONS,
+  SHOW_REPOSITORIES,
+  SHOW_ORGANIZATION
+} from '../actions/types'
 
 const initialState = {
-  toggel: false
+  showNotifications: false,
+  showRepositories: false,
+  showOrganization: false
 }
 
 export default function (state = initialState, action) {
   switch (action.type) {
-    case TOGGEL_ON:
+    case SHOW_NOTIFICATIONS:
       return {
         ...state,
-        toggel: true
+        showNotifications: action.payload
       }
 
-    case TOGGEL_OFF:
+    case SHOW_REPOSITORIES:
       return {
         ...state,
-        toggel: false
+        showRepositories: action.payload
+      }
+
+    case SHOW_ORGANIZATION:
+      return {
+        ...state,
+        showOrganization: action.payload
       }
 
     default:

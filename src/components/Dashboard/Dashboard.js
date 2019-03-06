@@ -4,6 +4,7 @@ import {} from '../../actions'
 // Components
 import Navbar from '../Navbar/Navbar'
 import RepoList from '../RepoList/RepoList'
+import OrgsList from '../OrgsList/OrgsList'
 import Notifcations from '../Notifications/Notifications'
 import _ from 'lodash'
 import firebase from '../../config/firebase'
@@ -14,10 +15,12 @@ class Dashboard extends Component {
     this.props.checkIfUserIsLoggedIn()
   }
   renderRepoOrNotificatin = () => {
-    if (this.props.toggel === true) {
+    if (this.props.toggel.showNotifications === true) {
       return <Notifcations />
-    } else {
+    } else if (this.props.toggel.showRepositories === true) {
       return <RepoList />
+    } else if (this.props.toggel.showOrganization === true) {
+      return <OrgsList />
     }
   }
   render () {
@@ -31,7 +34,7 @@ class Dashboard extends Component {
 }
 
 const mapStateToProps = state => {
-  return state.toggel
+  return state
 }
 
 export default connect(

@@ -22,14 +22,11 @@ export const checkIfUserIsLoggedIn = () => {
   }
 }
 
-// Set the specific user's online status to true
-const setUserToOnline = userID => {}
-
 export const signInUser = userData => {
   return dispatch => {
     let provider = new Firebase.auth.GithubAuthProvider()
 
-    provider.addScope('admin:repo_hook')
+    provider.addScope('admin:org')
 
     firebase
       .auth()

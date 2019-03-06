@@ -7,19 +7,29 @@ import Typography from '@material-ui/core/Typography'
 import Button from '@material-ui/core/Button'
 import SideNav from '../SideNav/SideNav'
 import { connect } from 'react-redux'
-import { signOutUser, fetchNotifications, toggelOn } from '../../actions'
+import {
+  signOutUser,
+  showRepositories,
+  showNotification,
+  showOrganizations
+} from '../../actions'
 import styles from './Navbar.style'
 
 class Navbar extends Component {
-  componentDidMount () {
-    this.props.fetchNotifications()
-  }
   signOutAttempt = () => {
     this.props.signOutUser()
   }
 
   toggelNotification = () => {
-    this.props.toggelOn()
+    this.props.showNotification()
+  }
+
+  toggelRepositories = () => {
+    this.props.showRepositories()
+  }
+
+  toggelOrganizations = () => {
+    this.props.showOrganizations()
   }
 
   render () {
@@ -29,11 +39,17 @@ class Navbar extends Component {
       <div className={classes.root}>
         <AppBar className={classes.navbarColor} position='static'>
           <Toolbar>
-            <SideNav />
-
             <Typography variant='h6' color='inherit' className={classes.grow}>
               Github Dashboard
             </Typography>
+            <SideNav />
+
+            <Button onClick={this.toggelOrganizations} color='inherit'>
+              Organizations
+            </Button>
+            <Button onClick={this.toggelRepositories} color='inherit'>
+              Repositories
+            </Button>
             <Button onClick={this.toggelNotification} color='inherit'>
               Notifications
             </Button>
@@ -53,5 +69,5 @@ Navbar.propTypes = {
 
 export default connect(
   null,
-  { signOutUser, fetchNotifications, toggelOn }
+  { signOutUser, showRepositories, showNotification, showOrganizations }
 )(withStyles(styles)(Navbar))

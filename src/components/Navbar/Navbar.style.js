@@ -4,7 +4,7 @@ const styles = {
   },
   grow: {
     flexGrow: 1,
-    textAlign: 'center'
+    textAlign: 'left'
   },
   menuButton: {
     marginLeft: -12,
