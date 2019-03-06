@@ -1,4 +1,4 @@
-import { GET_USER_PROFILE_DATA, TEST_DISPATCH } from '../actions/types'
+import { GET_USER_PROFILE_DATA } from '../actions/types'
 
 const initialState = {
   profileAvatar: '',

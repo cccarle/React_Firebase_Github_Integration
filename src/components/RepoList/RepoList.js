@@ -23,11 +23,34 @@ import styles from './RepoList.Style'
 class RepoList extends React.Component {
   componentDidMount () {
     this.props.fetchReposDataGithubAPI()
-    this.props.fetchOrgsDataGithubAPI()
   }
 
   addWebHooks = webhookURL => {
     this.props.addWebhook(webhookURL)
+  }
+
+  renderRepoListCards = (repos, classes) => {
+    if (repos.length < 2) {
+    } else {
+      return repos.map(repos => (
+        <GridListTile key={repos.id}>
+          <img src={examplePic} alt={repos.name} />
+          <GridListTileBar
+            title={repos.name}
+            subtitle={<span>by: {repos.owner}</span>}
+            actionIcon={
+              <Button
+                onClick={() => this.addWebHooks(repos.hooks_url)}
+                variant='contained'
+                className={classes.button}
+              >
+                Subscribe
+              </Button>
+            }
+          />
+        </GridListTile>
+      ))
+    }
   }
 
   render () {
@@ -41,25 +64,7 @@ class RepoList extends React.Component {
               Github Repositories
             </ListHeader>
           </GridListTile>
-          {this.props.repos.map(repos => (
-            <GridListTile key={repos.name}>
-              <img src={examplePic} alt={repos.name} />
-              <GridListTileBar
-                title={repos.name}
-                key={repos.name}
-                subtitle={<span>by: {repos.owner}</span>}
-                actionIcon={
-                  <Button
-                    onClick={() => this.addWebHooks(repos.hooks_url)}
-                    variant='contained'
-                    className={classes.button}
-                  >
-                    Subscribe
-                  </Button>
-                }
-              />
-            </GridListTile>
-          ))}
+          {this.renderRepoListCards(this.props.repos, classes)}
         </GridList>
       </div>
     )

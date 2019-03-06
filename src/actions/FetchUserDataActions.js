@@ -1,5 +1,9 @@
-import { GET_USER_PROFILE_DATA, GET_REPOS_DATA, GET_ORGS_DATA } from './types'
-var github = require('octonode')
+import {
+  GET_USER_PROFILE_DATA,
+  GET_REPOS_DATA,
+  GET_ORGS_DATA,
+  GET_REPOS_IN_ORGS
+} from './types'
 
 export const fetchUserDataFromGithubAPI = () => {
   return dispatch => {
@@ -10,7 +14,6 @@ export const fetchUserDataFromGithubAPI = () => {
       })
       .then(response => response.json())
       .then(data => {
-        console.log(data)
         dispatch({ type: GET_USER_PROFILE_DATA, payload: data })
       })
   }
@@ -42,8 +45,7 @@ export const fetchOrgsDataGithubAPI = () => {
             hooks_url: '',
             id: '',
             url: '',
-            name: '',
-            url: ''
+            name: ''
           }
 
           orgs.avatar_url = avatar_url
@@ -55,7 +57,6 @@ export const fetchOrgsDataGithubAPI = () => {
           arrayToFilter.push(orgs)
         }
 
-
         dispatch({ type: GET_ORGS_DATA, payload: arrayToFilter })
       })
   }
@@ -65,19 +66,6 @@ export const fetchReposDataGithubAPI = () => {
   return dispatch => {
     const arrayToFilter = []
     const accessToken = window.localStorage.getItem('token')
-
-    var client = github.client(accessToken)
-
-    client.get('https://api.github.com/user/orgs', {}, function (
-      err,
-      status,
-      body,
-      headers
-    ) {
-      console.log(body) // json object
-    })
-
-    var data = { type: 'example' }
 
     window
       .fetch('https://api.github.com/user/repos', {
@@ -93,23 +81,37 @@ export const fetchReposDataGithubAPI = () => {
           let hooks_url = data[k].hooks_url
           let url = data[k].url
           let owner = data[k].owner.login
+          let id = data[k].id
 
           var repos = {
             name: '',
             hooks_url: '',
             url: '',
-            owner: ''
+            owner: '',
+            id: ''
           }
 
           repos.name = name
           repos.hooks_url = hooks_url
           repos.url = url
           repos.owner = owner
+          repos.id = id
 
           arrayToFilter.push(repos)
         }
 
         dispatch({ type: GET_REPOS_DATA, payload: arrayToFilter })
+      })
+  }
+}
+
+export const fetchReposInOrg = orgName => {
+  return dispatch => {
+    window
+      .fetch(`https://api.github.com/orgs/${orgName}/repos`)
+      .then(response => response.json())
+      .then(data => {
+        dispatch({ type: GET_REPOS_IN_ORGS, payload: data })
       })
   }
 }

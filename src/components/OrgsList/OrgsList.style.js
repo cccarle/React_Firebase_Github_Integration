@@ -13,6 +13,10 @@ const styles = {
       backgroundColor: '#FFF',
       marginRight: 20
     },
+    backButton: {
+      backgroundColor: '#6699CC',
+      marginRight: 20
+    },
     headerText: {
       textAlign: 'center'
     }

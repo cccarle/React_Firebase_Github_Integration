@@ -6,8 +6,6 @@ import Navbar from '../Navbar/Navbar'
 import RepoList from '../RepoList/RepoList'
 import OrgsList from '../OrgsList/OrgsList'
 import Notifcations from '../Notifications/Notifications'
-import _ from 'lodash'
-import firebase from '../../config/firebase'
 import { checkIfUserIsLoggedIn } from '../../actions'
 
 class Dashboard extends Component {

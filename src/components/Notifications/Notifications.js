@@ -2,21 +2,18 @@ import React from 'react'
 import { connect } from 'react-redux'
 import { deleteNotifications, fetchNotifications } from '../../actions'
 import PropTypes from 'prop-types'
+import _ from 'lodash'
+
 import { withStyles } from '@material-ui/core/styles'
 import List from '@material-ui/core/List'
 import ListItem from '@material-ui/core/ListItem'
 import ListItemText from '@material-ui/core/ListItemText'
 import Avatar from '@material-ui/core/Avatar'
 import ImageIcon from '@material-ui/icons/Image'
-import Typography from '@material-ui/core/Typography'
-import ListSubheader from '@material-ui/core/ListSubheader'
 import Button from '@material-ui/core/Button'
-
-import _ from 'lodash'
 
 const styles = theme => ({
   root: {
-    width: '100%',
     maxWidth: 360,
     marginTop: '3%',
     margin: 'auto',
@@ -39,16 +36,15 @@ class FolderList extends React.Component {
   }
   render () {
     const { classes } = this.props
-    console.log(this.props)
     return (
       <div className={classes.root}>
-        {this.props.notifications.map(repos => (
-          <List>
+        {this.props.notifications.map(notification => (
+          <List key={notification.eventURL}>
             <ListItem>
               <Avatar>
                 <ImageIcon />
               </Avatar>
-              <ListItemText primary={repos.title} secondary={repos.body} />
+              <ListItemText primary={notification.title} secondary={notification.body} />
             </ListItem>
           </List>
         ))}

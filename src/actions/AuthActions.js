@@ -1,11 +1,7 @@
 import { LOGGED_IN_SUCCES, SIGN_OUT } from './types'
 import firebase from '../config/firebase'
 import history from '../config/history'
-
 import * as Firebase from 'firebase'
-
-const db = firebase.firestore()
-var database = firebase.database()
 
 export const checkIfUserIsLoggedIn = () => {
   return dispatch => {
@@ -26,7 +22,9 @@ export const signInUser = userData => {
   return dispatch => {
     let provider = new Firebase.auth.GithubAuthProvider()
 
-    provider.addScope('admin:org')
+    provider.addScope('user')
+    provider.addScope('repo')
+    provider.addScope('public_repo')
 
     firebase
       .auth()
@@ -80,7 +78,7 @@ export const checkIfUserOnline = uid => {
     .ref('.info/connected')
     .on('value', function (snapshot) {
       // If we're not currently connected, don't do anything.
-      if (snapshot.val() == false) {
+      if (snapshot.val() === false) {
         return
       }
       userStatusDatabaseRef

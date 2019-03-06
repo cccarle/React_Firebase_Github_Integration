@@ -4,11 +4,14 @@ const styles = {
   },
   grow: {
     flexGrow: 1,
-    textAlign: 'left'
+    width: 450
   },
   menuButton: {
     marginLeft: -12,
     marginRight: 20
+  },
+  ButtonContainer: {
+    textAlign: 'right'
   },
   navbarColor: {
     backgroundColor: '#6699CC'

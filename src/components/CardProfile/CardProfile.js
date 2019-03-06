@@ -18,6 +18,12 @@ class CardProfile extends React.Component {
     this.props.fetchUserDataFromGithubAPI()
   }
 
+  renderImage = (profileAvatar, classes) => {
+    if (profileAvatar.length < 1) {
+    } else {
+      return <CardMedia className={classes.media} image={profileAvatar} />
+    }
+  }
   render () {
     const { classes } = this.props
 
@@ -31,7 +37,7 @@ class CardProfile extends React.Component {
           }
           title={this.props.profileName}
         />
-        <CardMedia className={classes.media} image={this.props.profileAvatar} />
+        {this.renderImage(this.props.profileAvatar, classes)}
       </Card>
     )
   }

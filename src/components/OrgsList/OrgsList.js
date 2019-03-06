@@ -4,7 +4,8 @@ import { connect } from 'react-redux'
 import {
   fetchReposDataGithubAPI,
   addWebhook,
-  fetchOrgsDataGithubAPI
+  fetchOrgsDataGithubAPI,
+  fetchReposInOrg
 } from '../../actions'
 import _ from 'lodash'
 import examplePic from '../../assets/examplepic.jpg'
@@ -22,12 +23,25 @@ import styles from './OrgsList.style'
 
 class RepoList extends React.Component {
   componentDidMount () {
-    this.props.fetchReposDataGithubAPI()
     this.props.fetchOrgsDataGithubAPI()
   }
 
-  addWebHooks = webhookURL => {
-    this.props.addWebhook(webhookURL)
+  addWebHooks = name => {
+    let orgName = name
+
+    this.props.fetchReposInOrg(orgName)
+  }
+
+  renderOrgs = () => {
+    this.props.fetchOrgsDataGithubAPI()
+  }
+
+  checkIfAvatar = avatar => {
+    if (avatar === undefined) {
+      return examplePic
+    } else {
+      return avatar
+    }
   }
 
   render () {
@@ -43,23 +57,30 @@ class RepoList extends React.Component {
           </GridListTile>
           {this.props.orgs.map(orgs => (
             <GridListTile key={orgs.name}>
-              <img src={orgs.avatar_url} alt={'avatar'} />
+              <img src={this.checkIfAvatar(orgs.avatar_url)} alt={'avatar'} />
               <GridListTileBar
                 title={orgs.name}
                 key={orgs.name}
                 subtitle={<span> {orgs.url}</span>}
                 actionIcon={
                   <Button
-                    onClick={() => this.addWebHooks(orgs.hooks_url)}
+                    onClick={() => this.addWebHooks(orgs.name)}
                     variant='contained'
                     className={classes.button}
                   >
-                    Subscribe
+                    View
                   </Button>
                 }
               />
             </GridListTile>
           ))}
+          <Button
+            onClick={() => this.renderOrgs()}
+            variant='contained'
+            className={classes.backButton}
+          >
+            Back
+          </Button>
         </GridList>
       </div>
     )
@@ -80,5 +101,10 @@ const mapStateToProps = state => {
 
 export default connect(
   mapStateToProps,
-  { fetchReposDataGithubAPI, addWebhook, fetchOrgsDataGithubAPI }
+  {
+    fetchReposDataGithubAPI,
+    addWebhook,
+    fetchOrgsDataGithubAPI,
+    fetchReposInOrg
+  }
 )(withStyles(styles)(RepoList))

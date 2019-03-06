@@ -3,7 +3,6 @@ import authReducer from './authReducer'
 import profileReducer from './profileReducer'
 import reposReducer from './ReposReducer'
 import orgsReducer from './OrgsReducer'
-import subscriptionReducer from './SubscriptionReducer'
 import notificationsReducer from './notificationsReducer'
 import toggelReducers from './toggelReducer'
 

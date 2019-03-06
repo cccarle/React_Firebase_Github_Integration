@@ -6,9 +6,10 @@ export const SIGN_OUT = 'SIGN_OUT'
 // profile
 export const GET_USER_PROFILE_DATA = 'GET_USER_PROFILE_DATA'
 
-// Repos
+// Repos / Orgs
 export const GET_REPOS_DATA = 'GET_REPOS_DATA'
 export const GET_ORGS_DATA = 'GET_ORGS_DATA'
+export const GET_REPOS_IN_ORGS = 'GET_REPOS_IN_ORGS'
 
 // Webhook
 export const ADD_WEBHOOK = 'ADD_WEBHOOK'

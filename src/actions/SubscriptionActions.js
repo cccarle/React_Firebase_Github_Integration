@@ -9,12 +9,15 @@ export const addWebhook = webhookURL => {
       content_type: 'json'
     }
 
+    console.log(webhookURL)
+
     let data = { name: 'web', config: configData }
 
     window
       .fetch(webhookURL, {
         method: 'POST',
         body: JSON.stringify(data),
+        events: ['issues'],
         headers: {
           Authorization: 'token ' + accessToken,
           'Content-Type': 'application/json'
@@ -33,7 +36,5 @@ export const addWebhook = webhookURL => {
 }
 
 export const deleteWebhook = webhookURL => {
-  return dispatch => {
-    const accessToken = window.localStorage.getItem('token')
-  }
+  return dispatch => {}
 }

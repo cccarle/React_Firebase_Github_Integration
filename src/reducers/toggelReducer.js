@@ -6,7 +6,7 @@ import {
 
 const initialState = {
   showNotifications: false,
-  showRepositories: false,
+  showRepositories: true,
   showOrganization: false
 }
 
