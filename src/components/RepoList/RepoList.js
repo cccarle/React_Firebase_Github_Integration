@@ -21,7 +21,7 @@ import Button from '@material-ui/core/Button'
 import styles from './RepoList.Style'
 
 class RepoList extends React.Component {
-  componentDidMount () {
+  componentDidMount() {
     this.props.fetchReposDataGithubAPI()
   }
 
@@ -29,31 +29,7 @@ class RepoList extends React.Component {
     this.props.addWebhook(webhookURL)
   }
 
-  renderRepoListCards = (repos, classes) => {
-    if (repos.length < 2) {
-    } else {
-      return repos.map(repos => (
-        <GridListTile key={repos.id}>
-          <img src={examplePic} alt={repos.name} />
-          <GridListTileBar
-            title={repos.name}
-            subtitle={<span>by: {repos.owner}</span>}
-            actionIcon={
-              <Button
-                onClick={() => this.addWebHooks(repos.hooks_url)}
-                variant='contained'
-                className={classes.button}
-              >
-                Subscribe
-              </Button>
-            }
-          />
-        </GridListTile>
-      ))
-    }
-  }
-
-  render () {
+  render() {
     const { classes } = this.props
 
     return (
@@ -64,7 +40,26 @@ class RepoList extends React.Component {
               Github Repositories
             </ListHeader>
           </GridListTile>
-          {this.renderRepoListCards(this.props.repos, classes)}
+          {
+            this.props.repos.map(repos => (
+              <GridListTile key={repos.id}>
+                <img src={examplePic} alt={repos.name} />
+                <GridListTileBar
+                  title={repos.name}
+                  subtitle={<span>by: {repos.owner}</span>}
+                  actionIcon={
+                    <Button
+                      onClick={() => this.addWebHooks(repos.hooks_url)}
+                      variant='contained'
+                      className={classes.button}
+                    >
+                      Subscribe
+                  </Button>
+                  }
+                />
+              </GridListTile>
+            ))
+          }
         </GridList>
       </div>
     )

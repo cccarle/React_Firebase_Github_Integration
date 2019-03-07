@@ -23,7 +23,6 @@ class Main extends React.Component {
         <div>
           <Button
             onClick={this.signInAttempt}
-            variant='contained'
             color='primary'
             size='large'
             variant='outlined'

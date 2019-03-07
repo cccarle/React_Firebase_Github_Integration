@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
-import {} from '../../actions'
+import { } from '../../actions'
 // Components
 import Navbar from '../Navbar/Navbar'
 import RepoList from '../RepoList/RepoList'
@@ -8,9 +8,20 @@ import OrgsList from '../OrgsList/OrgsList'
 import Notifcations from '../Notifications/Notifications'
 import { checkIfUserIsLoggedIn } from '../../actions'
 
+
+
 class Dashboard extends Component {
-  componentDidMount () {
+  componentDidMount() {
     this.props.checkIfUserIsLoggedIn()
+
+
+    // var addMessage = firebase.functions().httpsCallable('addMessage');
+    // addMessage({ text: 'meddelande från client' }).then(function (result) {
+    //   // Read result of the Cloud Function.
+    //   var sanitizedMessage = result.data.text;
+    //   // ...
+    // });
+
   }
   renderRepoOrNotificatin = () => {
     if (this.props.toggel.showNotifications === true) {
@@ -21,7 +32,7 @@ class Dashboard extends Component {
       return <OrgsList />
     }
   }
-  render () {
+  render() {
     return (
       <div>
         <Navbar />

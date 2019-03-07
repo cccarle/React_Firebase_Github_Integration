@@ -21,7 +21,7 @@ export const fetchUserDataFromGithubAPI = () => {
 
 export const fetchOrgsDataGithubAPI = () => {
   return dispatch => {
-    const arrayToFilter = []
+    const orgsToFilter = []
     const accessToken = window.localStorage.getItem('token')
 
     window
@@ -32,6 +32,7 @@ export const fetchOrgsDataGithubAPI = () => {
       .then(data => {
         let keys = Object.keys(data)
 
+
         for (var i = 0; i < keys.length; i++) {
           let k = keys[i]
           let avatar_url = data[k].avatar_url
@@ -39,13 +40,15 @@ export const fetchOrgsDataGithubAPI = () => {
           let id = data[k].id
           let name = data[k].login
           let url = data[k].url
+          let repos_url = data[k].url
 
           var orgs = {
             avatar_url: '',
             hooks_url: '',
             id: '',
             url: '',
-            name: ''
+            name: '',
+            repos_url: ''
           }
 
           orgs.avatar_url = avatar_url
@@ -53,11 +56,12 @@ export const fetchOrgsDataGithubAPI = () => {
           orgs.id = id
           orgs.name = name
           orgs.url = url
+          orgs.repos_url = repos_url
 
-          arrayToFilter.push(orgs)
+          orgsToFilter.push(orgs)
         }
 
-        dispatch({ type: GET_ORGS_DATA, payload: arrayToFilter })
+        dispatch({ type: GET_ORGS_DATA, payload: orgsToFilter })
       })
   }
 }
@@ -66,6 +70,7 @@ export const fetchReposDataGithubAPI = () => {
   return dispatch => {
     const arrayToFilter = []
     const accessToken = window.localStorage.getItem('token')
+
 
     window
       .fetch('https://api.github.com/user/repos', {
@@ -82,13 +87,15 @@ export const fetchReposDataGithubAPI = () => {
           let url = data[k].url
           let owner = data[k].owner.login
           let id = data[k].id
+          let admin = data[k].permissions.admin
 
           var repos = {
             name: '',
             hooks_url: '',
             url: '',
             owner: '',
-            id: ''
+            id: '',
+            admin: ''
           }
 
           repos.name = name
@@ -96,22 +103,61 @@ export const fetchReposDataGithubAPI = () => {
           repos.url = url
           repos.owner = owner
           repos.id = id
+          repos.admin = admin
 
           arrayToFilter.push(repos)
         }
 
-        dispatch({ type: GET_REPOS_DATA, payload: arrayToFilter })
+        let arr = arrayToFilter.filter(child => child.admin === true)
+        dispatch({ type: GET_REPOS_DATA, payload: arr })
       })
   }
 }
 
 export const fetchReposInOrg = orgName => {
   return dispatch => {
+
+    let adminReposInOrg = []
     window
       .fetch(`https://api.github.com/orgs/${orgName}/repos`)
       .then(response => response.json())
       .then(data => {
-        dispatch({ type: GET_REPOS_IN_ORGS, payload: data })
+
+        let keys = Object.keys(data)
+
+        for (var i = 0; i < keys.length; i++) {
+          let k = keys[i]
+          let name = data[k].name
+          let hooks_url = data[k].hooks_url
+          let url = data[k].url
+          let owner = data[k].owner.login
+          let id = data[k].id
+          let admin = data[k].permissions.admin
+
+
+
+          var reposInOrg = {
+            name: '',
+            hooks_url: '',
+            url: '',
+            owner: '',
+            id: '',
+            admin: admin
+          }
+
+          reposInOrg.name = name
+          reposInOrg.hooks_url = hooks_url
+          reposInOrg.url = url
+          reposInOrg.owner = owner
+          reposInOrg.id = id
+          reposInOrg.admin = admin
+
+          adminReposInOrg.push(reposInOrg)
+        }
+
+
+
+        dispatch({ type: GET_REPOS_IN_ORGS, payload: adminReposInOrg })
       })
   }
 }

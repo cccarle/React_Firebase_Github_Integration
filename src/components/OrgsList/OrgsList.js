@@ -22,7 +22,7 @@ import Button from '@material-ui/core/Button'
 import styles from './OrgsList.style'
 
 class RepoList extends React.Component {
-  componentDidMount () {
+  componentDidMount() {
     this.props.fetchOrgsDataGithubAPI()
   }
 
@@ -36,6 +36,26 @@ class RepoList extends React.Component {
     this.props.fetchOrgsDataGithubAPI()
   }
 
+
+  checkIfAdmin = (orgs, classes) => {
+    if (orgs.admin === true || orgs.repos_url) {
+      return (<Button
+        onClick={() => this.addWebHooks(orgs.name)}
+        variant='contained'
+        className={classes.button}
+      >
+        View
+</Button>)
+    } else {
+      return (<Button
+        variant='contained'
+        className={classes.button}
+      >
+        Not admin
+</Button>)
+    }
+  }
+
   checkIfAvatar = avatar => {
     if (avatar === undefined) {
       return examplePic
@@ -44,7 +64,7 @@ class RepoList extends React.Component {
     }
   }
 
-  render () {
+  render() {
     const { classes } = this.props
 
     return (
@@ -63,13 +83,7 @@ class RepoList extends React.Component {
                 key={orgs.name}
                 subtitle={<span> {orgs.url}</span>}
                 actionIcon={
-                  <Button
-                    onClick={() => this.addWebHooks(orgs.name)}
-                    variant='contained'
-                    className={classes.button}
-                  >
-                    View
-                  </Button>
+                  this.checkIfAdmin(orgs, classes)
                 }
               />
             </GridListTile>

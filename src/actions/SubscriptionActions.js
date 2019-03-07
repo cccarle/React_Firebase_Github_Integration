@@ -1,4 +1,6 @@
 import { ADD_WEBHOOK } from './types'
+import firebase from '../config/firebase'
+var db = firebase.firestore()
 
 export const addWebhook = webhookURL => {
   return dispatch => {
@@ -17,7 +19,6 @@ export const addWebhook = webhookURL => {
       .fetch(webhookURL, {
         method: 'POST',
         body: JSON.stringify(data),
-        events: ['issues'],
         headers: {
           Authorization: 'token ' + accessToken,
           'Content-Type': 'application/json'
@@ -26,6 +27,18 @@ export const addWebhook = webhookURL => {
       .then(response => response.json())
       .then(data => {
         dispatch({ type: ADD_WEBHOOK, payload: data })
+
+        // Add a new document in collection "cities"
+        db.collection("users").doc("24423").set({
+          hookID: data.id
+        })
+          .then(function () {
+            console.log("Document successfully written!");
+          })
+          .catch(function (error) {
+            console.error("Error writing document: ", error);
+          });
+
 
         console.log(data)
       })
@@ -36,5 +49,5 @@ export const addWebhook = webhookURL => {
 }
 
 export const deleteWebhook = webhookURL => {
-  return dispatch => {}
+  return dispatch => { }
 }

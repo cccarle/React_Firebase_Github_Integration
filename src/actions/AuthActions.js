@@ -24,7 +24,6 @@ export const signInUser = userData => {
 
     provider.addScope('user')
     provider.addScope('repo')
-    provider.addScope('public_repo')
 
     firebase
       .auth()
@@ -61,7 +60,7 @@ export const signOutUser = userData => {
 }
 
 export const checkIfUserOnline = uid => {
-  var userStatusDatabaseRef = firebase.database().ref('/status/' + uid)
+  var userStatusDatabaseRef = firebase.database().ref('/users/' + uid)
 
   var isOfflineForDatabase = {
     state: 'offline',
@@ -77,7 +76,6 @@ export const checkIfUserOnline = uid => {
     .database()
     .ref('.info/connected')
     .on('value', function (snapshot) {
-      // If we're not currently connected, don't do anything.
       if (snapshot.val() === false) {
         return
       }
