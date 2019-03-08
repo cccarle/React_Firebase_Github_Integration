@@ -6,38 +6,35 @@ export const fetchNotifications = () => {
 	return (dispatch) => {
 		let repoIDFromUser;
 		let notificationArray = [];
+		var matchedNotificationWithUserArray = [];
 		let currentUser = firebase.auth().currentUser;
 		let userID = currentUser.providerData[0].uid;
 
-		var docRef = db.collection('users').doc(`${userID}`);
-
-		docRef
-			.get()
-			.then(function(doc) {
-				if (doc.exists) {
-					repoIDFromUser = doc.data().repositoryID.toString();
-				}
-			})
-			.catch(function(error) {
-				console.log('Error getting document:', error);
-			});
+		var docRef = db.doc(`users/${userID}`).get().then((doc) => {
+			if (doc.exists) {
+				repoIDFromUser = doc.data().repositoryID;
+			}
+		});
 
 		db.collection('notifications').get().then((querySnapshot) => {
 			querySnapshot.forEach((doc) => {
-				let notification = {
-					title: `${doc.data().notification.title}`,
-					body: `${doc.data().notification.body}`,
-					createdby: `${doc.data().notification.createdBy}`,
-					eventURL: `${doc.data().notification.eventURL}`,
-					repositoryID: `${doc.data().notification.repositoryID}`
-				};
-
-				notificationArray.push(notification);
+				notificationArray.push(doc.data().notification);
 			});
 
-			let filteredNotificationArray = notificationArray.filter((child) => child.repositoryID === repoIDFromUser);
+			repoIDFromUser.forEach((repositoryID) => {
+				notificationArray.filter(function(el) {
+					if (el.repositoryID == repositoryID) {
+						const repoObj = {
+							title: el.title,
+							body: el.body
+						};
 
-			dispatch({ type: FETCH_NOTIFICATIONS, payload: filteredNotificationArray });
+						matchedNotificationWithUserArray.push(repoObj);
+					}
+				});
+			});
+
+			dispatch({ type: FETCH_NOTIFICATIONS, payload: matchedNotificationWithUserArray });
 		});
 	};
 };
