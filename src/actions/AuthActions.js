@@ -8,7 +8,7 @@ export const checkIfUserIsLoggedIn = () => {
 		firebase.auth().onAuthStateChanged(function(user) {
 			if (user) {
 				let userID = user.providerData[0].uid;
-				checkIfUserOnline(userID);
+				//checkIfUserOnline(userID);
 				dispatch({ type: LOGGED_IN_SUCCES, payload: true });
 				history.push('/dashboard');
 			} else {
@@ -57,27 +57,4 @@ export const signOutUser = (userData) => {
 				console.log('error accurred' + error);
 			});
 	};
-};
-
-export const checkIfUserOnline = (uid) => {
-	var userStatusDatabaseRef = firebase.database().ref('/users/' + uid);
-
-	var isOfflineForDatabase = {
-		state: 'offline',
-		last_changed: Firebase.database.ServerValue.TIMESTAMP
-	};
-
-	var isOnlineForDatabase = {
-		state: 'online',
-		last_changed: Firebase.database.ServerValue.TIMESTAMP
-	};
-
-	firebase.database().ref('.info/connected').on('value', function(snapshot) {
-		if (snapshot.val() === false) {
-			return;
-		}
-		userStatusDatabaseRef.onDisconnect().set(isOfflineForDatabase).then(function() {
-			userStatusDatabaseRef.set(isOnlineForDatabase);
-		});
-	});
 };

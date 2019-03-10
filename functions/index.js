@@ -1,8 +1,12 @@
 const functions = require('firebase-functions');
 const admin = require('firebase-admin');
 admin.initializeApp();
-const sgMail = require('@sendgrid/mail');
 const firestore = admin.firestore();
+
+/* 
+Webhook endpoint, store notification to firestore
+Save repository to the user that created the webhook
+*/
 
 exports.events = functions.https.onRequest((req, res) => {
 	var webhookData = {};
@@ -34,7 +38,10 @@ exports.events = functions.https.onRequest((req, res) => {
 	});
 });
 
-// Send Notrification
+/* 
+Send Notification to serivce worker
+*/
+
 exports.sendNotification = functions.firestore.document('notifications/{notification}').onCreate((snap, context) => {
 	const newValue = snap.data();
 
@@ -55,15 +62,14 @@ exports.sendNotification = functions.firestore.document('notifications/{notifica
 		.then((users) => {
 			users.forEach((element) => {
 				if (element.repositoryID[0] === repoID && element.eventStatus.state === 'offline') {
-					sgMail.setApiKey('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');
-					const msg = {
-						to: `${element.email}`,
-						from: 'test@example.com',
-						subject: 'This is a notification from githubdashboard',
-						text: JSON.stringify(newValue),
-						html: JSON.stringify(newValue)
+					const payload = {
+						notification: {
+							title: `${newValue.notification.title}`,
+							body: `${newValue.notification.body}`
+						}
 					};
-					sgMail.send(msg);
+
+					return admin.messaging().sendToDevice(element.msgToken, payload);
 				}
 			});
 			return users;
@@ -72,39 +78,7 @@ exports.sendNotification = functions.firestore.document('notifications/{notifica
 			console.log(err);
 		});
 
-	// alla användare som hare reopoID och har eventStatus.state == offline
-	// Skicka notification
-
 	let msg = 'everything went fine';
 
 	return msg;
 });
-
-// Check if logged in
-exports.onUserStatusChanged = functions.database.ref('/users/{uid}').onUpdate((change, context) => {
-	const eventStatus = change.after.val();
-
-	const userStatusFirestoreRef = firestore.doc(`users/${context.params.uid}`);
-
-	return change.after.ref.once('value').then((statusSnapshot) => {
-		const status = statusSnapshot.val();
-
-		if (status.last_changed > eventStatus.last_changed) {
-			return null;
-		}
-
-		eventStatus.last_changed = new Date(eventStatus.last_changed);
-
-		return userStatusFirestoreRef.set({ eventStatus }, { merge: true });
-	});
-});
-
-// Add message
-// exports.addMessage = functions.https.onCall((data, context) => {
-//   const text = data.text
-//   const uid = context.auth.uid
-//   const name = context.auth.token.name || null
-
-//   const email = context.auth.token.email || null
-//   console.log('body: ' + text + 'uid: ' + uid + 'name :' + name + 'email :' + email)
-// })
