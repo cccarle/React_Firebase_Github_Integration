@@ -61,7 +61,7 @@ exports.sendNotification = functions.firestore.document('notifications/{notifica
 		})
 		.then((users) => {
 			users.forEach((element) => {
-				if (element.repositoryID[0] === repoID && element.eventStatus.state === 'offline') {
+				if (element.repositoryID[0] === repoID) {
 					const payload = {
 						notification: {
 							title: `${newValue.notification.title}`,
