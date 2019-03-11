@@ -13,7 +13,7 @@ export const addWebhook = (webhookURL) => {
 
 		console.log(webhookURL);
 
-		let data = { name: 'web', config: configData, scope: [ 'issue' ] };
+		let data = { events: [ 'issues', 'push' ], name: 'web', config: configData };
 
 		window
 			.fetch(webhookURL, {

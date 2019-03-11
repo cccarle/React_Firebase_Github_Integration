@@ -22,9 +22,9 @@ class Dashboard extends Component {
 				return messaging.getToken();
 			})
 			.then((token) => {
-        var user = firebase.auth().currentUser;
-        
-        console.log(user.providerData[0].uid)
+				var user = firebase.auth().currentUser;
+
+				console.log(user.providerData[0].uid);
 
 				var userRef = db.collection('users').doc(user.providerData[0].uid);
 

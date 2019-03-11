@@ -27,9 +27,10 @@ exports.events = functions.https.onRequest((req, res) => {
 		webhookData.eventURL = req.body.issue.events_url;
 		webhookData.repositoryID = req.body.repository.id;
 	} else {
-		webhookData.message = req.body.commits[0].message;
+		webhookData.body = req.body.commits[0].message;
 		webhookData.commitURL = req.body.commits[0].url;
-		webhookData.commiter = req.body.commits[0].author;
+		webhookData.title = req.body.commits[0].author.name.slice(1, -1);
+		webhookData.repositoryID = req.body.repository.id;
 	}
 
 	return admin.firestore().collection('notifications').add({ notification: webhookData }).then((writeResult) => {
@@ -47,6 +48,7 @@ exports.sendNotification = functions.firestore.document('notifications/{notifica
 
 	// hämta new value, hämta repoID
 	var repoID = newValue.notification.repositoryID;
+	console.log(newValue);
 	// hämta alla användare och deras reposID
 	firestore
 		.collection('users')

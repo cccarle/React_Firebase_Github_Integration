@@ -25,6 +25,7 @@ export const signInUser = (userData) => {
 		provider.addScope('user');
 		provider.addScope('repo');
 
+
 		firebase
 			.auth()
 			.signInWithPopup(provider)
