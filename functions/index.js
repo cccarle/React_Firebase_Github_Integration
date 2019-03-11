@@ -48,7 +48,6 @@ exports.sendNotification = functions.firestore.document('notifications/{notifica
 
 	// hämta new value, hämta repoID
 	var repoID = newValue.notification.repositoryID;
-	console.log(newValue);
 	// hämta alla användare och deras reposID
 	firestore
 		.collection('users')

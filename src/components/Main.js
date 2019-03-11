@@ -2,13 +2,16 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 import { connect } from 'react-redux';
-import { signInUser } from '../actions';
+import { signInUser, checkIfUserIsLoggedIn } from '../actions';
 import { withStyles } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
 import styles from './Main.style';
 
 class Main extends React.Component {
+	componentDidMount() {
+		this.props.checkIfUserIsLoggedIn();
+	}
 	signInAttempt = () => {
 		this.props.signInUser();
 	};
@@ -34,4 +37,4 @@ Main.propTypes = {
 	classes: PropTypes.object.isRequired
 };
 
-export default connect(null, { signInUser })(withStyles(styles)(Main));
+export default connect(null, { signInUser, checkIfUserIsLoggedIn })(withStyles(styles)(Main));

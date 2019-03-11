@@ -7,8 +7,6 @@ export const checkIfUserIsLoggedIn = () => {
 	return (dispatch) => {
 		firebase.auth().onAuthStateChanged(function(user) {
 			if (user) {
-				let userID = user.providerData[0].uid;
-				//checkIfUserOnline(userID);
 				dispatch({ type: LOGGED_IN_SUCCES, payload: true });
 				history.push('/dashboard');
 			} else {

@@ -6,13 +6,15 @@ import Navbar from '../Navbar/Navbar';
 import RepoList from '../RepoList/RepoList';
 import OrgsList from '../OrgsList/OrgsList';
 import Notifcations from '../Notifications/Notifications';
-import { checkIfUserIsLoggedIn } from '../../actions';
+import { checkIfUserIsLoggedIn, fetchNotifications, fetchReposDataGithubAPI } from '../../actions';
 import firebase from '../../config/firebase';
 let db = firebase.firestore();
 
 class Dashboard extends Component {
 	componentDidMount() {
 		this.props.checkIfUserIsLoggedIn();
+		this.props.fetchNotifications();
+		this.props.fetchReposDataGithubAPI();
 
 		const messaging = firebase.messaging();
 		messaging
@@ -22,28 +24,24 @@ class Dashboard extends Component {
 				return messaging.getToken();
 			})
 			.then((token) => {
-				var user = firebase.auth().currentUser;
+				let user = firebase.auth().currentUser;
 
-				console.log(user.providerData[0].uid);
+				let userRef = db.collection('users').doc(user.providerData[0].uid);
 
-				var userRef = db.collection('users').doc(user.providerData[0].uid);
-
-				var setWithMerge = userRef.set(
+				let setWithMerge = userRef.set(
 					{
 						msgToken: token
 					},
 					{ merge: true }
 				);
-
-				console.log(token);
 			})
 			.catch((err) => {
 				console.log(err);
 			});
 
-		messaging.onMessage((payload) => {
-			console.log('onMesage', payload);
-		});
+		// messaging.onMessage((payload) => {
+		// 	console.log('onMesage', payload);
+		// });
 	}
 	renderRepoOrNotificatin = () => {
 		if (this.props.toggel.showNotifications === true) {
@@ -68,4 +66,6 @@ const mapStateToProps = (state) => {
 	return state;
 };
 
-export default connect(mapStateToProps, { checkIfUserIsLoggedIn })(Dashboard);
+export default connect(mapStateToProps, { checkIfUserIsLoggedIn, fetchNotifications, fetchReposDataGithubAPI })(
+	Dashboard
+);

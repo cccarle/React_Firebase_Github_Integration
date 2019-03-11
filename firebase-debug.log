@@ -1,0 +1,16 @@
+[debug] [2019-03-11T16:04:20.681Z] ----------------------------------------------------------------------
+[debug] [2019-03-11T16:04:20.683Z] Command:       /usr/local/bin/node /usr/local/bin/firebase deploy
+[debug] [2019-03-11T16:04:20.683Z] CLI Version:   4.1.0
+[debug] [2019-03-11T16:04:20.683Z] Platform:      darwin
+[debug] [2019-03-11T16:04:20.683Z] Node Version:  v11.0.0
+[debug] [2019-03-11T16:04:20.684Z] Time:          Mon Mar 11 2019 17:04:20 GMT+0100 (GMT+01:00)
+[debug] [2019-03-11T16:04:20.684Z] ----------------------------------------------------------------------
+[debug] 
+[debug] [2019-03-11T16:04:20.693Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2019-03-11T16:04:20.693Z] > authorizing via signed-in user
+[debug] [2019-03-11T16:04:20.694Z] > refreshing access token with scopes: ["email","https://www.googleapis.com/auth/cloud-platform","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","openid"]
+[debug] [2019-03-11T16:04:20.695Z] >>> HTTP REQUEST POST https://www.googleapis.com/oauth2/v3/token  
+
+[debug] [2019-03-11T16:04:20.885Z] <<< HTTP RESPONSE 200
+[debug] [2019-03-11T16:04:20.902Z] >>> HTTP REQUEST GET https://admin.firebase.com/v1/projects/guthubdashboard  
+ 
