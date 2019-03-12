@@ -10,7 +10,7 @@ Save repository to the user that created the webhook
 
 exports.events = functions.https.onRequest((req, res) => {
 	var webhookData = {};
-
+	let id = req.query.id
 	if (req.body.zen) {
 		const userStatusFirestoreRef = firestore.doc(`users/${req.body.sender.id}`);
 
@@ -65,8 +65,6 @@ exports.sendNotification = functions.firestore.document('notifications/{notifica
 				let repositoryIDsArray = element.repositoryID;
 
 				repositoryIDsArray.forEach((repoIDss) => {
-					console.log('element : ' + element + ' repoIDSS : ' + repoIDss + ' repoID : ' + repoID);
-
 					if (repoIDss === repoID) {
 						const payload = {
 							notification: {

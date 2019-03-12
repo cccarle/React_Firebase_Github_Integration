@@ -6,8 +6,12 @@ export const addWebhook = (webhookURL) => {
 	return (dispatch) => {
 		const accessToken = window.localStorage.getItem('token');
 
+		let user = firebase.auth().currentUser;
+
+		console.log(user.uid);
+
 		let configData = {
-			url: 'https://us-central1-guthubdashboard.cloudfunctions.net/events',
+			url: `https://us-central1-guthubdashboard.cloudfunctions.net/events?id=${user.uid}`,
 			content_type: 'json'
 		};
 
@@ -59,7 +63,6 @@ export const turnOffNotifications = (webhookURL) => {
 			})
 			.then((response) => response.json())
 			.then((data) => {
-				
 				dispatch({ type: DELETE_WEBHOOK, payload: data });
 			})
 			.catch((err) => {
