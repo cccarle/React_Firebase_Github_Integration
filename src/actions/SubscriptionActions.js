@@ -59,6 +59,7 @@ export const turnOffNotifications = (webhookURL) => {
 			})
 			.then((response) => response.json())
 			.then((data) => {
+				
 				dispatch({ type: DELETE_WEBHOOK, payload: data });
 			})
 			.catch((err) => {

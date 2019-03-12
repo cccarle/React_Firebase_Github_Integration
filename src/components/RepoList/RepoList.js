@@ -30,7 +30,7 @@ class RepoList extends React.Component {
 	};
 
 	renderButton = (repos, classes) => {
-		if (repos.active === true) {
+		if (repos.active === false) {
 			return (
 				<Button
 					onClick={() => this.turnOffNotification(repos.hookURLDelete)}
@@ -50,23 +50,14 @@ class RepoList extends React.Component {
 					Turn on notifications
 				</Button>
 			);
-		} else {
-			return (
-				<Button
-					onClick={() => this.addWebHooks(repos.hooks_url)}
-					variant="contained"
-					className={classes.button}
-				>
-					Subscribe to notifications
-				</Button>
-			);
 		}
 	};
 
 	render() {
 		const { classes } = this.props;
-
+console.log(this.props.repos)
 		return (
+
 			<div className={classes.root}>
 				<GridList cellHeight={180} className={classes.gridList}>
 					<GridListTile key="header" cols={2} style={{ height: 'auto' }}>
@@ -80,7 +71,15 @@ class RepoList extends React.Component {
 							<GridListTileBar
 								title={repos.name}
 								subtitle={<span>by: {repos.owner}</span>}
-								actionIcon={this.renderButton(repos, classes)}
+								actionIcon={
+									<Button
+										onClick={() => this.addWebHooks(repos.hooks_url)}
+										variant="contained"
+										className={classes.button}
+									>
+										Sybscribe{' '}
+									</Button>
+								}
 							/>
 						</GridListTile>
 					))}

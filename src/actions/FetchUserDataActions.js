@@ -34,6 +34,9 @@ export const fetchOrgsDataGithubAPI = () => {
 			.then((data) => {
 				let keys = Object.keys(data);
 
+
+				console.log(data)
+
 				for (var i = 0; i < keys.length; i++) {
 					let k = keys[i];
 					let avatar_url = data[k].avatar_url;
@@ -95,7 +98,8 @@ export const fetchReposDataGithubAPI = () => {
 						url: '',
 						owner: '',
 						id: '',
-						admin: ''
+						admin: '',
+						active: false
 					};
 
 					repos.name = name;
@@ -104,49 +108,31 @@ export const fetchReposDataGithubAPI = () => {
 					repos.owner = owner;
 					repos.id = id;
 					repos.admin = admin;
+					repos.active = false;
 
 					arrayToFilter.push(repos);
 				}
 
 				let arr = arrayToFilter.filter((child) => child.admin === true);
-
-				return arr;
-			})
-			.then((arr) => {
-				arr.forEach((element) => {
-					let url = element.hooks_url;
-
-					console.log(element);
-					window
-						.fetch(url, {
-							headers: { Authorization: 'token ' + accessToken }
-						})
-						.then((response) => response.json())
-						.then((data) => {
-							if (data[0] != undefined) {
-								element.hookURLDelete = data[0].url;
-								element.active = data[0].active;
-							}
-
-							dispatch({ type: GET_REPOS_DATA, payload: arr });
-						});
-				});
+				dispatch({ type: GET_REPOS_DATA, payload: arr });
 			});
 	};
 };
 
-export const checkIfWebhookIsRegistered = (webhookURL) => {
+export const checkIfWebhookIsRegistered = () => {
 	return (dispatch) => {
+		let a = fetchReposDataGithubAPI();
+		console.log(a);
 		const accessToken = window.localStorage.getItem('token');
 
-		window
-			.fetch(webhookURL, {
-				headers: { Authorization: 'token ' + accessToken }
-			})
-			.then((response) => response.json())
-			.then((data) => {
-				dispatch({ type: UPDATE_REPOS_DATA_WITH_HOOK_URL, payload: data[0].url });
-			});
+		// window
+		// 	.fetch(webhookURL, {
+		// 		headers: { Authorization: 'token ' + accessToken }
+		// 	})
+		// 	.then((response) => response.json())
+		// 	.then((data) => {
+		// 		dispatch({ type: UPDATE_REPOS_DATA_WITH_HOOK_URL, payload: data[0].url });
+		// 	});
 	};
 };
 

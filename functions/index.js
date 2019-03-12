@@ -62,16 +62,22 @@ exports.sendNotification = functions.firestore.document('notifications/{notifica
 		})
 		.then((users) => {
 			users.forEach((element) => {
-				if (element.repositoryID[0] === repoID) {
-					const payload = {
-						notification: {
-							title: `${newValue.notification.title}`,
-							body: `${newValue.notification.body}`
-						}
-					};
+				let repositoryIDsArray = element.repositoryID;
 
-					return admin.messaging().sendToDevice(element.msgToken, payload);
-				}
+				repositoryIDsArray.forEach((repoIDss) => {
+					console.log('element : ' + element + ' repoIDSS : ' + repoIDss + ' repoID : ' + repoID);
+
+					if (repoIDss === repoID) {
+						const payload = {
+							notification: {
+								title: `${newValue.notification.title}`,
+								body: `${newValue.notification.body}`
+							}
+						};
+
+						return admin.messaging().sendToDevice(element.msgToken, payload);
+					}
+				});
 			});
 			return users;
 		})

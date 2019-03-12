@@ -6,7 +6,12 @@ import Navbar from '../Navbar/Navbar';
 import RepoList from '../RepoList/RepoList';
 import OrgsList from '../OrgsList/OrgsList';
 import Notifcations from '../Notifications/Notifications';
-import { checkIfUserIsLoggedIn, fetchNotifications, fetchReposDataGithubAPI } from '../../actions';
+import {
+	checkIfUserIsLoggedIn,
+	fetchNotifications,
+	fetchReposDataGithubAPI,
+	checkIfWebhookIsRegistered
+} from '../../actions';
 import firebase from '../../config/firebase';
 let db = firebase.firestore();
 
@@ -14,7 +19,7 @@ class Dashboard extends Component {
 	componentDidMount() {
 		this.props.checkIfUserIsLoggedIn();
 		this.props.fetchNotifications();
-		this.props.fetchReposDataGithubAPI();
+		this.props.fetchReposDataGithubAPI()
 
 		const messaging = firebase.messaging();
 		messaging
@@ -66,6 +71,9 @@ const mapStateToProps = (state) => {
 	return state;
 };
 
-export default connect(mapStateToProps, { checkIfUserIsLoggedIn, fetchNotifications, fetchReposDataGithubAPI })(
-	Dashboard
-);
+export default connect(mapStateToProps, {
+	checkIfUserIsLoggedIn,
+	fetchNotifications,
+	fetchReposDataGithubAPI,
+	checkIfWebhookIsRegistered
+})(Dashboard);
