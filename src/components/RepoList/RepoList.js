@@ -55,9 +55,7 @@ class RepoList extends React.Component {
 
 	render() {
 		const { classes } = this.props;
-console.log(this.props.repos)
 		return (
-
 			<div className={classes.root}>
 				<GridList cellHeight={180} className={classes.gridList}>
 					<GridListTile key="header" cols={2} style={{ height: 'auto' }}>

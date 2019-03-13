@@ -23,7 +23,6 @@ class RepoList extends React.Component {
 
 	addWebHooks = (name) => {
 		let orgName = name;
-
 		this.props.fetchReposInOrg(orgName);
 	};
 

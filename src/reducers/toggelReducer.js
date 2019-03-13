@@ -1,8 +1,4 @@
-import {
-  SHOW_NOTIFICATIONS,
-  SHOW_REPOSITORIES,
-  SHOW_ORGANIZATION
-} from '../actions/types'
+import { SHOW_NOTIFICATIONS, SHOW_REPOSITORIES, SHOW_ORGANIZATION } from '../actions/types'
 
 const initialState = {
   showNotifications: false,
