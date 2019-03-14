@@ -15,6 +15,11 @@ const styles = {
   },
   headerText: {
     textAlign: 'center'
+  },
+  text: {
+    textAlign: 'center',
+    marginTop: 300
+
   }
 }
 

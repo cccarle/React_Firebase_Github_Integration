@@ -61,7 +61,7 @@ export const fetchReposDataGithubAPI = () => {
         headers: { Authorization: 'token ' + getGitHubToken() }
       })
       .then((response) => response.json())
-      .then((data) => {
+      .then(async (data) => {
         let keys = Object.keys(data)
 
         for (var i = 0; i < keys.length; i++) {
@@ -70,24 +70,33 @@ export const fetchReposDataGithubAPI = () => {
           let hooks_url = data[k].hooks_url
           let url = data[k].url
           let owner = data[k].owner.login
-          let id = data[k].id
           let admin = data[k].permissions.admin
+          let avatarIMG = data[k].owner.avatar_url
 
           let repos = {}
+
+          // let hasRepo = await checkIfRepoHasHook(hooks_url).then(e => {
+          //   if (e !== undefined) {
+          //     console.log(e)
+          //     repos.active = e.active
+          //     repos.editURL = e.url
+          //   } else {
+          //     repos.active = false
+          //   }
+          // })
 
           repos.name = name
           repos.hooks_url = hooks_url
           repos.url = url
           repos.owner = owner
-          repos.id = id
           repos.admin = admin
-          repos.active = false
-          repos.editURL = ''
+          repos.avatarIMG = avatarIMG
 
           reposArray.push(repos)
         }
 
         let reposOnlyAdminArray = reposArray.filter((repo) => repo.admin === true)
+
         dispatch({ type: GET_REPOS_DATA, payload: reposOnlyAdminArray })
       })
   }
@@ -97,12 +106,15 @@ export const fetchReposInOrg = (orgName) => {
   return (dispatch) => {
     let adminReposInOrg = []
     window
-      .fetch(`https://api.github.com/orgs/${orgName}/repos`)
+      .fetch(`https://api.github.com/orgs/${orgName}/repos`, {
+        headers: { Authorization: 'token ' + getGitHubToken() }
+      })
       .then((response) => response.json())
       .then((data) => {
         let keys = Object.keys(data)
+        console.log(data)
 
-        for (var i = 0; i < keys.length; i++) {
+        for (let i = 0; i < keys.length; i++) {
           let k = keys[i]
           let name = data[k].name
           let hooks_url = data[k].hooks_url
@@ -111,7 +123,9 @@ export const fetchReposInOrg = (orgName) => {
           let id = data[k].id
           let admin = data[k].permissions.admin
 
-          var reposInOrg = {}
+          let avatarIMG = data[k].owner.avatar_url
+
+          let reposInOrg = {}
 
           reposInOrg.name = name
           reposInOrg.hooks_url = hooks_url
@@ -119,6 +133,8 @@ export const fetchReposInOrg = (orgName) => {
           reposInOrg.owner = owner
           reposInOrg.id = id
           reposInOrg.admin = admin
+
+          reposInOrg.avatarIMG = avatarIMG
 
           adminReposInOrg.push(reposInOrg)
         }

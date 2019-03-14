@@ -5,6 +5,7 @@ import reposReducer from './reposReducer'
 import orgsReducer from './orgsReducer'
 import notificationsReducer from './notificationsReducer'
 import toggelReducers from './toggelReducer'
+import subscriptionReducers from './subscriptionReducer'
 
 export default combineReducers({
   auth: authReducer,
@@ -12,5 +13,6 @@ export default combineReducers({
   repos: reposReducer,
   orgs: orgsReducer,
   notification: notificationsReducer,
-  toggel: toggelReducers
+  toggel: toggelReducers,
+  subscription: subscriptionReducers
 })

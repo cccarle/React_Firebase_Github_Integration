@@ -1,9 +1,9 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { fetchReposDataGithubAPI, addWebhook, turnOffNotifications, turnOnNotifications } from '../../actions';
+import { fetchReposDataGithubAPI, turnOffNotifications } from '../../actions';
+import { checkIfRepoHasHook, addWebhook } from '../../utils/helpers'
 import _ from 'lodash';
-import examplePic from '../../assets/examplepic.jpg';
 
 // Material-UI components
 import { withStyles } from '@material-ui/core/styles';
@@ -12,46 +12,52 @@ import GridListTile from '@material-ui/core/GridListTile';
 import GridListTileBar from '@material-ui/core/GridListTileBar';
 import ListHeader from '@material-ui/core/ListSubheader';
 import Button from '@material-ui/core/Button';
+import Typography from '@material-ui/core/Typography';
 
 // Styles
 import styles from './RepoList.Style';
 
 class RepoList extends React.Component {
-	addWebHooks = (webhookURL) => {
-		this.props.addWebhook(webhookURL);
-	};
 
-	turnOffNotification = (webhookURL) => {
-		this.props.turnOffNotifications(webhookURL);
+	componentDidMount() {
+		this.props.fetchReposDataGithubAPI()
+	}
+
+	turnOffNotification = (editURL) => {
+		this.props.turnOffNotifications(editURL);
+
 	};
 
 	turnOnNotification = (webhookURL) => {
-		this.props.turnOnNotifications(webhookURL);
+		addWebhook(webhookURL);
 	};
 
 	renderButton = (repos, classes) => {
-		if (repos.active === false) {
+		if (repos.active === true) {
 			return (
 				<Button
-					onClick={() => this.turnOffNotification(repos.hookURLDelete)}
+					onClick={() => this.turnOffNotification(repos.editURL)}
 					variant="contained"
 					className={classes.button}
 				>
-					Turn off notifications
+					Unsubscribe
 				</Button>
 			);
-		} else if (repos.active === false) {
+		} else {
 			return (
 				<Button
-					onClick={() => this.turnOnNotification(repos.hookURLDelete)}
+					onClick={() => this.turnOnNotification(repos.hooks_url)}
 					variant="outlined"
 					className={classes.button}
 				>
-					Turn on notifications
+					Subscribe
+
 				</Button>
 			);
 		}
 	};
+
+
 
 	render() {
 		const { classes } = this.props;
@@ -60,24 +66,18 @@ class RepoList extends React.Component {
 				<GridList cellHeight={180} className={classes.gridList}>
 					<GridListTile key="header" cols={2} style={{ height: 'auto' }}>
 						<ListHeader className={classes.headerText} component="div">
-							Github Repositories
+							<Typography variant="overline" gutterBottom>
+								Github Repositories
+					</Typography>
 						</ListHeader>
 					</GridListTile>
 					{this.props.repos.map((repos) => (
 						<GridListTile key={repos.id}>
-							<img src={examplePic} alt={repos.name} />
+							<img src={repos.avatarIMG} alt={repos.name} />
 							<GridListTileBar
 								title={repos.name}
-								subtitle={<span>by: {repos.owner}</span>}
-								actionIcon={
-									<Button
-										onClick={() => this.addWebHooks(repos.hooks_url)}
-										variant="contained"
-										className={classes.button}
-									>
-										Sybscribe{' '}
-									</Button>
-								}
+								subtitle={<span>owner: {repos.owner}</span>}
+								actionIcon={this.renderButton(repos, classes)}
 							/>
 						</GridListTile>
 					))}
@@ -101,7 +101,8 @@ const mapStateToProps = (state) => {
 
 export default connect(mapStateToProps, {
 	fetchReposDataGithubAPI,
-	addWebhook,
-	turnOffNotifications,
-	turnOnNotifications
+	turnOffNotifications
 })(withStyles(styles)(RepoList));
+
+
+

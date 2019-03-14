@@ -7,6 +7,7 @@ import history from '../config/history'
 export const checkIfUserIsLoggedIn = () => dispatch => {
   firebase.auth().onAuthStateChanged(function (user) {
     if (user) {
+      window.localStorage.setItem('loggedInUser', user.providerData[0].uid)
       dispatch({ type: LOGGED_IN_SUCCES, payload: true })
       history.push('/dashboard')
     } else {

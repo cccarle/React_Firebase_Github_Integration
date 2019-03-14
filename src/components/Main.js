@@ -12,6 +12,7 @@ class Main extends React.Component {
 	componentDidMount() {
 		this.props.checkIfUserIsLoggedIn();
 	}
+
 	signInAttempt = () => {
 		this.props.signInUser();
 	};

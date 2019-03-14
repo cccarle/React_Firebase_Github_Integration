@@ -1,9 +1,9 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { fetchReposDataGithubAPI, addWebhook, fetchOrgsDataGithubAPI, fetchReposInOrg } from '../../actions';
+import { fetchReposDataGithubAPI, fetchOrgsDataGithubAPI, fetchReposInOrg } from '../../actions';
+import { addWebhook } from '../../utils/helpers'
 import _ from 'lodash';
-import examplePic from '../../assets/examplepic.jpg';
 
 // Material-UI components
 import { withStyles } from '@material-ui/core/styles';
@@ -12,6 +12,7 @@ import GridListTile from '@material-ui/core/GridListTile';
 import GridListTileBar from '@material-ui/core/GridListTileBar';
 import ListHeader from '@material-ui/core/ListSubheader';
 import Button from '@material-ui/core/Button';
+import Typography from '@material-ui/core/Typography';
 
 // Styles
 import styles from './OrgsList.style';
@@ -21,13 +22,13 @@ class RepoList extends React.Component {
 		this.props.fetchOrgsDataGithubAPI();
 	}
 
-	addWebHooks = (name) => {
+	viewReposInOrg = (name) => {
 		let orgName = name;
 		this.props.fetchReposInOrg(orgName);
 	};
 
 	addWebHOOK = (hookurl) => {
-		this.props.addWebhook(hookurl);
+		addWebhook(hookurl);
 	};
 
 	renderOrgs = () => {
@@ -35,22 +36,22 @@ class RepoList extends React.Component {
 	};
 
 	checkIfAdmin = (orgs, classes) => {
-		if (orgs.admin === false || orgs.repos_url) {
+		if (orgs.repos_url) {
 			return (
 				<div>
-					<Button onClick={() => this.addWebHooks(orgs.name)} variant="contained" className={classes.button}>
+					<Button onClick={() => this.viewReposInOrg(orgs.name)} variant="contained" className={classes.button}>
 						View
-					</Button>
-					<Button
-						onClick={() => this.addWebHOOK(orgs.hooks_url)}
-						variant="contained"
-						className={classes.button}
-					>
-						webhook
 					</Button>
 				</div>
 			);
-		} else {
+		} else if (orgs.admin === true) {
+			return (
+				<Button onClick={this.addWebHOOK(orgs.hooks_url)} variant="contained" className={classes.button}>
+					Subscribe
+				</Button>
+			);
+		}
+		else {
 			return (
 				<Button variant="contained" className={classes.button}>
 					Not admin
@@ -59,11 +60,11 @@ class RepoList extends React.Component {
 		}
 	};
 
-	checkIfAvatar = (avatar) => {
-		if (avatar === undefined) {
-			return examplePic;
+	checkIfAvatar = (orgs) => {
+		if (orgs.avatarIMG) {
+			return orgs.avatarIMG;
 		} else {
-			return avatar;
+			return orgs.avatar_url;
 		}
 	};
 
@@ -73,13 +74,15 @@ class RepoList extends React.Component {
 			<div className={classes.root}>
 				<GridList cellHeight={180} className={classes.gridList}>
 					<GridListTile key="header" cols={2} style={{ height: 'auto' }}>
-						<ListHeader className={classes.headerText} component="div">
-							Github Organizations
+						<ListHeader component="div">
+							<Typography className={classes.headerText} variant="overline" gutterBottom>
+								Github Organizations
+							</Typography>
 						</ListHeader>
 					</GridListTile>
 					{this.props.orgs.map((orgs) => (
 						<GridListTile key={orgs.name}>
-							<img src={this.checkIfAvatar(orgs.avatar_url)} alt={'avatar'} />
+							<img src={this.checkIfAvatar(orgs)} alt={'avatar'} />
 							<GridListTileBar
 								title={orgs.name}
 								key={orgs.name}
@@ -111,7 +114,6 @@ const mapStateToProps = (state) => {
 
 export default connect(mapStateToProps, {
 	fetchReposDataGithubAPI,
-	addWebhook,
 	fetchOrgsDataGithubAPI,
 	fetchReposInOrg
 })(withStyles(styles)(RepoList));

@@ -9,15 +9,12 @@ import Notifcations from '../Notifications/Notifications';
 import {
 	checkIfUserIsLoggedIn,
 	fetchReposDataGithubAPI,
-	checkIfWebhookIsRegistered,
-	fetchUserDataFromGithubAPI
+	fetchUserDataFromGithubAPI,
 } from '../../actions';
 
 class Dashboard extends Component {
 	componentDidMount() {
-		this.props.checkIfUserIsLoggedIn();
 		this.props.fetchUserDataFromGithubAPI();
-		this.props.fetchReposDataGithubAPI();
 		allowNotifications();
 	}
 
@@ -48,6 +45,5 @@ const mapStateToProps = (state) => {
 export default connect(mapStateToProps, {
 	checkIfUserIsLoggedIn,
 	fetchReposDataGithubAPI,
-	checkIfWebhookIsRegistered,
-	fetchUserDataFromGithubAPI
+	fetchUserDataFromGithubAPI,
 })(Dashboard);

@@ -10,7 +10,6 @@ Save repository to the user that created the webhook
 
 exports.events = functions.https.onRequest((req, res) => {
   var webhookData = {}
-  let id = req.query.id
   if (req.body.zen) {
     const userStatusFirestoreRef = firestore.doc(`users/${req.body.sender.id}`)
 
@@ -18,9 +17,11 @@ exports.events = functions.https.onRequest((req, res) => {
       repositoryID: admin.firestore.FieldValue.arrayUnion(req.body.repository.id)
     })
   }
-
+  webhookData.action = req.body.action
   if (req.body.issue) {
     webhookData.title = req.body.issue.title
+    webhookData.avatarURL = req.body.issue.user.avatar_url
+    webhookData.repositoryName = req.body.repository.name
     webhookData.body = req.body.issue.body
     webhookData.createdBy = req.body.issue.user.login
     webhookData.id = req.body.issue.id
@@ -62,17 +63,25 @@ exports.sendNotification = functions.firestore.document('notifications/{notifica
     .then((users) => {
       users.forEach((element) => {
         let repositoryIDsArray = element.repositoryID
+        var userID = element.userID
 
         repositoryIDsArray.forEach((repoIDss) => {
           if (repoIDss === repoID) {
             const payload = {
               notification: {
-                title: `${newValue.notification.title}`,
+                header: `${newValue.notification.createdBy}  ${newValue.notification.action} `,
+                title: `${newValue.notification.title} `,
                 body: `${newValue.notification.body}`,
-                createdBy: `${newValue.notification.createdBy}`
+                avatar: `${newValue.notification.avatarURL}`,
+                repositoryName: `${newValue.notification.repositoryName}`
               }
             }
 
+            const userStatusFirestoreRef = firestore.doc(`users/${userID}`)
+
+            var arrUnion = userStatusFirestoreRef.update({
+              notifications: admin.firestore.FieldValue.arrayUnion(payload)
+            })
             return admin.messaging().sendToDevice(element.msgToken, payload)
           }
         })

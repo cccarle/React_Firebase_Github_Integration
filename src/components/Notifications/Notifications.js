@@ -1,6 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import {} from '../../actions';
+import { } from '../../actions';
 import PropTypes from 'prop-types';
 import _ from 'lodash';
 
@@ -15,10 +15,10 @@ import Typography from '@material-ui/core/Typography';
 
 const styles = (theme) => ({
 	root: {
-		maxWidth: 360,
+		maxWidth: 860,
 		marginTop: '3%',
 		margin: 'auto',
-		width: '50‰',
+		width: '80‰',
 		textAlign: 'center',
 		backgroundColor: theme.palette.background.paper
 	},
@@ -29,6 +29,7 @@ const styles = (theme) => ({
 });
 
 class FolderList extends React.Component {
+
 	renderIfNotification = (notifications) => {
 		if (notifications.length === 0) {
 			return (
@@ -38,28 +39,37 @@ class FolderList extends React.Component {
 			);
 		} else {
 			return (
-				<div>
-					{this.props.notifications.map((notification) => (
+				<div key={notifications}>
+					<Typography variant="overline" gutterBottom>
+						Notifications
+					</Typography>
+					{notifications.map((notification) => (
 						<List key={notification.eventURL}>
 							<ListItem>
-								<Avatar>
-									<ImageIcon />
-								</Avatar>
+								<Avatar alt="" src={notification.avatar} ></Avatar>
+
 								<ListItemText
-									primary={notification.notification.title}
-									secondary={notification.notification.body}
+									primary={notification.title}
+									secondary={notification.body}
 								/>
+								<Typography variant="overline" gutterBottom>
+									{notification.createdBy} issue on {notification.repositoryName}
+								</Typography>
+
 							</ListItem>
 						</List>
+
 					))}
-					<Button color="outlined">clear notifications</Button>
 				</div>
 			);
 		}
 	};
 
+
+
 	render() {
 		const { classes } = this.props;
+		console.log(this.props.notifications)
 
 		return <div className={classes.root}>{this.renderIfNotification(this.props.notifications)}</div>;
 	}

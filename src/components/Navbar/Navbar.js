@@ -16,6 +16,7 @@ import Badge from '@material-ui/core/Badge';
 import MailIcon from '@material-ui/icons/Mail';
 
 class Navbar extends Component {
+
 	componentWillMount() {
 		this.props.fetchNotifications();
 	}
@@ -25,7 +26,22 @@ class Navbar extends Component {
 
 	toggelNotification = () => {
 		this.props.showNotification();
+		this.setState({ counter: 0 })
 	};
+
+	checkMessagesLength = () => {
+
+		console.log(this.props.notifications)
+		// if (messages.length > 0) {
+
+		// 	let len = messages.length
+		// 	console.log(len)
+		// 	this.setState({ counter: 2 })
+		// }
+
+		//this.setState({ counter: messages })
+		//return this.state.counter
+	}
 
 	toggelRepositories = () => {
 		this.props.showRepositories();
@@ -37,7 +53,6 @@ class Navbar extends Component {
 
 	render() {
 		const { classes } = this.props;
-
 		return (
 			<div className={classes.root}>
 				<AppBar color="primary" className={classes.navbarColor} position="static">

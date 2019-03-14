@@ -22,5 +22,6 @@ messaging.setBackgroundMessageHandler((payload) => {
     title: payload.notification.title,
     createdBy: payload.notification.createdBy
   }
+
   return self.registration.showNotification(title, options)
 })
