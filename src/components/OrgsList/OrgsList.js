@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { fetchReposDataGithubAPI, fetchOrgsDataGithubAPI, fetchReposInOrg } from '../../actions';
-import { addWebhook, saveReposInOrgsToFireStore } from '../../utils/helpers'
+import { addWebhook, deleteWebhook, saveReposInOrgsToFireStore } from '../../utils/helpers'
 import _ from 'lodash';
 
 // Material-UI components
@@ -22,25 +22,30 @@ class RepoList extends React.Component {
 		this.props.fetchOrgsDataGithubAPI();
 	}
 
-	viewReposInOrg = (name) => {
-		saveReposInOrgsToFireStore(name)
-		this.props.fetchReposInOrg();
+	viewReposInOrg = (org) => {
+		console.log(org)
+		this.props.fetchReposInOrg(org);
 	};
 
 	addWebHOOK = (orgs) => {
 		addWebhook(orgs);
 	};
 
+	deleteHook = (orgs) => {
+		deleteWebhook(orgs)
+	}
+
 	renderOrgs = () => {
 		this.props.fetchOrgsDataGithubAPI();
 	};
 
 	checkIfAdmin = (orgs, classes) => {
-		console.log(orgs)
+
+
 		if (orgs.reposURL) {
 			return (
 				<div>
-					<Button onClick={() => this.viewReposInOrg(orgs.name)} variant="contained" className={classes.button}>
+					<Button onClick={() => this.viewReposInOrg(orgs)} variant="contained" className={classes.button}>
 						View
 					</Button>
 				</div>
@@ -53,7 +58,7 @@ class RepoList extends React.Component {
 			);
 		} else if (orgs.active === true) {
 			return (
-				<Button onClick={() => this.addWebHOOK(orgs)} variant="contained" className={classes.button}>
+				<Button onClick={() => this.deleteHook(orgs)} variant="contained" className={classes.button}>
 					Unsubscribe
 				</Button>
 			);
@@ -77,7 +82,6 @@ class RepoList extends React.Component {
 
 	render() {
 		const { classes } = this.props;
-
 		console.log(this.props.orgs)
 		return (
 			<div className={classes.root}>

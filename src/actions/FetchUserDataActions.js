@@ -60,7 +60,8 @@ export const fetchReposDataGithubAPI = () => {
   }
 }
 
-export const fetchReposInOrg = (orgName) => {
+export const fetchReposInOrg = (org) => {
+
   var reposInOrgsArray = []
 
   return (dispatch) => {
@@ -69,14 +70,16 @@ export const fetchReposInOrg = (orgName) => {
     docRef.onSnapshot(function (doc) {
       if (doc.exists && doc.data().reposInOrgs) {
         let changes = doc.data().reposInOrgs
-
         for (let key in changes) {
-          reposInOrgsArray.push(changes[key])
+          if (changes[key].owner === org.name) {
+            reposInOrgsArray.push(changes[key])
+          }
         }
       }
 
       dispatch({ type: GET_REPOS_IN_ORGS, payload: reposInOrgsArray })
       reposInOrgsArray = []
+
     })
   }
 }

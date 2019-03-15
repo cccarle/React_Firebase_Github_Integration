@@ -75,15 +75,9 @@ export const addWebhook = (repo) => {
     .then((response) => response.json())
     .then((data) => {
 
-
-
-      console.log(repo)
-
-      if (repo.reposInOrgs === true) {
-
-        let update = {};
-
-        let reposInOrgs = {
+      if (repo.reposInOrgss === true) {
+        let update = {}
+        let obj = {
           active: true,
           admin: repo.admin,
           avatarURL: repo.avatarURL,
@@ -94,10 +88,9 @@ export const addWebhook = (repo) => {
           url: repo.url,
           hooksID: data.url,
           reposInOrgss: true
-
         }
 
-        update[`reposInOrgs.${repo.id}`] = reposInOrgs
+        update[`reposInOrgs.${repo.id}`] = obj
         db.collection('users').doc(`${getCurrentLoggedInGithubID()}`).update(update)
 
       } else {
@@ -127,6 +120,7 @@ export const addWebhook = (repo) => {
 }
 
 export const deleteWebhook = (repo) => {
+  console.log(repo)
   window
     .fetch(repo.hooksID, {
       method: 'DELETE',
@@ -136,23 +130,47 @@ export const deleteWebhook = (repo) => {
       }
     })
     .then(() => {
-      let obj = {
-        active: false,
-        admin: repo.admin,
-        avatarURL: repo.avatarURL,
-        hooks_url: repo.hooks_url,
-        id: repo.id,
-        name: repo.name,
-        owner: repo.owner,
-        url: repo.url,
-        hooksID: repo.hooksID
+
+      if (repo.reposInOrgss === true) {
+
+        let update = {};
+
+        let reposInOrgs = {
+          active: false,
+          admin: repo.admin,
+          avatarURL: repo.avatarURL,
+          hooks_url: repo.hooks_url,
+          id: repo.id,
+          name: repo.name,
+          owner: repo.owner,
+          url: repo.url,
+          hooksID: repo.url,
+          reposInOrgss: true
+        }
+
+        update[`reposInOrgs.${repo.id}`] = reposInOrgs
+        db.collection('users').doc(`${getCurrentLoggedInGithubID()}`).update(update)
+
+      } else {
+        let obj = {
+          active: false,
+          admin: repo.admin,
+          avatarURL: repo.avatarURL,
+          hooks_url: repo.hooks_url,
+          id: repo.id,
+          name: repo.name,
+          owner: repo.owner,
+          url: repo.url,
+          hooksID: repo.hooksID
+        }
+
+        const update = {}
+
+        update[`repos.${repo.id}`] = obj
+
+        db.collection('users').doc(`${getCurrentLoggedInGithubID()}`).update(update)
       }
 
-      const update = {}
-
-      update[`repos.${repo.id}`] = obj
-
-      db.collection('users').doc(`${getCurrentLoggedInGithubID()}`).update(update)
     })
 }
 
@@ -182,6 +200,9 @@ export const saveOrgsToFireStore = () => {
 
         }
 
+        saveReposInOrgsToFireStore(data[k].login)
+
+
         orgs[`${orgsObject.id}`] = orgsObject
 
         db.collection('users').doc(`${getCurrentLoggedInGithubID()}`).set({ orgs: orgs }, { merge: true })
@@ -198,7 +219,6 @@ export const saveReposInOrgsToFireStore = (orgName) => {
     .then((response) => response.json())
     .then(async (data) => {
       let keys = Object.keys(data)
-      console.log(data)
       for (var i = 0; i < keys.length; i++) {
         let k = keys[i]
         let reposInOrgs = {}
