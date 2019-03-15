@@ -24,6 +24,9 @@ class Main extends React.Component {
 				<Typography component="h2" variant="h2" gutterBottom>
 					Welcome To Guthub Dashboard
 				</Typography>
+				<Typography className={classes.underText} component="h2" variant="overline" gutterBottom>
+					A webapplication some description about the app and that it will notice issues and commits
+			</Typography>
 				<div>
 					<Button onClick={this.signInAttempt} color="primary" size="large" variant="outlined">
 						Log in{' '}

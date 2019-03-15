@@ -12,6 +12,12 @@ export const getCurrentLoggedInGithubID = () => {
   return id
 }
 
+export const saveGithubIDToFireStore = (githubID) => {
+  db.collection("users").doc(`${githubID}`).set({
+    userID: githubID
+  }, { merge: true })
+}
+
 export const allowNotifications = () => {
   messaging
     .requestPermission()
@@ -153,6 +159,8 @@ export const deleteWebhook = (repo) => {
 
 export const saveOrgsToFireStore = () => {
 
+  console.log(getGitHubToken())
+
   window
     .fetch(`https://api.github.com/user/orgs`, {
       headers: { Authorization: 'token ' + getGitHubToken() }
@@ -220,7 +228,7 @@ export const saveRepoToFireStore = () => {
       headers: { Authorization: 'token ' + getGitHubToken() }
     })
     .then((response) => response.json())
-    .then(async (data) => {
+    .then((data) => {
       let keys = Object.keys(data)
       console.log(data)
 

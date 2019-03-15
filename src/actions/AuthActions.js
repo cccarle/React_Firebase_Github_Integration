@@ -1,6 +1,6 @@
 import * as Firebase from 'firebase'
 import { LOGGED_IN_SUCCES, SIGN_OUT } from './types'
-import { setGitHubToken } from '../utils/helpers'
+import { setGitHubToken, saveGithubIDToFireStore } from '../utils/helpers'
 import firebase from '../config/firebase'
 import history from '../config/history'
 
@@ -8,6 +8,7 @@ export const checkIfUserIsLoggedIn = () => dispatch => {
   firebase.auth().onAuthStateChanged(function (user) {
     if (user) {
       window.localStorage.setItem('loggedInUser', user.providerData[0].uid)
+      saveGithubIDToFireStore(user.providerData[0].uid)
       dispatch({ type: LOGGED_IN_SUCCES, payload: true })
       history.push('/dashboard')
     } else {

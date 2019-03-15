@@ -12,6 +12,9 @@ const styles = {
     fontSize: 100,
     color: 'black',
     textAlign: 'center'
+  },
+  underText: {
+    marginBottom: "2%"
   }
 }
 
