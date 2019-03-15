@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { fetchReposDataGithubAPI, fetchOrgsDataGithubAPI, fetchReposInOrg } from '../../actions';
-import { addWebhook } from '../../utils/helpers'
+import { addWebhook, saveReposInOrgsToFireStore } from '../../utils/helpers'
 import _ from 'lodash';
 
 // Material-UI components
@@ -23,12 +23,12 @@ class RepoList extends React.Component {
 	}
 
 	viewReposInOrg = (name) => {
-		let orgName = name;
-		this.props.fetchReposInOrg(orgName);
+		saveReposInOrgsToFireStore(name)
+		this.props.fetchReposInOrg();
 	};
 
-	addWebHOOK = (hookurl) => {
-		addWebhook(hookurl);
+	addWebHOOK = (orgs) => {
+		addWebhook(orgs);
 	};
 
 	renderOrgs = () => {
@@ -36,7 +36,8 @@ class RepoList extends React.Component {
 	};
 
 	checkIfAdmin = (orgs, classes) => {
-		if (orgs.repos_url) {
+		console.log(orgs)
+		if (orgs.reposURL) {
 			return (
 				<div>
 					<Button onClick={() => this.viewReposInOrg(orgs.name)} variant="contained" className={classes.button}>
@@ -44,32 +45,40 @@ class RepoList extends React.Component {
 					</Button>
 				</div>
 			);
-		} else if (orgs.admin === true) {
-			return (
-				<Button onClick={this.addWebHOOK(orgs.hooks_url)} variant="contained" className={classes.button}>
-					Subscribe
-				</Button>
-			);
-		}
-		else {
+		} else if (orgs.reposURL && orgs.admin === false) {
 			return (
 				<Button variant="contained" className={classes.button}>
 					Not admin
 				</Button>
 			);
+		} else if (orgs.active === true) {
+			return (
+				<Button onClick={() => this.addWebHOOK(orgs)} variant="contained" className={classes.button}>
+					Unsubscribe
+				</Button>
+			);
+		} else {
+			return (
+				<Button onClick={() => this.addWebHOOK(orgs)} variant="contained" className={classes.button}>
+					Subscribe
+				</Button>
+			);
 		}
+
 	};
 
 	checkIfAvatar = (orgs) => {
 		if (orgs.avatarIMG) {
 			return orgs.avatarIMG;
 		} else {
-			return orgs.avatar_url;
+			return orgs.avatarURL;
 		}
 	};
 
 	render() {
 		const { classes } = this.props;
+
+		console.log(this.props.orgs)
 		return (
 			<div className={classes.root}>
 				<GridList cellHeight={180} className={classes.gridList}>

@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { fetchReposDataGithubAPI, turnOffNotifications } from '../../actions';
-import { checkIfRepoHasHook, addWebhook } from '../../utils/helpers'
+import { checkIfRepoHasHook, addWebhook, deleteWebhook } from '../../utils/helpers'
 import _ from 'lodash';
 
 // Material-UI components
@@ -19,24 +19,19 @@ import styles from './RepoList.Style';
 
 class RepoList extends React.Component {
 
-	componentDidMount() {
-		this.props.fetchReposDataGithubAPI()
-	}
-
-	turnOffNotification = (editURL) => {
-		this.props.turnOffNotifications(editURL);
-
+	turnOffNotification = (repo) => {
+		deleteWebhook(repo)
 	};
 
-	turnOnNotification = (webhookURL) => {
-		addWebhook(webhookURL);
+	turnOnNotification = (repo) => {
+		addWebhook(repo);
 	};
 
 	renderButton = (repos, classes) => {
 		if (repos.active === true) {
 			return (
 				<Button
-					onClick={() => this.turnOffNotification(repos.editURL)}
+					onClick={() => this.turnOffNotification(repos)}
 					variant="contained"
 					className={classes.button}
 				>
@@ -46,7 +41,7 @@ class RepoList extends React.Component {
 		} else {
 			return (
 				<Button
-					onClick={() => this.turnOnNotification(repos.hooks_url)}
+					onClick={() => this.turnOnNotification(repos)}
 					variant="outlined"
 					className={classes.button}
 				>
@@ -56,8 +51,6 @@ class RepoList extends React.Component {
 			);
 		}
 	};
-
-
 
 	render() {
 		const { classes } = this.props;
@@ -73,7 +66,7 @@ class RepoList extends React.Component {
 					</GridListTile>
 					{this.props.repos.map((repos) => (
 						<GridListTile key={repos.id}>
-							<img src={repos.avatarIMG} alt={repos.name} />
+							<img src={repos.avatarURL} alt={repos.name} />
 							<GridListTileBar
 								title={repos.name}
 								subtitle={<span>owner: {repos.owner}</span>}

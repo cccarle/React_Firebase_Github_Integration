@@ -1,5 +1,9 @@
 import { GET_USER_PROFILE_DATA, GET_REPOS_DATA, GET_ORGS_DATA, GET_REPOS_IN_ORGS } from './types'
-import { getGitHubToken } from '../utils/helpers'
+import { getGitHubToken, getCurrentLoggedInGithubID } from '../utils/helpers'
+import firebase from '../config/firebase'
+
+let db = firebase.firestore()
+
 
 export const fetchUserDataFromGithubAPI = () => {
   return (dispatch) => {
@@ -15,131 +19,64 @@ export const fetchUserDataFromGithubAPI = () => {
 }
 
 export const fetchOrgsDataGithubAPI = () => {
+  let adminReposInOrg = []
+
   return (dispatch) => {
-    const orgsArray = []
+    var docRef = db.collection('users').doc(`${getCurrentLoggedInGithubID()}`)
 
-    window
-      .fetch('https://api.github.com/user/orgs', {
-        headers: { Authorization: 'token ' + getGitHubToken() }
-      })
-      .then((response) => response.json())
-      .then((data) => {
-        let keys = Object.keys(data)
+    docRef.onSnapshot(function (doc) {
+      if (doc.exists && doc.data().orgs) {
+        let changes = doc.data().orgs
 
-        for (var i = 0; i < keys.length; i++) {
-          let k = keys[i]
-          let avatar_url = data[k].avatar_url
-          let hooks_url = data[k].hooks_url
-          let id = data[k].id
-          let name = data[k].login
-          let url = data[k].url
-          let repos_url = data[k].url
-
-          let orgs = {}
-
-          orgs.avatar_url = avatar_url
-          orgs.hooks_url = hooks_url
-          orgs.id = id
-          orgs.name = name
-          orgs.url = url
-          orgs.repos_url = repos_url
-
-          orgsArray.push(orgs)
+        for (let key in changes) {
+          adminReposInOrg.push(changes[key])
         }
+      }
 
-        dispatch({ type: GET_ORGS_DATA, payload: orgsArray })
-      })
+      dispatch({ type: GET_ORGS_DATA, payload: adminReposInOrg })
+      adminReposInOrg = []
+    })
   }
 }
 
 export const fetchReposDataGithubAPI = () => {
+  var notificationsArray = []
+
   return (dispatch) => {
-    const reposArray = []
+    var docRef = db.collection('users').doc(`${getCurrentLoggedInGithubID()}`)
 
-    window
-      .fetch('https://api.github.com/user/repos', {
-        headers: { Authorization: 'token ' + getGitHubToken() }
-      })
-      .then((response) => response.json())
-      .then(async (data) => {
-        let keys = Object.keys(data)
+    docRef.onSnapshot(function (doc) {
+      if (doc.exists && doc.data().repos) {
+        let changes = doc.data().repos
 
-        for (var i = 0; i < keys.length; i++) {
-          let k = keys[i]
-          let name = data[k].name
-          let hooks_url = data[k].hooks_url
-          let url = data[k].url
-          let owner = data[k].owner.login
-          let admin = data[k].permissions.admin
-          let avatarIMG = data[k].owner.avatar_url
-
-          let repos = {}
-
-          // let hasRepo = await checkIfRepoHasHook(hooks_url).then(e => {
-          //   if (e !== undefined) {
-          //     console.log(e)
-          //     repos.active = e.active
-          //     repos.editURL = e.url
-          //   } else {
-          //     repos.active = false
-          //   }
-          // })
-
-          repos.name = name
-          repos.hooks_url = hooks_url
-          repos.url = url
-          repos.owner = owner
-          repos.admin = admin
-          repos.avatarIMG = avatarIMG
-
-          reposArray.push(repos)
+        for (let key in changes) {
+          notificationsArray.push(changes[key])
         }
+      }
 
-        let reposOnlyAdminArray = reposArray.filter((repo) => repo.admin === true)
-
-        dispatch({ type: GET_REPOS_DATA, payload: reposOnlyAdminArray })
-      })
+      dispatch({ type: GET_REPOS_DATA, payload: notificationsArray.filter(repo => repo.admin === true) })
+      notificationsArray = []
+    })
   }
 }
 
 export const fetchReposInOrg = (orgName) => {
+  var reposInOrgsArray = []
+
   return (dispatch) => {
-    let adminReposInOrg = []
-    window
-      .fetch(`https://api.github.com/orgs/${orgName}/repos`, {
-        headers: { Authorization: 'token ' + getGitHubToken() }
-      })
-      .then((response) => response.json())
-      .then((data) => {
-        let keys = Object.keys(data)
-        console.log(data)
+    var docRef = db.collection('users').doc(`${getCurrentLoggedInGithubID()}`)
 
-        for (let i = 0; i < keys.length; i++) {
-          let k = keys[i]
-          let name = data[k].name
-          let hooks_url = data[k].hooks_url
-          let url = data[k].url
-          let owner = data[k].owner.login
-          let id = data[k].id
-          let admin = data[k].permissions.admin
+    docRef.onSnapshot(function (doc) {
+      if (doc.exists && doc.data().reposInOrgs) {
+        let changes = doc.data().reposInOrgs
 
-          let avatarIMG = data[k].owner.avatar_url
-
-          let reposInOrg = {}
-
-          reposInOrg.name = name
-          reposInOrg.hooks_url = hooks_url
-          reposInOrg.url = url
-          reposInOrg.owner = owner
-          reposInOrg.id = id
-          reposInOrg.admin = admin
-
-          reposInOrg.avatarIMG = avatarIMG
-
-          adminReposInOrg.push(reposInOrg)
+        for (let key in changes) {
+          reposInOrgsArray.push(changes[key])
         }
+      }
 
-        dispatch({ type: GET_REPOS_IN_ORGS, payload: adminReposInOrg })
-      })
+      dispatch({ type: GET_REPOS_IN_ORGS, payload: reposInOrgsArray })
+      reposInOrgsArray = []
+    })
   }
 }

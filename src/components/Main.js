@@ -10,12 +10,12 @@ import styles from './Main.style';
 
 class Main extends React.Component {
 	componentDidMount() {
-		this.props.checkIfUserIsLoggedIn();
+		this.props.checkIfUserIsLoggedIn()
 	}
 
 	signInAttempt = () => {
-		this.props.signInUser();
-	};
+		this.props.signInUser()
+	}
 
 	render() {
 		const { classes } = this.props;
@@ -30,7 +30,7 @@ class Main extends React.Component {
 					</Button>
 				</div>
 			</div>
-		);
+		)
 	}
 }
 

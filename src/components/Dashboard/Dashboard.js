@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { allowNotifications } from '../../utils/helpers';
+import { allowNotifications, saveRepoToFireStore, saveOrgsToFireStore } from '../../utils/helpers';
 // Components
 import Navbar from '../Navbar/Navbar';
 import RepoList from '../RepoList/RepoList';
@@ -16,6 +16,9 @@ class Dashboard extends Component {
 	componentDidMount() {
 		this.props.fetchUserDataFromGithubAPI();
 		allowNotifications();
+		saveRepoToFireStore()
+		saveOrgsToFireStore()
+		this.props.fetchReposDataGithubAPI()
 	}
 
 	toggelComponentToRender = () => {

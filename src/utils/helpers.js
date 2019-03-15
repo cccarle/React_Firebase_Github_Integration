@@ -39,6 +39,7 @@ export const allowNotifications = () => {
 export const setGitHubToken = (accessToken) => {
   window.localStorage.setItem('token', accessToken)
 }
+
 export const getGitHubToken = () => {
   const accessToken = window.localStorage.getItem('token')
   return accessToken
@@ -52,35 +53,12 @@ export const getConfigURL = () => {
   return config
 }
 
-export const checkIfRepoHasHook = (hooksURL) => {
-  return window
-    .fetch(hooksURL, {
-      headers: { Authorization: 'token ' + getGitHubToken() }
-    })
-    .then((response) => response.json())
-    .then((hooks) => {
-      if (Array.isArray(hooks)) {
-        if (hooks[0] !== undefined && hooks[0].config.url === getConfigURL().url) {
-          let obj = {
-            url: hooks[0].url,
-            active: true
-          }
-          return obj
-        } else {
-          let obj = {
-            active: false
-          }
-          return obj
-        }
-      }
-    })
-}
 
-export const addWebhook = (webhookURL) => {
+export const addWebhook = (repo) => {
   let githubParameters = { events: ['issues', 'push'], name: 'web', config: getConfigURL() }
 
   window
-    .fetch(webhookURL, {
+    .fetch(repo.hooks_url, {
       method: 'POST',
       body: JSON.stringify(githubParameters),
       headers: {
@@ -90,9 +68,179 @@ export const addWebhook = (webhookURL) => {
     })
     .then((response) => response.json())
     .then((data) => {
-      console.log(data)
+
+
+
+      console.log(repo)
+
+      if (repo.reposInOrgs === true) {
+
+        let update = {};
+
+        let reposInOrgs = {
+          active: true,
+          admin: repo.admin,
+          avatarURL: repo.avatarURL,
+          hooks_url: repo.hooks_url,
+          id: repo.id,
+          name: repo.name,
+          owner: repo.owner,
+          url: repo.url,
+          hooksID: data.url,
+          reposInOrgss: true
+
+        }
+
+        update[`reposInOrgs.${repo.id}`] = reposInOrgs
+        db.collection('users').doc(`${getCurrentLoggedInGithubID()}`).update(update)
+
+      } else {
+        let update = {};
+
+        let obj = {
+          active: true,
+          admin: repo.admin,
+          avatarURL: repo.avatarURL,
+          hooks_url: repo.hooks_url,
+          id: repo.id,
+          name: repo.name,
+          owner: repo.owner,
+          url: repo.url,
+          hooksID: data.url
+        }
+        update[`repos.${repo.id}`] = obj
+
+        db.collection('users').doc(`${getCurrentLoggedInGithubID()}`).update(update)
+      }
+
+
     })
     .catch((err) => {
       console.log(err)
     })
 }
+
+export const deleteWebhook = (repo) => {
+  window
+    .fetch(repo.hooksID, {
+      method: 'DELETE',
+      headers: {
+        Authorization: 'token ' + getGitHubToken(),
+        'Content-Type': 'application/json'
+      }
+    })
+    .then(() => {
+      let obj = {
+        active: false,
+        admin: repo.admin,
+        avatarURL: repo.avatarURL,
+        hooks_url: repo.hooks_url,
+        id: repo.id,
+        name: repo.name,
+        owner: repo.owner,
+        url: repo.url,
+        hooksID: repo.hooksID
+      }
+
+      const update = {}
+
+      update[`repos.${repo.id}`] = obj
+
+      db.collection('users').doc(`${getCurrentLoggedInGithubID()}`).update(update)
+    })
+}
+
+
+export const saveOrgsToFireStore = () => {
+
+  window
+    .fetch(`https://api.github.com/user/orgs`, {
+      headers: { Authorization: 'token ' + getGitHubToken() }
+    })
+    .then((response) => response.json())
+    .then(async (data) => {
+      let keys = Object.keys(data)
+      for (var i = 0; i < keys.length; i++) {
+        let k = keys[i]
+        let orgs = {}
+
+        let orgsObject = {
+          'id': data[k].id,
+          'name': data[k].login,
+          'hooks_url': data[k].hooks_url,
+          'url': data[k].url,
+          'avatarURL': data[k].avatar_url,
+          'reposURL': data[k].repos_url
+
+        }
+
+        orgs[`${orgsObject.id}`] = orgsObject
+
+        db.collection('users').doc(`${getCurrentLoggedInGithubID()}`).set({ orgs: orgs }, { merge: true })
+      }
+    })
+}
+
+export const saveReposInOrgsToFireStore = (orgName) => {
+
+  window
+    .fetch(`https://api.github.com/orgs/${orgName}/repos`, {
+      headers: { Authorization: 'token ' + getGitHubToken() }
+    })
+    .then((response) => response.json())
+    .then(async (data) => {
+      let keys = Object.keys(data)
+      console.log(data)
+      for (var i = 0; i < keys.length; i++) {
+        let k = keys[i]
+        let reposInOrgs = {}
+
+        let orgsObject = {
+          'id': data[k].id,
+          'name': data[k].name,
+          'hooks_url': data[k].hooks_url,
+          'url': data[k].url,
+          'owner': data[k].owner.login,
+          'admin': data[k].permissions.admin,
+          'avatarURL': data[k].owner.avatar_url,
+          'reposInOrgss': true
+
+        }
+
+        reposInOrgs[`${orgsObject.id}`] = orgsObject
+
+        db.collection('users').doc(`${getCurrentLoggedInGithubID()}`).set({ reposInOrgs: reposInOrgs }, { merge: true })
+      }
+    })
+}
+export const saveRepoToFireStore = () => {
+
+  window
+    .fetch('https://api.github.com/user/repos', {
+      headers: { Authorization: 'token ' + getGitHubToken() }
+    })
+    .then((response) => response.json())
+    .then(async (data) => {
+      let keys = Object.keys(data)
+      console.log(data)
+
+      for (var i = 0; i < keys.length; i++) {
+        let k = keys[i]
+        let repos = {}
+        var reposObject = {
+          'id': data[k].id,
+          'name': data[k].name,
+          'hooks_url': data[k].hooks_url,
+          'url': data[k].url,
+          'owner': data[k].owner.login,
+          'admin': data[k].permissions.admin,
+          'avatarURL': data[k].owner.avatar_url
+        }
+
+        repos[`${reposObject.id}`] = reposObject
+
+        db.collection('users').doc(`${getCurrentLoggedInGithubID()}`).set({ repos: repos }, { merge: true })
+      }
+    })
+}
+

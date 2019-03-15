@@ -15,7 +15,6 @@ export const fetchNotifications = () => {
       if (doc.exists && doc.data().notifications) {
         let changes = doc.data().notifications
         changes.forEach(change => {
-          console.log(change)
           let obj = {}
           obj.title = change.notification.title
           obj.body = change.notification.body
