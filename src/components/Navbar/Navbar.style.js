@@ -3,18 +3,16 @@ const styles = {
     flexGrow: 1
   },
   grow: {
-    flexGrow: 1,
-    width: 450
+
   },
-  menuButton: {
-    marginLeft: -12,
-    marginRight: 20
-  },
+
   ButtonContainer: {
-    textAlign: 'right'
+    textAlign: 'right',
+    flexGrow: 1
+
   },
   navbarColor: {
-    backgroundColor: '#98c1d9'
+    backgroundColor: '#76427A'
   }
 }
 

@@ -14,7 +14,7 @@ const styles = {
     textAlign: 'center'
   },
   underText: {
-    marginBottom: "2%"
+    marginBottom: '2%'
   }
 }
 

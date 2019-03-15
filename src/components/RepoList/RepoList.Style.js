@@ -1,7 +1,6 @@
 const styles = {
   root: {
     display: 'flex',
-    flexWrap: 'wrap',
     justifyContent: 'center',
     overflow: 'hidden'
   },
@@ -14,7 +13,9 @@ const styles = {
     marginRight: 20
   },
   headerText: {
-    textAlign: 'center'
+    textAlign: 'center',
+    marginTop: '10%'
+
   },
   text: {
     textAlign: 'center',

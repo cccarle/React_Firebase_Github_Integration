@@ -1,9 +1,8 @@
-import { GET_USER_PROFILE_DATA, GET_REPOS_DATA, GET_ORGS_DATA, GET_REPOS_IN_ORGS } from './types'
+import { GET_USER_PROFILE_DATA, GET_REPOS_DATA, GET_ORGS_DATA, GET_REPOS_IN_ORGS,GET_SUBSCRIPTIONS } from './types'
 import { getGitHubToken, getCurrentLoggedInGithubID } from '../utils/helpers'
 import firebase from '../config/firebase'
 
 let db = firebase.firestore()
-
 
 export const fetchUserDataFromGithubAPI = () => {
   return (dispatch) => {
@@ -13,6 +12,7 @@ export const fetchUserDataFromGithubAPI = () => {
       })
       .then((response) => response.json())
       .then((githubUserProfileData) => {
+        console.log(githubUserProfileData)
         dispatch({ type: GET_USER_PROFILE_DATA, payload: githubUserProfileData })
       })
   }
@@ -61,7 +61,6 @@ export const fetchReposDataGithubAPI = () => {
 }
 
 export const fetchReposInOrg = (org) => {
-
   var reposInOrgsArray = []
 
   return (dispatch) => {
@@ -79,7 +78,27 @@ export const fetchReposInOrg = (org) => {
 
       dispatch({ type: GET_REPOS_IN_ORGS, payload: reposInOrgsArray })
       reposInOrgsArray = []
-
     })
   }
 }
+
+export const fetchSubscriptions = () => {
+  var subscriptionArray = []
+
+  return (dispatch) => {
+    var docRef = db.collection('users').doc(`${getCurrentLoggedInGithubID()}`)
+
+    docRef.onSnapshot(function (doc) {
+      if (doc.exists && doc.data().subscriptions) {
+        let changes = doc.data().subscriptions
+        for (let key in changes) {
+            subscriptionArray.push(changes[key])
+        }
+      }
+
+      dispatch({ type: GET_SUBSCRIPTIONS, payload: subscriptionArray })
+      subscriptionArray = []
+    })
+  }
+}
+

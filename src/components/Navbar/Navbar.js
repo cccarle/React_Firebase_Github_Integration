@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { signOutUser, showRepositories, showNotification, showOrganizations, fetchNotifications } from '../../actions';
+import { signOutUser, showRepositories, showNotification, showOrganizations, showProfile,showSubscriptions, fetchNotifications } from '../../actions';
 import _ from 'lodash';
 
 // Styles
@@ -29,18 +29,8 @@ class Navbar extends Component {
 		this.setState({ counter: 0 })
 	};
 
-	checkMessagesLength = () => {
-
-		console.log(this.props.notifications)
-		// if (messages.length > 0) {
-
-		// 	let len = messages.length
-		// 	console.log(len)
-		// 	this.setState({ counter: 2 })
-		// }
-
-		//this.setState({ counter: messages })
-		//return this.state.counter
+	toggelProfile = () => {
+		this.props.showProfile()
 	}
 
 	toggelRepositories = () => {
@@ -51,6 +41,10 @@ class Navbar extends Component {
 		this.props.showOrganizations();
 	};
 
+
+	toggelSubscriptions = () => {
+		this.props.showSubscriptions();
+	};
 	render() {
 		const { classes } = this.props;
 		return (
@@ -58,31 +52,53 @@ class Navbar extends Component {
 				<AppBar color="primary" className={classes.navbarColor} position="static">
 					<Toolbar>
 						<div>
-							<Typography className={classes.grow} variant="h6" color="inherit">
+							<Typography className={classes.grow} variant="overline" color="inherit">
 								Github Dashboard
 							</Typography>
 						</div>
-						<SideNav />
 
 						<div className={classes.ButtonContainer}>
+							<Button onClick={this.toggelProfile} color="inherit">
+
+								<Typography variant="overline" color="inherit">
+									Profile
+					</Typography>
+							</Button>
 							<Button onClick={this.toggelOrganizations} color="inherit">
-								Organizations
+
+								<Typography variant="overline" color="inherit">
+									Organizations
+							</Typography>
 							</Button>
 							<Button onClick={this.toggelRepositories} color="inherit">
-								Repositories
+								<Typography variant="overline" color="inherit">
+									Repositories
+						</Typography>
 							</Button>
 
-							<Button onClick={this.signOutAttempt} color="inherit">
-								Sign out
+							<Button onClick={this.toggelSubscriptions} color="inherit">
+								<Typography variant="overline" color="inherit">
+									My Subscriptions
+					</Typography>
 							</Button>
-							<Badge
-								className={classes.margin}
-								onClick={this.toggelNotification}
-								badgeContent={this.props.notifications.length}
-								color="secondary"
-							>
-								<MailIcon />
-							</Badge>
+							<Button onClick={this.toggelNotification} color="inherit">
+								<Badge
+									className={classes.margin}
+									onClick={this.toggelNotification}
+									badgeContent={this.props.notifications.length}
+									color="secondary"
+								>
+									<MailIcon />
+								</Badge>
+							</Button>
+							<Button onClick={this.signOutAttempt} color="inherit">
+								<Typography variant="overline" color="inherit">
+									Sign out
+							</Typography>
+							</Button>
+
+
+
 						</div>
 					</Toolbar>
 				</AppBar>
@@ -108,5 +124,7 @@ export default connect(mapStateToProps, {
 	showRepositories,
 	showNotification,
 	showOrganizations,
+	showSubscriptions,
+	showProfile,
 	fetchNotifications
 })(withStyles(styles)(Navbar));

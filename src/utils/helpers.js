@@ -13,7 +13,7 @@ export const getCurrentLoggedInGithubID = () => {
 }
 
 export const saveGithubIDToFireStore = (githubID) => {
-  db.collection("users").doc(`${githubID}`).set({
+  db.collection('users').doc(`${githubID}`).set({
     userID: githubID
   }, { merge: true })
 }
@@ -59,7 +59,6 @@ export const getConfigURL = () => {
   return config
 }
 
-
 export const addWebhook = (repo) => {
   let githubParameters = { events: ['issues', 'push'], name: 'web', config: getConfigURL() }
 
@@ -74,9 +73,9 @@ export const addWebhook = (repo) => {
     })
     .then((response) => response.json())
     .then((data) => {
-
       if (repo.reposInOrgss === true) {
         let update = {}
+        let subscriptions = {}
         let obj = {
           active: true,
           admin: repo.admin,
@@ -91,10 +90,14 @@ export const addWebhook = (repo) => {
         }
 
         update[`reposInOrgs.${repo.id}`] = obj
+        subscriptions[`subscriptions.${repo.id}`] = obj
+
         db.collection('users').doc(`${getCurrentLoggedInGithubID()}`).update(update)
+        db.collection('users').doc(`${getCurrentLoggedInGithubID()}`).update(subscriptions)
 
       } else {
-        let update = {};
+        let update = {}
+        let subscriptions = {}
 
         let obj = {
           active: true,
@@ -108,11 +111,12 @@ export const addWebhook = (repo) => {
           hooksID: data.url
         }
         update[`repos.${repo.id}`] = obj
+        subscriptions[`subscriptions.${repo.id}`] = obj
 
         db.collection('users').doc(`${getCurrentLoggedInGithubID()}`).update(update)
+        db.collection('users').doc(`${getCurrentLoggedInGithubID()}`).update(subscriptions)
+
       }
-
-
     })
     .catch((err) => {
       console.log(err)
@@ -130,11 +134,9 @@ export const deleteWebhook = (repo) => {
       }
     })
     .then(() => {
-
       if (repo.reposInOrgss === true) {
-
-        let update = {};
-
+        let update = {}
+        let subscriptions = {}
         let reposInOrgs = {
           active: false,
           admin: repo.admin,
@@ -149,6 +151,9 @@ export const deleteWebhook = (repo) => {
         }
 
         update[`reposInOrgs.${repo.id}`] = reposInOrgs
+
+        deleteSubscription(repo.id)
+
         db.collection('users').doc(`${getCurrentLoggedInGithubID()}`).update(update)
 
       } else {
@@ -164,19 +169,28 @@ export const deleteWebhook = (repo) => {
           hooksID: repo.hooksID
         }
 
-        const update = {}
+        let update = {}
+        let subscriptions = {}
 
         update[`repos.${repo.id}`] = obj
 
-        db.collection('users').doc(`${getCurrentLoggedInGithubID()}`).update(update)
-      }
+        deleteSubscription(repo.id)
 
+        db.collection('users').doc(`${getCurrentLoggedInGithubID()}`).update(update)
+
+      }
     })
 }
 
+export const deleteSubscription = (id) => {
+
+//   db.collection('users').doc(`${getCurrentLoggedInGithubID()}`).update({
+//     ['subscriptions.' + id]: db.FieldValue.delete()
+// })
+console.log('delete repo')
+}
 
 export const saveOrgsToFireStore = () => {
-
   console.log(getGitHubToken())
 
   window
@@ -202,7 +216,6 @@ export const saveOrgsToFireStore = () => {
 
         saveReposInOrgsToFireStore(data[k].login)
 
-
         orgs[`${orgsObject.id}`] = orgsObject
 
         db.collection('users').doc(`${getCurrentLoggedInGithubID()}`).set({ orgs: orgs }, { merge: true })
@@ -211,7 +224,6 @@ export const saveOrgsToFireStore = () => {
 }
 
 export const saveReposInOrgsToFireStore = (orgName) => {
-
   window
     .fetch(`https://api.github.com/orgs/${orgName}/repos`, {
       headers: { Authorization: 'token ' + getGitHubToken() }
@@ -242,7 +254,6 @@ export const saveReposInOrgsToFireStore = (orgName) => {
     })
 }
 export const saveRepoToFireStore = () => {
-
   window
     .fetch('https://api.github.com/user/repos', {
       headers: { Authorization: 'token ' + getGitHubToken() }

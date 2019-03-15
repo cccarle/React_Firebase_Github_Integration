@@ -1,9 +1,11 @@
-import { SHOW_NOTIFICATIONS, SHOW_REPOSITORIES, SHOW_ORGANIZATION } from '../actions/types'
+import { SHOW_NOTIFICATIONS, SHOW_REPOSITORIES, SHOW_ORGANIZATION, SHOW_PROFILE, SHOW_SUBSCRIPTIONS } from '../actions/types'
 
 const initialState = {
   showNotifications: false,
-  showRepositories: true,
-  showOrganization: false
+  showRepositories: false,
+  showOrganization: false,
+  showSubscription: false,
+  showProfile: true
 }
 
 export default function (state = initialState, action) {
@@ -24,6 +26,18 @@ export default function (state = initialState, action) {
       return {
         ...state,
         showOrganization: action.payload
+      }
+
+    case SHOW_PROFILE:
+      return {
+        ...state,
+        showProfile: action.payload
+      }
+
+      case SHOW_SUBSCRIPTIONS:
+      return {
+        ...state,
+        showSubscription: action.payload
       }
 
     default:

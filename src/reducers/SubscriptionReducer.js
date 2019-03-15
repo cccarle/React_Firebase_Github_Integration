@@ -1,4 +1,4 @@
-import { ADD_WEBHOOK, DELETE_WEBHOOK } from '../actions/types'
+import { GET_SUBSCRIPTIONS } from '../actions/types'
 
 const initialState = {
   active: false,
@@ -7,13 +7,9 @@ const initialState = {
 
 export default function (state = initialState, action) {
   switch (action.type) {
-    case ADD_WEBHOOK:
-      console.log(action.payload)
-      return { ...state, active: true, url: 'someurl' }
+    case GET_SUBSCRIPTIONS:
+      return action.payload
 
-    case DELETE_WEBHOOK:
-      console.log(action.payload)
-      return { ...state, active: false, url: 'someurl' }
     default:
       return state
   }

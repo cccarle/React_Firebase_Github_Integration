@@ -41,7 +41,6 @@ class RepoList extends React.Component {
 
 	checkIfAdmin = (orgs, classes) => {
 
-
 		if (orgs.reposURL) {
 			return (
 				<div>

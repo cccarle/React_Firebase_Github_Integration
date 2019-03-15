@@ -20,8 +20,7 @@ const styles = theme => ({
     transform: 'rotate(180deg)'
   },
   avatar: {
-    backgroundColor: '#6699CC',
-    fontSize: '12'
+    backgroundColor: 'red'
   }
 })
 export default styles

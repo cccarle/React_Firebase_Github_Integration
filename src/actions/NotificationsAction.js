@@ -11,7 +11,6 @@ export const fetchNotifications = () => {
     var docRef = db.collection('users').doc(`${getCurrentLoggedInGithubID()}`)
 
     docRef.onSnapshot(function (doc) {
-
       if (doc.exists && doc.data().notifications) {
         let changes = doc.data().notifications
         changes.forEach(change => {
@@ -37,4 +36,3 @@ export const fetchNotifications = () => {
 export const clearNotifications = () => {
 
 }
-

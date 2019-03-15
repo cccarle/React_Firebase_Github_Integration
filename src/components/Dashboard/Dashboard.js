@@ -1,11 +1,13 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { allowNotifications, saveRepoToFireStore, saveOrgsToFireStore } from '../../utils/helpers';
+import { allowNotifications, saveRepoToFireStore, saveOrgsToFireStore, getSubscriptions } from '../../utils/helpers';
 // Components
 import Navbar from '../Navbar/Navbar';
 import RepoList from '../RepoList/RepoList';
 import OrgsList from '../OrgsList/OrgsList';
 import Notifcations from '../Notifications/Notifications';
+import SubscriptionList from '../SubscriptionList/SubscriptionList'
+import Profile from '../Profile/Profile'
 import {
 	checkIfUserIsLoggedIn,
 	fetchReposDataGithubAPI,
@@ -28,6 +30,11 @@ class Dashboard extends Component {
 			return <RepoList />;
 		} else if (this.props.toggel.showOrganization) {
 			return <OrgsList />;
+		} else if (this.props.toggel.showSubscription) {
+			return <SubscriptionList/>
+		}
+		else {
+			return <Profile />
 		}
 	};
 

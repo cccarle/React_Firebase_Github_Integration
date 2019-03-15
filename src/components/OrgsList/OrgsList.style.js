@@ -14,11 +14,15 @@ const styles = {
     marginRight: 20
   },
   backButton: {
-    backgroundColor: '#6699CC',
+    backgroundColor: '#A5668B',
     marginRight: 20
   },
   headerText: {
-    textAlign: 'center'
+    textAlign: 'center',
+    marginTop: '10%',
+    marginBottom: '10%'
+
+
   }
 }
 
