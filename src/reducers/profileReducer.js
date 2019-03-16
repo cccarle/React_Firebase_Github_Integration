@@ -1,11 +1,6 @@
 import { GET_USER_PROFILE_DATA } from '../actions/types'
 
-const initialState = {
-  profileAvatar: '',
-  profileName: '',
-  githubURL: ''
-
-}
+const initialState = {}
 
 export default function (state = initialState, action) {
   switch (action.type) {

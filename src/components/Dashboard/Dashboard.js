@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { allowNotifications, saveRepoToFireStore, saveOrgsToFireStore, getSubscriptions } from '../../utils/helpers';
+import { allowNotifications } from '../../utils/helpers';
+import { saveReposToFireStore, saveOrgsToFireStore } from '../../utils/firebaseHelpers';
+
 // Components
 import Navbar from '../Navbar/Navbar';
 import RepoList from '../RepoList/RepoList';
@@ -8,19 +10,28 @@ import OrgsList from '../OrgsList/OrgsList';
 import Notifcations from '../Notifications/Notifications';
 import SubscriptionList from '../SubscriptionList/SubscriptionList'
 import Profile from '../Profile/Profile'
+
 import {
-	checkIfUserIsLoggedIn,
 	fetchReposDataGithubAPI,
 	fetchUserDataFromGithubAPI,
+	fetchOrgsDataGithubAPI,
+	fetchNotifications,
+	fetchSubscriptions
 } from '../../actions';
 
 class Dashboard extends Component {
+	componentWillMount(){
+		allowNotifications();
+		saveReposToFireStore()
+		saveOrgsToFireStore()
+	}
+	
 	componentDidMount() {
 		this.props.fetchUserDataFromGithubAPI();
-		allowNotifications();
-		saveRepoToFireStore()
-		saveOrgsToFireStore()
 		this.props.fetchReposDataGithubAPI()
+		this.props.fetchOrgsDataGithubAPI()
+		this.props.fetchNotifications()
+		this.props.fetchSubscriptions()
 	}
 
 	toggelComponentToRender = () => {
@@ -31,7 +42,7 @@ class Dashboard extends Component {
 		} else if (this.props.toggel.showOrganization) {
 			return <OrgsList />;
 		} else if (this.props.toggel.showSubscription) {
-			return <SubscriptionList/>
+			return <SubscriptionList />
 		}
 		else {
 			return <Profile />
@@ -53,7 +64,9 @@ const mapStateToProps = (state) => {
 };
 
 export default connect(mapStateToProps, {
-	checkIfUserIsLoggedIn,
-	fetchReposDataGithubAPI,
 	fetchUserDataFromGithubAPI,
+	fetchReposDataGithubAPI,
+	fetchOrgsDataGithubAPI,
+	fetchNotifications,
+	fetchSubscriptions
 })(Dashboard);

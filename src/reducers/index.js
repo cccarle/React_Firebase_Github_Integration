@@ -1,10 +1,10 @@
 import { combineReducers } from 'redux'
-import authReducer from './authReducer'
-import profileReducer from './profileReducer'
+import authReducer from './AuthReducer'
+import profileReducer from './ProfileReducer'
 import reposReducer from './ReposReducer'
 import orgsReducer from './OrgsReducer'
-import notificationsReducer from './notificationsReducer'
-import toggelReducers from './toggelReducer'
+import notificationsReducer from './NotificationsReducer'
+import toggelReducers from './ToggelReducer'
 import subscriptionReducers from './SubscriptionReducer'
 
 export default combineReducers({

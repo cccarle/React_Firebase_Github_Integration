@@ -28,7 +28,6 @@ export const showProfile = () => {
     dispatch({ type: SHOW_NOTIFICATIONS, payload: false })
     dispatch({ type: SHOW_ORGANIZATION, payload: false })
     dispatch({ type: SHOW_SUBSCRIPTIONS, payload: false })
-
   }
 }
 
@@ -39,7 +38,6 @@ export const showSubscriptions = () => {
     dispatch({ type: SHOW_REPOSITORIES, payload: false })
     dispatch({ type: SHOW_NOTIFICATIONS, payload: false })
     dispatch({ type: SHOW_ORGANIZATION, payload: false })
-
   }
 }
 

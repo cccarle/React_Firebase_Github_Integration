@@ -1,6 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { } from '../../actions';
+import { currentLoggedInUserFirestoreReference, getCurrentLoggedInGithubID } from '../../utils/helpers'
 import PropTypes from 'prop-types';
 import _ from 'lodash';
 
@@ -9,28 +10,21 @@ import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
 import Avatar from '@material-ui/core/Avatar';
-import ImageIcon from '@material-ui/icons/Image';
-import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
+import DeleteIcon from '@material-ui/icons/Delete';
+import Tooltip from '@material-ui/core/Tooltip';
+import IconButton from '@material-ui/core/IconButton';
 
-const styles = (theme) => ({
-	root: {
-		maxWidth: 860,
-		marginTop: '3%',
-		margin: 'auto',
-		width: '80‰',
-		textAlign: 'center',
-		backgroundColor: theme.palette.background.paper
-	},
-	Button: {
-		marginTop: 10,
-		marginRight: 110
+import styles from './Notifications.style';
+
+class Notifications extends React.Component {
+
+
+	clearNotifications = () => {
+		console.log('clear noti')
 	}
-});
 
-class FolderList extends React.Component {
-
-	renderIfNotification = (notifications) => {
+	renderIfNotification = (notifications, classes) => {
 		if (notifications.length === 0) {
 			return (
 				<Typography variant="overline" gutterBottom>
@@ -40,11 +34,23 @@ class FolderList extends React.Component {
 		} else {
 			return (
 				<div key={notifications}>
-					<Typography variant="overline" gutterBottom>
-						Notifications
-					</Typography>
+
+					<div className={classes.container}>
+						<Typography className={classes.headline} variant="overline" gutterBottom>
+							Notifications
+						<div className={classes.delete} >
+								<Tooltip title="Delete">
+									<IconButton onClick={this.clearNotifications} aria-label="Delete">
+										<DeleteIcon />
+									</IconButton>
+								</Tooltip>
+							</div>
+						</Typography>
+
+					</div>
+
 					{notifications.map((notification) => (
-						<List key={notification.eventURL}>
+						<List key={notification.time}>
 							<ListItem>
 								<Avatar alt="" src={notification.avatar} ></Avatar>
 
@@ -57,6 +63,21 @@ class FolderList extends React.Component {
 								</Typography>
 
 							</ListItem>
+
+							<ListItem>
+
+								<ListItemText
+									primary=''
+									secondary=''
+								/>
+
+								<Typography variant="overline" gutterBottom>
+									{notification.time.slice(0, 24)}
+								</Typography>
+
+
+							</ListItem>
+
 						</List>
 
 					))}
@@ -71,11 +92,11 @@ class FolderList extends React.Component {
 		const { classes } = this.props;
 		console.log(this.props.notifications)
 
-		return <div className={classes.root}>{this.renderIfNotification(this.props.notifications)}</div>;
+		return <div className={classes.root}>{this.renderIfNotification(this.props.notifications, classes)}</div>;
 	}
 }
 
-FolderList.propTypes = {
+Notifications.propTypes = {
 	classes: PropTypes.object.isRequired
 };
 
@@ -87,4 +108,4 @@ const mapStateToProps = (state) => {
 	return { notifications };
 };
 
-export default connect(mapStateToProps, {})(withStyles(styles)(FolderList));
+export default connect(mapStateToProps, {})(withStyles(styles)(Notifications));

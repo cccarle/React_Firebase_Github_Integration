@@ -45,7 +45,7 @@ npm manifest:
   		"start": "react-scripts start",
   		"build": "react-scripts build",
   		"eject": "react-scripts eject",
-  		"test": "standard && node my-tests.js"
+  		"test": "standard"
   	},
   	"browserslist": [
   		">0.2%",
@@ -54,7 +54,9 @@ npm manifest:
   		"not op_mini all"
   	],
   	"devDependencies": {
-  		"standard": "*"
+  		"eslint": "^5.15.2",
+  		"eslint-plugin-promise": "^4.0.1",
+  		"eslint-plugin-react": "^7.12.4"
   	}
   }
 
@@ -12688,7 +12690,7 @@ Lockfile:
 
 Trace: 
   Error: Command failed.
-  Exit code: 127
+  Exit code: 1
   Command: sh
   Arguments: -c react-scripts start
   Directory: /Users/carleinarsson/Desktop/ce222qw-examination

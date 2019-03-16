@@ -1,8 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { fetchSubscriptions } from '../../actions';
-import { checkIfRepoHasHook, addWebhook, deleteWebhook } from '../../utils/helpers'
+import {  addWebhook, deleteWebhook } from '../../utils/helpers'
 import _ from 'lodash';
 
 // Material-UI components
@@ -19,12 +18,8 @@ import styles from './SubscriptionList.style';
 
 class SubscriptionList extends React.Component {
 
-    componentWillMount(){
-        this.props.fetchSubscriptions()
-    }
-
 	turnOffNotification = (subscription) => {
-		console.log()
+		console.log('delete')
 		deleteWebhook(subscription)
 	};
 
@@ -33,7 +28,7 @@ class SubscriptionList extends React.Component {
 	};
 
 	renderButton = (subscription, classes) => {
-		if (subscription.active === true) {
+		if (subscription.active) {
 			return (
 				<Button
 					onClick={() => this.turnOffNotification(subscription)}
@@ -51,7 +46,6 @@ class SubscriptionList extends React.Component {
 					className={classes.button}
 				>
 					Subscribe
-
 				</Button>
 			);
 		}
@@ -98,7 +92,6 @@ const mapStateToProps = (state) => {
 };
 
 export default connect(mapStateToProps, {
-	fetchSubscriptions
 })(withStyles(styles)(SubscriptionList));
 
 

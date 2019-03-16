@@ -18,27 +18,21 @@ export const saveGithubIDToFireStore = (githubID) => {
   }, { merge: true })
 }
 
+export const currentLoggedInUserFirestoreReference = () => {
+
+  return db.collection('users').doc(`${getCurrentLoggedInGithubID()}`)
+}
 export const allowNotifications = () => {
   messaging
     .requestPermission()
     .then(() => {
-      console.log('have permission')
       return messaging.getToken()
     })
     .then((token) => {
-      let userID = getCurrentLoggedInGithubID()
-
-      let userRef = db.collection('users').doc(userID)
-
-      let setWithMerge = userRef.set(
-        {
-          msgToken: token
-        },
-        { merge: true }
-      )
+      currentLoggedInUserFirestoreReference().set({ msgToken: token }, { merge: true })
     })
     .catch((err) => {
-      console.log(err)
+      console.log('An error accured : ' + err)
     })
 }
 
@@ -136,7 +130,6 @@ export const deleteWebhook = (repo) => {
     .then(() => {
       if (repo.reposInOrgss === true) {
         let update = {}
-        let subscriptions = {}
         let reposInOrgs = {
           active: false,
           admin: repo.admin,
@@ -170,116 +163,21 @@ export const deleteWebhook = (repo) => {
         }
 
         let update = {}
-        let subscriptions = {}
 
         update[`repos.${repo.id}`] = obj
 
         deleteSubscription(repo.id)
 
         db.collection('users').doc(`${getCurrentLoggedInGithubID()}`).update(update)
-
       }
     })
 }
 
 export const deleteSubscription = (id) => {
 
-//   db.collection('users').doc(`${getCurrentLoggedInGithubID()}`).update({
-//     ['subscriptions.' + id]: db.FieldValue.delete()
-// })
-console.log('delete repo')
-}
-
-export const saveOrgsToFireStore = () => {
-  console.log(getGitHubToken())
-
-  window
-    .fetch(`https://api.github.com/user/orgs`, {
-      headers: { Authorization: 'token ' + getGitHubToken() }
-    })
-    .then((response) => response.json())
-    .then(async (data) => {
-      let keys = Object.keys(data)
-      for (var i = 0; i < keys.length; i++) {
-        let k = keys[i]
-        let orgs = {}
-
-        let orgsObject = {
-          'id': data[k].id,
-          'name': data[k].login,
-          'hooks_url': data[k].hooks_url,
-          'url': data[k].url,
-          'avatarURL': data[k].avatar_url,
-          'reposURL': data[k].repos_url
-
-        }
-
-        saveReposInOrgsToFireStore(data[k].login)
-
-        orgs[`${orgsObject.id}`] = orgsObject
-
-        db.collection('users').doc(`${getCurrentLoggedInGithubID()}`).set({ orgs: orgs }, { merge: true })
-      }
-    })
-}
-
-export const saveReposInOrgsToFireStore = (orgName) => {
-  window
-    .fetch(`https://api.github.com/orgs/${orgName}/repos`, {
-      headers: { Authorization: 'token ' + getGitHubToken() }
-    })
-    .then((response) => response.json())
-    .then(async (data) => {
-      let keys = Object.keys(data)
-      for (var i = 0; i < keys.length; i++) {
-        let k = keys[i]
-        let reposInOrgs = {}
-
-        let orgsObject = {
-          'id': data[k].id,
-          'name': data[k].name,
-          'hooks_url': data[k].hooks_url,
-          'url': data[k].url,
-          'owner': data[k].owner.login,
-          'admin': data[k].permissions.admin,
-          'avatarURL': data[k].owner.avatar_url,
-          'reposInOrgss': true
-
-        }
-
-        reposInOrgs[`${orgsObject.id}`] = orgsObject
-
-        db.collection('users').doc(`${getCurrentLoggedInGithubID()}`).set({ reposInOrgs: reposInOrgs }, { merge: true })
-      }
-    })
-}
-export const saveRepoToFireStore = () => {
-  window
-    .fetch('https://api.github.com/user/repos', {
-      headers: { Authorization: 'token ' + getGitHubToken() }
-    })
-    .then((response) => response.json())
-    .then((data) => {
-      let keys = Object.keys(data)
-      console.log(data)
-
-      for (var i = 0; i < keys.length; i++) {
-        let k = keys[i]
-        let repos = {}
-        var reposObject = {
-          'id': data[k].id,
-          'name': data[k].name,
-          'hooks_url': data[k].hooks_url,
-          'url': data[k].url,
-          'owner': data[k].owner.login,
-          'admin': data[k].permissions.admin,
-          'avatarURL': data[k].owner.avatar_url
-        }
-
-        repos[`${reposObject.id}`] = reposObject
-
-        db.collection('users').doc(`${getCurrentLoggedInGithubID()}`).set({ repos: repos }, { merge: true })
-      }
-    })
+  //   db.collection('users').doc(`${getCurrentLoggedInGithubID()}`).update({
+  //     ['subscriptions.' + id]: db.FieldValue.delete()
+  // })
+  console.log('delete repo')
 }
 

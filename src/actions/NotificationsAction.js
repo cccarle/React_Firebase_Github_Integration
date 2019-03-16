@@ -1,38 +1,45 @@
-import { FETCH_NOTIFICATIONS, TEST_DISPATCH } from './types'
-import { getCurrentLoggedInGithubID } from '../utils/helpers'
-import firebase from '../config/firebase'
-import { FieldValue } from '@google-cloud/firestore'
-const messaging = firebase.messaging()
-let db = firebase.firestore()
+import { FETCH_NOTIFICATIONS } from './types'
+import { currentLoggedInUserFirestoreReference } from '../utils/helpers'
+
+/* 
+  Fetches all notifications in realtime from authenticated users firestore & update the state with the new data
+*/
 
 export const fetchNotifications = () => {
   var notificationsArray = []
   return (dispatch) => {
-    var docRef = db.collection('users').doc(`${getCurrentLoggedInGithubID()}`)
 
-    docRef.onSnapshot(function (doc) {
+    currentLoggedInUserFirestoreReference().onSnapshot(function (doc) {
       if (doc.exists && doc.data().notifications) {
-        let changes = doc.data().notifications
-        changes.forEach(change => {
-          let obj = {}
-          obj.title = change.notification.title
-          obj.body = change.notification.body
-          obj.createdBy = change.notification.header
-          obj.avatar = change.notification.avatar
-          obj.repositoryName = change.notification.repositoryName
+        let notifications = doc.data().notifications
+        notifications.forEach(notification => {
+          let notificationObject = {}
+          notificationObject.title = notification.notification.title
+          notificationObject.body = notification.notification.body
+          notificationObject.createdBy = notification.notification.header
+          notificationObject.avatar = notification.notification.avatar
+          notificationObject.repositoryName = notification.notification.repositoryName
+          notificationObject.time = notification.notification.time
 
-          notificationsArray.push(obj)
+
+          notificationsArray.push(notificationObject)
         })
+        dispatch({ type: FETCH_NOTIFICATIONS, payload: notificationsArray.reverse() })
+        notificationsArray = []
       }
-
-      let reversed = notificationsArray.reverse()
-
-      dispatch({ type: FETCH_NOTIFICATIONS, payload: reversed })
-      notificationsArray = []
     })
   }
 }
 
-export const clearNotifications = () => {
 
-}
+// export const deleteUserNotices = () => {
+//   let user = firebase.auth().currentUser
+//   let dbData = firebase.firestore().collection('notices').where('firebaseId', '==', user.uid)
+//   dbData.get().then(querySnapshot => {
+//     querySnapshot.forEach(doc => {
+//       doc.ref.delete()
+//     })
+//   }
+
+//   )
+// }

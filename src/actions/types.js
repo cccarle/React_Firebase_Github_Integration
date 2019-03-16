@@ -1,16 +1,14 @@
-// auth
-export const TEST_DISPATCH = 'TEST_DISPATCH'
+// Auth
 export const LOGGED_IN_SUCCES = 'LOGGED_IN_SUCCESS'
 export const SIGN_OUT = 'SIGN_OUT'
 
-// profile
+// Profile
 export const GET_USER_PROFILE_DATA = 'GET_USER_PROFILE_DATA'
 
-// Repos / Orgs
+// Repos - Orgs
 export const GET_REPOS_DATA = 'GET_REPOS_DATA'
 export const GET_ORGS_DATA = 'GET_ORGS_DATA'
 export const GET_REPOS_IN_ORGS = 'GET_REPOS_IN_ORGS'
-export const UPDATE_REPOS_DATA_WITH_HOOK_URL = 'UPDATE_REPOS_DATA_WITH_HOOK_URL'
 export const GET_SUBSCRIPTIONS = 'GET_SUBSCRIPTIONS'
 
 // Webhook

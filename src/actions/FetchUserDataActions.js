@@ -1,8 +1,9 @@
-import { GET_USER_PROFILE_DATA, GET_REPOS_DATA, GET_ORGS_DATA, GET_REPOS_IN_ORGS,GET_SUBSCRIPTIONS } from './types'
-import { getGitHubToken, getCurrentLoggedInGithubID } from '../utils/helpers'
-import firebase from '../config/firebase'
+import { GET_USER_PROFILE_DATA, GET_REPOS_DATA, GET_ORGS_DATA, GET_REPOS_IN_ORGS, GET_SUBSCRIPTIONS } from './types'
+import { getGitHubToken, currentLoggedInUserFirestoreReference } from '../utils/helpers'
 
-let db = firebase.firestore()
+/* 
+Retrieve github repositories from authenticated user and saves it as objects to firestore under field "repos"
+*/
 
 export const fetchUserDataFromGithubAPI = () => {
   return (dispatch) => {
@@ -12,24 +13,24 @@ export const fetchUserDataFromGithubAPI = () => {
       })
       .then((response) => response.json())
       .then((githubUserProfileData) => {
-        console.log(githubUserProfileData)
         dispatch({ type: GET_USER_PROFILE_DATA, payload: githubUserProfileData })
       })
   }
 }
 
+/* 
+  Fetches all organizations in realtime from authenticated users firestore & update the state with the new data
+*/
+
 export const fetchOrgsDataGithubAPI = () => {
   let adminReposInOrg = []
 
   return (dispatch) => {
-    var docRef = db.collection('users').doc(`${getCurrentLoggedInGithubID()}`)
-
-    docRef.onSnapshot(function (doc) {
+    currentLoggedInUserFirestoreReference().onSnapshot(function (doc) {
       if (doc.exists && doc.data().orgs) {
-        let changes = doc.data().orgs
-
-        for (let key in changes) {
-          adminReposInOrg.push(changes[key])
+        let org = doc.data().orgs
+        for (let key in org) {
+          adminReposInOrg.push(org[key])
         }
       }
 
@@ -39,39 +40,44 @@ export const fetchOrgsDataGithubAPI = () => {
   }
 }
 
+/* 
+  Fetches all repositories in realtime from authenticated users firestore & update the state with the new data
+*/
+
 export const fetchReposDataGithubAPI = () => {
-  var notificationsArray = []
+  let reposArray = []
 
   return (dispatch) => {
-    var docRef = db.collection('users').doc(`${getCurrentLoggedInGithubID()}`)
-
-    docRef.onSnapshot(function (doc) {
+    currentLoggedInUserFirestoreReference().onSnapshot(function (doc) {
       if (doc.exists && doc.data().repos) {
-        let changes = doc.data().repos
 
-        for (let key in changes) {
-          notificationsArray.push(changes[key])
+        let repo = doc.data().repos
+
+        for (let key in repo) {
+          reposArray.push(repo[key])
         }
       }
 
-      dispatch({ type: GET_REPOS_DATA, payload: notificationsArray.filter(repo => repo.admin === true) })
-      notificationsArray = []
+      dispatch({ type: GET_REPOS_DATA, payload: reposArray.filter(repo => repo.admin === true) })
+      reposArray = []
     })
   }
 }
 
+/* 
+  Fetches all repositories in organizations in realtime from the authenticated users firestore & update the state with the new data
+*/
+
 export const fetchReposInOrg = (org) => {
-  var reposInOrgsArray = []
+  let reposInOrgsArray = []
 
   return (dispatch) => {
-    var docRef = db.collection('users').doc(`${getCurrentLoggedInGithubID()}`)
-
-    docRef.onSnapshot(function (doc) {
+    currentLoggedInUserFirestoreReference().onSnapshot(function (doc) {
       if (doc.exists && doc.data().reposInOrgs) {
-        let changes = doc.data().reposInOrgs
-        for (let key in changes) {
-          if (changes[key].owner === org.name) {
-            reposInOrgsArray.push(changes[key])
+        let repo = doc.data().reposInOrgs
+        for (let key in repo) {
+          if (repo[key].owner === org.name) {
+            reposInOrgsArray.push(repo[key])
           }
         }
       }
@@ -82,17 +88,19 @@ export const fetchReposInOrg = (org) => {
   }
 }
 
+/* 
+  Fetches all subscription in realtime from authenticated users firestore & update the state with the new data
+*/
+
 export const fetchSubscriptions = () => {
-  var subscriptionArray = []
+  let subscriptionArray = []
 
   return (dispatch) => {
-    var docRef = db.collection('users').doc(`${getCurrentLoggedInGithubID()}`)
-
-    docRef.onSnapshot(function (doc) {
+    currentLoggedInUserFirestoreReference().onSnapshot(function (doc) {
       if (doc.exists && doc.data().subscriptions) {
-        let changes = doc.data().subscriptions
-        for (let key in changes) {
-            subscriptionArray.push(changes[key])
+        let subscription = doc.data().subscriptions
+        for (let key in subscription) {
+          subscriptionArray.push(subscription[key])
         }
       }
 

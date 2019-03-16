@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { signOutUser, showRepositories, showNotification, showOrganizations, showProfile,showSubscriptions, fetchNotifications } from '../../actions';
+import { signOutUser, showRepositories, showNotification, showOrganizations, showProfile,showSubscriptions } from '../../actions';
 import _ from 'lodash';
 
 // Styles
@@ -10,23 +10,14 @@ import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
 import Button from '@material-ui/core/Button';
-import SideNav from '../SideNav/SideNav';
 import styles from './Navbar.style';
 import Badge from '@material-ui/core/Badge';
 import MailIcon from '@material-ui/icons/Mail';
 
 class Navbar extends Component {
 
-	componentWillMount() {
-		this.props.fetchNotifications();
-	}
 	signOutAttempt = () => {
 		this.props.signOutUser();
-	};
-
-	toggelNotification = () => {
-		this.props.showNotification();
-		this.setState({ counter: 0 })
 	};
 
 	toggelProfile = () => {
@@ -41,10 +32,14 @@ class Navbar extends Component {
 		this.props.showOrganizations();
 	};
 
-
 	toggelSubscriptions = () => {
 		this.props.showSubscriptions();
 	};
+
+	toggelNotification = ()=>{
+		this.props.showNotification()
+	}
+	
 	render() {
 		const { classes } = this.props;
 		return (
@@ -125,6 +120,5 @@ export default connect(mapStateToProps, {
 	showNotification,
 	showOrganizations,
 	showSubscriptions,
-	showProfile,
-	fetchNotifications
+	showProfile
 })(withStyles(styles)(Navbar));

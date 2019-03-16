@@ -18,6 +18,8 @@ exports.events = functions.https.onRequest((req, res) => {
     })
   }
   webhookData.action = req.body.action
+  webhookData.time = admin.firestore.FieldValue.serverTimestamp()
+
   if (req.body.issue) {
     webhookData.title = req.body.issue.title
     webhookData.avatarURL = req.body.issue.user.avatar_url
@@ -73,7 +75,9 @@ exports.sendNotification = functions.firestore.document('notifications/{notifica
                 title: `${newValue.notification.title} `,
                 body: `${newValue.notification.body}`,
                 avatar: `${newValue.notification.avatarURL}`,
-                repositoryName: `${newValue.notification.repositoryName}`
+                repositoryName: `${newValue.notification.repositoryName}`,
+                time: `${newValue.notification.time}`
+
               }
             }
 

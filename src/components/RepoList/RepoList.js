@@ -1,8 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { fetchReposDataGithubAPI, turnOffNotifications } from '../../actions';
-import { checkIfRepoHasHook, addWebhook, deleteWebhook } from '../../utils/helpers'
+import { addWebhook, deleteWebhook } from '../../utils/helpers'
 import _ from 'lodash';
 
 // Material-UI components
@@ -28,7 +27,7 @@ class RepoList extends React.Component {
 	};
 
 	renderButton = (repos, classes) => {
-		if (repos.active === true) {
+		if (repos.active) {
 			return (
 				<Button
 					onClick={() => this.turnOffNotification(repos)}
@@ -46,7 +45,6 @@ class RepoList extends React.Component {
 					className={classes.button}
 				>
 					Subscribe
-
 				</Button>
 			);
 		}
@@ -92,10 +90,7 @@ const mapStateToProps = (state) => {
 	return { repos };
 };
 
-export default connect(mapStateToProps, {
-	fetchReposDataGithubAPI,
-	turnOffNotifications
-})(withStyles(styles)(RepoList));
+export default connect(mapStateToProps, {})(withStyles(styles)(RepoList));
 
 
 

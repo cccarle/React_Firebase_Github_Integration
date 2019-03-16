@@ -1,8 +1,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { fetchReposDataGithubAPI, fetchOrgsDataGithubAPI, fetchReposInOrg } from '../../actions';
-import { addWebhook, deleteWebhook, saveReposInOrgsToFireStore } from '../../utils/helpers'
+import { fetchOrgsDataGithubAPI, fetchReposInOrg } from '../../actions';
+import { addWebhook, deleteWebhook } from '../../utils/helpers'
 import _ from 'lodash';
 
 // Material-UI components
@@ -18,29 +18,25 @@ import Typography from '@material-ui/core/Typography';
 import styles from './OrgsList.style';
 
 class RepoList extends React.Component {
-	componentDidMount() {
-		this.props.fetchOrgsDataGithubAPI();
-	}
 
 	viewReposInOrg = (org) => {
-		console.log(org)
 		this.props.fetchReposInOrg(org);
 	};
-
-	addWebHOOK = (orgs) => {
-		addWebhook(orgs);
-	};
-
-	deleteHook = (orgs) => {
-		deleteWebhook(orgs)
-	}
 
 	renderOrgs = () => {
 		this.props.fetchOrgsDataGithubAPI();
 	};
 
-	checkIfAdmin = (orgs, classes) => {
+	addWebhook = (org) => {
+		addWebhook(org);
+	};
 
+	deleteHook = (org) => {
+		deleteWebhook(org)
+	}
+
+
+	renderButton = (orgs, classes) => {
 		if (orgs.reposURL) {
 			return (
 				<div>
@@ -49,13 +45,13 @@ class RepoList extends React.Component {
 					</Button>
 				</div>
 			);
-		} else if (orgs.reposURL && orgs.admin === false) {
+		} else if (orgs.reposURL && !orgs.admin  || orgs.reposInOrgss && !orgs.admin) {
 			return (
 				<Button variant="contained" className={classes.button}>
 					Not admin
 				</Button>
 			);
-		} else if (orgs.active === true) {
+		} else if (orgs.active) {
 			return (
 				<Button onClick={() => this.deleteHook(orgs)} variant="contained" className={classes.button}>
 					Unsubscribe
@@ -63,7 +59,7 @@ class RepoList extends React.Component {
 			);
 		} else {
 			return (
-				<Button onClick={() => this.addWebHOOK(orgs)} variant="contained" className={classes.button}>
+				<Button onClick={() => this.addWebhook(orgs)} variant="contained" className={classes.button}>
 					Subscribe
 				</Button>
 			);
@@ -71,7 +67,7 @@ class RepoList extends React.Component {
 
 	};
 
-	checkIfAvatar = (orgs) => {
+	checkWhichAvatarToRender = (orgs) => {
 		if (orgs.avatarIMG) {
 			return orgs.avatarIMG;
 		} else {
@@ -81,7 +77,6 @@ class RepoList extends React.Component {
 
 	render() {
 		const { classes } = this.props;
-		console.log(this.props.orgs)
 		return (
 			<div className={classes.root}>
 				<GridList cellHeight={180} className={classes.gridList}>
@@ -94,12 +89,12 @@ class RepoList extends React.Component {
 					</GridListTile>
 					{this.props.orgs.map((orgs) => (
 						<GridListTile key={orgs.name}>
-							<img src={this.checkIfAvatar(orgs)} alt={'avatar'} />
+							<img src={this.checkWhichAvatarToRender(orgs)} alt={'avatar'} />
 							<GridListTileBar
 								title={orgs.name}
 								key={orgs.name}
 								subtitle={<span> {orgs.url}</span>}
-								actionIcon={this.checkIfAdmin(orgs, classes)}
+								actionIcon={this.renderButton(orgs, classes)}
 							/>
 						</GridListTile>
 					))}
@@ -125,7 +120,6 @@ const mapStateToProps = (state) => {
 };
 
 export default connect(mapStateToProps, {
-	fetchReposDataGithubAPI,
 	fetchOrgsDataGithubAPI,
 	fetchReposInOrg
 })(withStyles(styles)(RepoList));
