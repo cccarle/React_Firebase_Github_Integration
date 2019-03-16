@@ -71,11 +71,10 @@ Send Notification to serivce worker
 
 exports.sendNotification = functions.firestore.document('notifications/{notification}').onCreate((snap, context) => {
 
-  const newNotificationData = snap.data()
+  let newNotificationData = snap.data()
+  let repoID = newNotificationData.notification.repositoryID
+  let listOfAsyncJobs = [];
 
-  // hämta new value, hämta repoID
-  var repoID = newNotificationData.notification.repositoryID
-  // hämta alla användare och deras reposID
   firestore
     .collection('users')
     .get()
@@ -84,48 +83,22 @@ exports.sendNotification = functions.firestore.document('notifications/{notifica
       querySnapshot.forEach((doc) => {
         users.push(doc.data())
       })
-
       return users
     })
     .then((users) => {
       users.forEach((element) => {
         let repositoryIDsArray = element.repositoryID
         var userID = element.userID
+        let msgToken = element.msgToken
 
         repositoryIDsArray.forEach((repoIDss) => {
           if (repoIDss === repoID) {
-            let payload = {}
+
             if (newNotificationData.notification.type === 'issue') {
-              payload = {
-                notification: {
-                  type: newNotificationData.notification.type,
-                  header: `${newNotificationData.notification.createdBy}  ${newNotificationData.notification.action} `,
-                  body: `${newNotificationData.notification.body}`,
-                  title: `${newNotificationData.notification.title} `,
-                  avatar: `${newNotificationData.notification.avatarURL}`,
-                  repositoryName: `${newNotificationData.notification.repositoryName}`,
-                  repoID: `${newNotificationData.notification.repositoryID}`,
-                  time: `${newNotificationData.notification.time}`
-                }
-              }
+              listOfAsyncJobs.push(createMessagePayloadForIssue(newNotificationData.notification, userID, msgToken))
             } else {
-              payload = {
-                notification: {
-                  type: newNotificationData.notification.type,
-                  action: newNotificationData.notification.action,
-                  body: newNotificationData.notification.body,
-                  title: newNotificationData.notification.title,
-                  avatar: `${newNotificationData.notification.avatarURL}`,
-                  repositoryName: `${newNotificationData.notification.repositoryName}`,
-                  repoID: `${newNotificationData.notification.repositoryID}`,
-                  time: `${newNotificationData.notification.time}`
-                }
-              }
+              listOfAsyncJobs.push(createMessagePayloadForComment(newNotificationData.notification, userID, msgToken))
             }
-
-
-            firestore.doc(`users/${userID}`).update({ notifications: admin.firestore.FieldValue.arrayUnion(payload) })
-            return admin.messaging().sendToDevice(element.msgToken, payload)
           }
         })
       })
@@ -135,5 +108,41 @@ exports.sendNotification = functions.firestore.document('notifications/{notifica
       console.log('An error occurred when trying to send notificatin : ' + err)
     })
 
-  return newNotificationData
+  return Promise.all(listOfAsyncJobs)
 })
+
+let createMessagePayloadForComment = (notificationData, userID, msgToken) => {
+  let payloadForComment = {
+    notification: {
+      type: notificationData.type,
+      action: notificationData.action,
+      body: notificationData.body,
+      title: notificationData.title,
+      avatar: `${notificationData.avatarURL}`,
+      repositoryName: `${notificationData.repositoryName}`,
+      repoID: `${notificationData.repositoryID}`,
+      time: `${notificationData.time}`
+    }
+  }
+  firestore.doc(`users/${userID}`).update({ notifications: admin.firestore.FieldValue.arrayUnion(payloadForComment) })
+  admin.messaging().sendToDevice(msgToken, payloadForComment)
+}
+
+let createMessagePayloadForIssue = (notificationData, userID, msgToken) => {
+
+  let payloadForIssue = {
+    notification: {
+      type: notificationData.type,
+      header: `${notificationData.createdBy}  ${notificationData.action} `,
+      body: `${notificationData.body}`,
+      title: `${notificationData.title} `,
+      avatar: `${notificationData.avatarURL}`,
+      repositoryName: `${notificationData.repositoryName}`,
+      repoID: `${notificationData.repositoryID}`,
+      time: `${notificationData.time}`
+    }
+  }
+
+  firestore.doc(`users/${userID}`).update({ notifications: admin.firestore.FieldValue.arrayUnion(payloadForIssue) })
+  admin.messaging().sendToDevice(msgToken, payloadForIssue)
+}
