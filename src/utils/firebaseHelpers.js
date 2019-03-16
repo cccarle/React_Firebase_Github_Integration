@@ -108,3 +108,48 @@ export const saveOrgsToFireStore = () => {
             }
         })
 }
+
+export const updateReposInOrgs = (repo, data) => {
+  let update = {}
+  let subscriptions = {}
+  let obj = {
+    active: true,
+    admin: repo.admin,
+    avatarURL: repo.avatarURL,
+    hooks_url: repo.hooks_url,
+    id: repo.id,
+    name: repo.name,
+    owner: repo.owner,
+    url: repo.url,
+    hooksID: data.url,
+    reposInOrgss: true
+  }
+
+  update[`reposInOrgs.${repo.id}`] = obj
+  subscriptions[`subscriptions.${repo.id}`] = obj
+
+  db.collection('users').doc(`${getCurrentLoggedInGithubID()}`).update(update)
+  db.collection('users').doc(`${getCurrentLoggedInGithubID()}`).update(subscriptions)
+}
+
+export const updateRepos = (repo, data) => {
+  let update = {}
+  let subscriptions = {}
+
+  let obj = {
+    active: true,
+    admin: repo.admin,
+    avatarURL: repo.avatarURL,
+    hooks_url: repo.hooks_url,
+    id: repo.id,
+    name: repo.name,
+    owner: repo.owner,
+    url: repo.url,
+    hooksID: data.url
+  }
+  update[`repos.${repo.id}`] = obj
+  subscriptions[`subscriptions.${repo.id}`] = obj
+
+  db.collection('users').doc(`${getCurrentLoggedInGithubID()}`).update(update)
+  db.collection('users').doc(`${getCurrentLoggedInGithubID()}`).update(subscriptions)
+}

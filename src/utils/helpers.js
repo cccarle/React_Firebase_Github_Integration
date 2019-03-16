@@ -1,4 +1,5 @@
 import firebase from '../config/firebase'
+import { updateReposInOrgs, updateRepos } from './firebaseHelpers'
 let db = firebase.firestore()
 let messaging = firebase.messaging()
 
@@ -54,6 +55,7 @@ export const getConfigURL = () => {
 }
 
 export const addWebhook = (repo) => {
+
   let githubParameters = { events: ['issues', 'push'], name: 'web', config: getConfigURL() }
 
   window
@@ -67,55 +69,17 @@ export const addWebhook = (repo) => {
     })
     .then((response) => response.json())
     .then((data) => {
-      if (repo.reposInOrgss === true) {
-        let update = {}
-        let subscriptions = {}
-        let obj = {
-          active: true,
-          admin: repo.admin,
-          avatarURL: repo.avatarURL,
-          hooks_url: repo.hooks_url,
-          id: repo.id,
-          name: repo.name,
-          owner: repo.owner,
-          url: repo.url,
-          hooksID: data.url,
-          reposInOrgss: true
-        }
-
-        update[`reposInOrgs.${repo.id}`] = obj
-        subscriptions[`subscriptions.${repo.id}`] = obj
-
-        db.collection('users').doc(`${getCurrentLoggedInGithubID()}`).update(update)
-        db.collection('users').doc(`${getCurrentLoggedInGithubID()}`).update(subscriptions)
-
+      if (repo.reposInOrgss) {
+        updateReposInOrgs(repo, data)
       } else {
-        let update = {}
-        let subscriptions = {}
-
-        let obj = {
-          active: true,
-          admin: repo.admin,
-          avatarURL: repo.avatarURL,
-          hooks_url: repo.hooks_url,
-          id: repo.id,
-          name: repo.name,
-          owner: repo.owner,
-          url: repo.url,
-          hooksID: data.url
-        }
-        update[`repos.${repo.id}`] = obj
-        subscriptions[`subscriptions.${repo.id}`] = obj
-
-        db.collection('users').doc(`${getCurrentLoggedInGithubID()}`).update(update)
-        db.collection('users').doc(`${getCurrentLoggedInGithubID()}`).update(subscriptions)
-
+        updateRepos(repo, data)
       }
     })
     .catch((err) => {
-      console.log(err)
+      console.log('An error accoured when trying to add webhook : ' + err)
     })
 }
+
 
 export const deleteWebhook = (repo) => {
   console.log(repo)
