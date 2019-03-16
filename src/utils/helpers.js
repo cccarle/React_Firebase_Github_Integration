@@ -69,20 +69,21 @@ export const addWebhook = (repo) => {
     })
     .then((response) => response.json())
     .then((data) => {
+      let activeStatus = true
+
       if (repo.reposInOrgss) {
-        updateReposInOrgs(repo, data)
+        updateReposInOrgs(repo, data, activeStatus)
       } else {
-        updateRepos(repo, data)
+        updateRepos(repo, data, activeStatus)
       }
+
     })
     .catch((err) => {
       console.log('An error accoured when trying to add webhook : ' + err)
     })
 }
 
-
 export const deleteWebhook = (repo) => {
-  console.log(repo)
   window
     .fetch(repo.hooksID, {
       method: 'DELETE',
@@ -92,48 +93,16 @@ export const deleteWebhook = (repo) => {
       }
     })
     .then(() => {
-      if (repo.reposInOrgss === true) {
-        let update = {}
-        let reposInOrgs = {
-          active: false,
-          admin: repo.admin,
-          avatarURL: repo.avatarURL,
-          hooks_url: repo.hooks_url,
-          id: repo.id,
-          name: repo.name,
-          owner: repo.owner,
-          url: repo.url,
-          hooksID: repo.url,
-          reposInOrgss: true
-        }
+      let activeStatus = false
 
-        update[`reposInOrgs.${repo.id}`] = reposInOrgs
-
-        deleteSubscription(repo.id)
-
-        db.collection('users').doc(`${getCurrentLoggedInGithubID()}`).update(update)
-
+      if (repo.reposInOrgss) {
+        updateReposInOrgs(repo, null, activeStatus)
       } else {
-        let obj = {
-          active: false,
-          admin: repo.admin,
-          avatarURL: repo.avatarURL,
-          hooks_url: repo.hooks_url,
-          id: repo.id,
-          name: repo.name,
-          owner: repo.owner,
-          url: repo.url,
-          hooksID: repo.hooksID
-        }
-
-        let update = {}
-
-        update[`repos.${repo.id}`] = obj
-
-        deleteSubscription(repo.id)
-
-        db.collection('users').doc(`${getCurrentLoggedInGithubID()}`).update(update)
+        updateRepos(repo, null, activeStatus)
       }
+
+    }).catch((err) => {
+      console.log('An error accoured when trying to delete webhook : ' + err)
     })
 }
 

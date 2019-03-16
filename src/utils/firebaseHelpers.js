@@ -109,47 +109,64 @@ export const saveOrgsToFireStore = () => {
         })
 }
 
-export const updateReposInOrgs = (repo, data) => {
-  let update = {}
-  let subscriptions = {}
-  let obj = {
-    active: true,
-    admin: repo.admin,
-    avatarURL: repo.avatarURL,
-    hooks_url: repo.hooks_url,
-    id: repo.id,
-    name: repo.name,
-    owner: repo.owner,
-    url: repo.url,
-    hooksID: data.url,
-    reposInOrgss: true
-  }
+/* 
+    Update the repository active status in the organization depending on if a webhook has been created or deleted
+*/
 
-  update[`reposInOrgs.${repo.id}`] = obj
-  subscriptions[`subscriptions.${repo.id}`] = obj
+export const updateReposInOrgs = (repo, data, activeStatus) => {
+    let update = {}
+    let subscriptions = {}
 
-  db.collection('users').doc(`${getCurrentLoggedInGithubID()}`).update(update)
-  db.collection('users').doc(`${getCurrentLoggedInGithubID()}`).update(subscriptions)
+    if (data === null) {
+        data = repo
+    }
+
+    let obj = {
+        active: activeStatus,
+        admin: repo.admin,
+        avatarURL: repo.avatarURL,
+        hooks_url: repo.hooks_url,
+        id: repo.id,
+        name: repo.name,
+        owner: repo.owner,
+        url: repo.url,
+        hooksID: data.url,
+        reposInOrgss: true
+    }
+
+    update[`reposInOrgs.${repo.id}`] = obj
+    subscriptions[`subscriptions.${repo.id}`] = obj
+
+    db.collection('users').doc(`${getCurrentLoggedInGithubID()}`).update(update)
+    db.collection('users').doc(`${getCurrentLoggedInGithubID()}`).update(subscriptions)
 }
 
-export const updateRepos = (repo, data) => {
-  let update = {}
-  let subscriptions = {}
+/* 
+    Update the repository active status depending on if a webhook has been created or deleted
+*/
 
-  let obj = {
-    active: true,
-    admin: repo.admin,
-    avatarURL: repo.avatarURL,
-    hooks_url: repo.hooks_url,
-    id: repo.id,
-    name: repo.name,
-    owner: repo.owner,
-    url: repo.url,
-    hooksID: data.url
-  }
-  update[`repos.${repo.id}`] = obj
-  subscriptions[`subscriptions.${repo.id}`] = obj
+export const updateRepos = (repo, data, activeStatus) => {
+    let update = {}
+    let subscriptions = {}
 
-  db.collection('users').doc(`${getCurrentLoggedInGithubID()}`).update(update)
-  db.collection('users').doc(`${getCurrentLoggedInGithubID()}`).update(subscriptions)
+    if (data === null) {
+        data = repo
+    }
+
+    let obj = {
+        active: activeStatus,
+        admin: repo.admin,
+        avatarURL: repo.avatarURL,
+        hooks_url: repo.hooks_url,
+        id: repo.id,
+        name: repo.name,
+        owner: repo.owner,
+        url: repo.url,
+        hooksID: data.url
+    }
+    update[`repos.${repo.id}`] = obj
+    subscriptions[`subscriptions.${repo.id}`] = obj
+
+    db.collection('users').doc(`${getCurrentLoggedInGithubID()}`).update(update)
+    db.collection('users').doc(`${getCurrentLoggedInGithubID()}`).update(subscriptions)
 }
