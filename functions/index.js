@@ -17,10 +17,12 @@ exports.events = functions.https.onRequest((req, res) => {
       repositoryID: admin.firestore.FieldValue.arrayUnion(req.body.repository.id)
     })
   }
-  webhookData.action = req.body.action
+
   webhookData.time = admin.firestore.FieldValue.serverTimestamp()
 
   if (req.body.issue) {
+    webhookData.type = 'issue'
+    webhookData.action = req.body.action
     webhookData.title = req.body.issue.title
     webhookData.avatarURL = req.body.issue.user.avatar_url
     webhookData.repositoryName = req.body.repository.name
@@ -29,11 +31,17 @@ exports.events = functions.https.onRequest((req, res) => {
     webhookData.id = req.body.issue.id
     webhookData.eventURL = req.body.issue.events_url
     webhookData.repositoryID = req.body.repository.id
-  } else {
+  }
+
+  if (req.body.commits) {
+    webhookData.type = 'commit'
+    webhookData.action = 'made commit'
     webhookData.body = req.body.commits[0].message
     webhookData.commitURL = req.body.commits[0].url
     webhookData.title = req.body.commits[0].author.name.slice(1, -1)
     webhookData.repositoryID = req.body.repository.id
+    webhookData.repositoryName = req.body.repository.name
+    webhookData.avatarURL = req.body.repository.owner.avatar_url
   }
 
   return admin.firestore().collection('notifications').add({ notification: webhookData }).then((writeResult) => {
@@ -69,17 +77,35 @@ exports.sendNotification = functions.firestore.document('notifications/{notifica
 
         repositoryIDsArray.forEach((repoIDss) => {
           if (repoIDss === repoID) {
-            const payload = {
-              notification: {
-                header: `${newValue.notification.createdBy}  ${newValue.notification.action} `,
-                title: `${newValue.notification.title} `,
-                body: `${newValue.notification.body}`,
-                avatar: `${newValue.notification.avatarURL}`,
-                repositoryName: `${newValue.notification.repositoryName}`,
-                time: `${newValue.notification.time}`
-
+            let payload = {}
+            if (newValue.notification.type === 'issue') {
+              payload = {
+                notification: {
+                  type: newValue.notification.type,
+                  header: `${newValue.notification.createdBy}  ${newValue.notification.action} `,
+                  body: `${newValue.notification.body}`,
+                  title: `${newValue.notification.title} `,
+                  avatar: `${newValue.notification.avatarURL}`,
+                  repositoryName: `${newValue.notification.repositoryName}`,
+                  repoID: `${newValue.notification.repositoryID}`,
+                  time: `${newValue.notification.time}`
+                }
+              }
+            } else {
+              payload = {
+                notification: {
+                  type: newValue.notification.type,
+                  action: newValue.notification.action,
+                  body: newValue.notification.body,
+                  title: newValue.notification.title,
+                  avatar: `${newValue.notification.avatarURL}`,
+                  repositoryName: `${newValue.notification.repositoryName}`,
+                  repoID: `${newValue.notification.repositoryID}`,
+                  time: `${newValue.notification.time}`
+                }
               }
             }
+
 
             const userStatusFirestoreRef = firestore.doc(`users/${userID}`)
 
@@ -93,7 +119,7 @@ exports.sendNotification = functions.firestore.document('notifications/{notifica
       return users
     })
     .catch((err) => {
-      console.log(err)
+      console.log('An error occurred when trying to send notificatin : ' + err)
     })
 
   return newValue

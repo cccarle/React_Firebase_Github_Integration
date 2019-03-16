@@ -132,12 +132,3 @@ export const deleteWebhook = async  (repo) => {
       console.log('An error accoured when trying to delete webhook : ' + err)
     })
 }
-
-export const deleteSubscription = async  (id) => {
-
-  //   db.collection('users').doc(`${getCurrentLoggedInGithubID()}`).update({
-  //     ['subscriptions.' + id]: db.FieldValue.delete()
-  // })
-  console.log('delete repo')
-}
-

@@ -21,8 +21,11 @@ const styles = {
     textAlign: 'center',
     marginTop: '10%',
     marginBottom: '10%'
-
-
+  },
+  hrContainer: {
+    display: 'flex',
+    flexWrap: 'wrap',
+    justifyContent: 'center'
   }
 }
 

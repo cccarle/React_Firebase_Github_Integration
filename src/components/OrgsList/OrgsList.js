@@ -45,7 +45,7 @@ class RepoList extends React.Component {
 					</Button>
 				</div>
 			);
-		} else if (orgs.reposURL && !orgs.admin  || orgs.reposInOrgss && !orgs.admin) {
+		} else if (orgs.reposURL && !orgs.admin || orgs.reposInOrgss && !orgs.admin) {
 			return (
 				<Button variant="contained" className={classes.button}>
 					Not admin
@@ -82,9 +82,14 @@ class RepoList extends React.Component {
 				<GridList cellHeight={180} className={classes.gridList}>
 					<GridListTile key="header" cols={2} style={{ height: 'auto' }}>
 						<ListHeader component="div">
-							<Typography className={classes.headerText} variant="overline" gutterBottom>
-								Github Organizations
-							</Typography>
+							<div className={classes.hrContainer}>
+
+								<Typography className={classes.headerText} variant="overline" gutterBottom>
+									Github Organizations
+									<hr />
+								</Typography>
+							</div>
+
 						</ListHeader>
 					</GridListTile>
 					{this.props.orgs.map((orgs) => (

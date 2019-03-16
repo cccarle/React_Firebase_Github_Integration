@@ -59,7 +59,7 @@ class Notifications extends React.Component {
 									secondary={notification.body}
 								/>
 								<Typography variant="overline" gutterBottom>
-									{notification.createdBy} issue on {notification.repositoryName}
+									{notification.createdBy} on  {notification.repositoryName}
 								</Typography>
 
 							</ListItem>
