@@ -8,8 +8,24 @@ export const getCurrentLoggedInUserID = () => {
   return user.uid
 }
 
-export const getCurrentLoggedInGithubID = () => {
+export const getCurrentLoggedInGithubID =  () => {
   let id = window.localStorage.getItem('loggedInUser')
+
+
+
+  // let githubID = await db.collection('users').doc(`${getCurrentLoggedInGithubID()}`).get().then(function (doc) {
+  //   if (doc.exists) {
+  //     return doc.data().accessToken
+  //   }
+  // }).catch(error => {
+  //   console.log(`Error getting document:`, error)
+  //   return error
+  // })
+
+  // return accessToken
+
+
+
   return id
 }
 
@@ -38,11 +54,22 @@ export const allowNotifications = () => {
 }
 
 export const setGitHubToken = (accessToken) => {
-  window.localStorage.setItem('token', accessToken)
+  db.collection('users').doc(`${getCurrentLoggedInGithubID()}`).set({
+    accessToken: accessToken
+  }, { merge: true })
 }
 
-export const getGitHubToken = () => {
-  const accessToken = window.localStorage.getItem('token')
+export const getGitHubToken = async () => {
+
+  let accessToken = await db.collection('users').doc(`${getCurrentLoggedInGithubID()}`).get().then(function (doc) {
+    if (doc.exists) {
+      return doc.data().accessToken
+    }
+  }).catch(error => {
+    console.log(`Error getting document:`, error)
+    return error
+  })
+
   return accessToken
 }
 
@@ -54,7 +81,7 @@ export const getConfigURL = () => {
   return config
 }
 
-export const addWebhook = (repo) => {
+export const addWebhook =  async (repo) => {
 
   let githubParameters = { events: ['issues', 'push'], name: 'web', config: getConfigURL() }
 
@@ -63,7 +90,7 @@ export const addWebhook = (repo) => {
       method: 'POST',
       body: JSON.stringify(githubParameters),
       headers: {
-        Authorization: 'token ' + getGitHubToken(),
+        Authorization: 'token ' + await getGitHubToken(),
         'Content-Type': 'application/json'
       }
     })
@@ -83,12 +110,12 @@ export const addWebhook = (repo) => {
     })
 }
 
-export const deleteWebhook = (repo) => {
+export const deleteWebhook = async  (repo) => {
   window
     .fetch(repo.hooksID, {
       method: 'DELETE',
       headers: {
-        Authorization: 'token ' + getGitHubToken(),
+        Authorization: 'token ' + await getGitHubToken(),
         'Content-Type': 'application/json'
       }
     })
@@ -106,7 +133,7 @@ export const deleteWebhook = (repo) => {
     })
 }
 
-export const deleteSubscription = (id) => {
+export const deleteSubscription = async  (id) => {
 
   //   db.collection('users').doc(`${getCurrentLoggedInGithubID()}`).update({
   //     ['subscriptions.' + id]: db.FieldValue.delete()

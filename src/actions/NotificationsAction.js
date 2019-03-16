@@ -7,9 +7,9 @@ import { currentLoggedInUserFirestoreReference } from '../utils/helpers'
 
 export const fetchNotifications = () => {
   var notificationsArray = []
-  return (dispatch) => {
+  return async (dispatch) => {
 
-    currentLoggedInUserFirestoreReference().onSnapshot(function (doc) {
+   await currentLoggedInUserFirestoreReference().onSnapshot(function (doc) {
       if (doc.exists && doc.data().notifications) {
         let notifications = doc.data().notifications
         notifications.forEach(notification => {

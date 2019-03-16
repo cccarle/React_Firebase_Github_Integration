@@ -6,10 +6,10 @@ Retrieve github repositories from authenticated user and saves it as objects to 
 */
 
 export const fetchUserDataFromGithubAPI = () => {
-  return (dispatch) => {
+  return async (dispatch) => {
     window
       .fetch('https://api.github.com/user', {
-        headers: { Authorization: 'token ' + getGitHubToken() }
+        headers: { Authorization: 'token ' + await getGitHubToken() }
       })
       .then((response) => response.json())
       .then((githubUserProfileData) => {
@@ -26,6 +26,7 @@ export const fetchOrgsDataGithubAPI = () => {
   let adminReposInOrg = []
 
   return (dispatch) => {
+
     currentLoggedInUserFirestoreReference().onSnapshot(function (doc) {
       if (doc.exists && doc.data().orgs) {
         let org = doc.data().orgs

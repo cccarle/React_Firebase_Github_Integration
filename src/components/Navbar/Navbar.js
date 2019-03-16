@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { signOutUser, showRepositories, showNotification, showOrganizations, showProfile,showSubscriptions } from '../../actions';
+import { signOutUser, showRepositories, showNotification, showOrganizations, showProfile, showSubscriptions } from '../../actions';
 import _ from 'lodash';
 
 // Styles
@@ -36,10 +36,10 @@ class Navbar extends Component {
 		this.props.showSubscriptions();
 	};
 
-	toggelNotification = ()=>{
+	toggelNotification = () => {
 		this.props.showNotification()
 	}
-	
+
 	render() {
 		const { classes } = this.props;
 		return (

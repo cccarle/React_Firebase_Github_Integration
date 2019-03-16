@@ -1,4 +1,4 @@
-import { getGitHubToken, getCurrentLoggedInGithubID } from './helpers'
+import { getGitHubToken, getCurrentLoggedInGithubID, currentLoggedInUserFirestoreReference } from './helpers'
 import firebase from '../config/firebase'
 let db = firebase.firestore()
 
@@ -6,10 +6,10 @@ let db = firebase.firestore()
 Retrieve github repositories from authenticated user and saves it as objects to firestore under field "repos"
 */
 
-export const saveReposToFireStore = () => {
+export const saveReposToFireStore = async () => {
     window
         .fetch('https://api.github.com/user/repos', {
-            headers: { Authorization: 'token ' + getGitHubToken() }
+            headers: { Authorization: 'token ' + await getGitHubToken() }
         })
         .then((response) => response.json())
         .then(repo => {
@@ -41,10 +41,10 @@ Retrieve github repositories from authenticated user and saves it as objects to 
 */
 
 
-export const saveReposInOrgsToFireStore = (orgName) => {
+export const saveReposInOrgsToFireStore = async (orgName) => {
     window
         .fetch(`https://api.github.com/orgs/${orgName}/repos`, {
-            headers: { Authorization: 'token ' + getGitHubToken() }
+            headers: { Authorization: 'token ' + await getGitHubToken() }
         })
         .then((response) => response.json())
         .then(repo => {
@@ -78,10 +78,10 @@ export const saveReposInOrgsToFireStore = (orgName) => {
 Retrieve github organizations from authenticated user and saves it as objects to firestore under field "orgs"
 */
 
-export const saveOrgsToFireStore = () => {
+export const saveOrgsToFireStore = async () => {
     window
         .fetch(`https://api.github.com/user/orgs`, {
-            headers: { Authorization: 'token ' + getGitHubToken() }
+            headers: { Authorization: 'token ' + await getGitHubToken() }
         })
         .then((response) => response.json())
         .then(async (data) => {
@@ -137,8 +137,8 @@ export const updateReposInOrgs = (repo, data, activeStatus) => {
     update[`reposInOrgs.${repo.id}`] = obj
     subscriptions[`subscriptions.${repo.id}`] = obj
 
-    db.collection('users').doc(`${getCurrentLoggedInGithubID()}`).update(update)
-    db.collection('users').doc(`${getCurrentLoggedInGithubID()}`).update(subscriptions)
+    currentLoggedInUserFirestoreReference().update(update)
+    currentLoggedInUserFirestoreReference().update(subscriptions)
 }
 
 /* 
@@ -167,6 +167,6 @@ export const updateRepos = (repo, data, activeStatus) => {
     update[`repos.${repo.id}`] = obj
     subscriptions[`subscriptions.${repo.id}`] = obj
 
-    db.collection('users').doc(`${getCurrentLoggedInGithubID()}`).update(update)
-    db.collection('users').doc(`${getCurrentLoggedInGithubID()}`).update(subscriptions)
+    currentLoggedInUserFirestoreReference().update(update)
+    currentLoggedInUserFirestoreReference().update(subscriptions)
 }
