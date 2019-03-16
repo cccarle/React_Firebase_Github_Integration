@@ -9,55 +9,72 @@ Save repository to the user that created the webhook
 */
 
 exports.events = functions.https.onRequest((req, res) => {
-  var webhookData = {}
-  if (req.body.zen) {
-    const userStatusFirestoreRef = firestore.doc(`users/${req.body.sender.id}`)
 
-    var arrUnion = userStatusFirestoreRef.update({
-      repositoryID: admin.firestore.FieldValue.arrayUnion(req.body.repository.id)
-    })
+  const listOfAsyncJobs = [];
+
+  if (req.body.zen) {
+    listOfAsyncJobs.push(saveRepoIDToUser(req.body.sender.id, req.body.repository.id))
   }
 
-  webhookData.time = admin.firestore.FieldValue.serverTimestamp()
-
   if (req.body.issue) {
-    webhookData.type = 'issue'
-    webhookData.action = req.body.action
-    webhookData.title = req.body.issue.title
-    webhookData.avatarURL = req.body.issue.user.avatar_url
-    webhookData.repositoryName = req.body.repository.name
-    webhookData.body = req.body.issue.body
-    webhookData.createdBy = req.body.issue.user.login
-    webhookData.id = req.body.issue.id
-    webhookData.eventURL = req.body.issue.events_url
-    webhookData.repositoryID = req.body.repository.id
+    listOfAsyncJobs.push(createNotificationForIssue(req.body))
   }
 
   if (req.body.commits) {
-    webhookData.type = 'commit'
-    webhookData.action = 'made commit'
-    webhookData.body = req.body.commits[0].message
-    webhookData.commitURL = req.body.commits[0].url
-    webhookData.title = req.body.commits[0].author.name.slice(1, -1)
-    webhookData.repositoryID = req.body.repository.id
-    webhookData.repositoryName = req.body.repository.name
-    webhookData.avatarURL = req.body.repository.owner.avatar_url
+    listOfAsyncJobs.push(createNotificationForComment(req.body))
   }
 
-  return admin.firestore().collection('notifications').add({ notification: webhookData }).then((writeResult) => {
-    return res.send(200)
-  })
+  return Promise.all(listOfAsyncJobs)
 })
+
+let saveRepoIDToUser = (userID, repoID) => {
+  firestore.doc(`users/${userID}`).update({ repositoryID: admin.firestore.FieldValue.arrayUnion(repoID) })
+}
+
+let createNotificationForComment = (webhookData) => {
+
+  let commit = {}
+  commit.type = 'commit'
+  commit.action = 'made commit'
+  commit.body = webhookData.commits[0].message
+  commit.commitURL = webhookData.commits[0].url
+  commit.title = webhookData.commits[0].author.name.slice(1, -1)
+  commit.repositoryID = webhookData.repository.id
+  commit.repositoryName = webhookData.repository.name
+  commit.avatarURL = webhookData.repository.owner.avatar_url
+  commit.time = admin.firestore.FieldValue.serverTimestamp()
+
+  admin.firestore().collection('notifications').add({ notification: commit })
+
+}
+
+let createNotificationForIssue = (webhookData) => {
+  let issue = {}
+  issue.type = 'issue'
+  issue.action = webhookData.action
+  issue.title = webhookData.issue.title
+  issue.avatarURL = webhookData.issue.user.avatar_url
+  issue.repositoryName = webhookData.repository.name
+  issue.body = webhookData.issue.body
+  issue.createdBy = webhookData.issue.user.login
+  issue.id = webhookData.issue.id
+  issue.eventURL = webhookData.issue.events_url
+  issue.repositoryID = webhookData.repository.id
+  issue.time = admin.firestore.FieldValue.serverTimestamp()
+
+  admin.firestore().collection('notifications').add({ notification: issue })
+}
 
 /*
 Send Notification to serivce worker
 */
 
 exports.sendNotification = functions.firestore.document('notifications/{notification}').onCreate((snap, context) => {
-  const newValue = snap.data()
+
+  const newNotificationData = snap.data()
 
   // hämta new value, hämta repoID
-  var repoID = newValue.notification.repositoryID
+  var repoID = newNotificationData.notification.repositoryID
   // hämta alla användare och deras reposID
   firestore
     .collection('users')
@@ -78,40 +95,36 @@ exports.sendNotification = functions.firestore.document('notifications/{notifica
         repositoryIDsArray.forEach((repoIDss) => {
           if (repoIDss === repoID) {
             let payload = {}
-            if (newValue.notification.type === 'issue') {
+            if (newNotificationData.notification.type === 'issue') {
               payload = {
                 notification: {
-                  type: newValue.notification.type,
-                  header: `${newValue.notification.createdBy}  ${newValue.notification.action} `,
-                  body: `${newValue.notification.body}`,
-                  title: `${newValue.notification.title} `,
-                  avatar: `${newValue.notification.avatarURL}`,
-                  repositoryName: `${newValue.notification.repositoryName}`,
-                  repoID: `${newValue.notification.repositoryID}`,
-                  time: `${newValue.notification.time}`
+                  type: newNotificationData.notification.type,
+                  header: `${newNotificationData.notification.createdBy}  ${newNotificationData.notification.action} `,
+                  body: `${newNotificationData.notification.body}`,
+                  title: `${newNotificationData.notification.title} `,
+                  avatar: `${newNotificationData.notification.avatarURL}`,
+                  repositoryName: `${newNotificationData.notification.repositoryName}`,
+                  repoID: `${newNotificationData.notification.repositoryID}`,
+                  time: `${newNotificationData.notification.time}`
                 }
               }
             } else {
               payload = {
                 notification: {
-                  type: newValue.notification.type,
-                  action: newValue.notification.action,
-                  body: newValue.notification.body,
-                  title: newValue.notification.title,
-                  avatar: `${newValue.notification.avatarURL}`,
-                  repositoryName: `${newValue.notification.repositoryName}`,
-                  repoID: `${newValue.notification.repositoryID}`,
-                  time: `${newValue.notification.time}`
+                  type: newNotificationData.notification.type,
+                  action: newNotificationData.notification.action,
+                  body: newNotificationData.notification.body,
+                  title: newNotificationData.notification.title,
+                  avatar: `${newNotificationData.notification.avatarURL}`,
+                  repositoryName: `${newNotificationData.notification.repositoryName}`,
+                  repoID: `${newNotificationData.notification.repositoryID}`,
+                  time: `${newNotificationData.notification.time}`
                 }
               }
             }
 
 
-            const userStatusFirestoreRef = firestore.doc(`users/${userID}`)
-
-            var arrUnion = userStatusFirestoreRef.update({
-              notifications: admin.firestore.FieldValue.arrayUnion(payload)
-            })
+            firestore.doc(`users/${userID}`).update({ notifications: admin.firestore.FieldValue.arrayUnion(payload) })
             return admin.messaging().sendToDevice(element.msgToken, payload)
           }
         })
@@ -122,5 +135,5 @@ exports.sendNotification = functions.firestore.document('notifications/{notifica
       console.log('An error occurred when trying to send notificatin : ' + err)
     })
 
-  return newValue
+  return newNotificationData
 })
