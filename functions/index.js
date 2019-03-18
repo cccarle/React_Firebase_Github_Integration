@@ -67,10 +67,10 @@ let createNotificationForIssue = (webhookData) => {
   issue.type = 'issue'
   issue.action = webhookData.action
   issue.title = webhookData.issue.title
-  issue.avatarURL = webhookData.issue.user.avatar_url
+  issue.avatarURL = webhookData.sender.avatar_url
   issue.repositoryName = webhookData.repository.name
   issue.body = webhookData.issue.body
-  issue.createdBy = webhookData.issue.user.login
+  issue.createdBy = webhookData.sender.login
   issue.id = webhookData.issue.id
   issue.eventURL = webhookData.issue.events_url
   issue.repositoryID = webhookData.repository.id

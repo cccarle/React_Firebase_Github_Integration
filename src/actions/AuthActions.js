@@ -37,6 +37,7 @@ export const signInUser = userData => dispatch => {
     .signInWithPopup(provider)
     .then(function (result) {
       const { accessToken } = result.credential
+      
       setGitHubToken(accessToken)
       dispatch({ type: LOGGED_IN_SUCCES, payload: true })
       history.push('/dashboard')

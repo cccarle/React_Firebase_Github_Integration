@@ -18,6 +18,8 @@ import styles from './SubscriptionList.style';
 
 class SubscriptionList extends React.Component {
 
+	componentWillMount
+
 	turnOffNotification = (subscription) => {
 		deleteWebhook(subscription)
 		deleteRepoFromSubscription(subscription)

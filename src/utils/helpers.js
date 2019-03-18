@@ -54,7 +54,7 @@ export const allowNotifications = () => {
       return messaging.getToken()
     })
     .then((token) => {
-      currentLoggedInUserFirestoreReference().set({ msgToken: token }, { merge: true })
+      db.collection('users').doc(`${getCurrentLoggedInGithubID()}`).set({ msgToken: token }, { merge: true })
     })
     .catch((err) => {
       console.log('An error accured : ' + err)
@@ -67,9 +67,14 @@ accesToken will be used to fetch data from the github API
 */
 
 export const setGitHubToken = (accessToken) => {
-  db.collection('users').doc(`${getCurrentLoggedInGithubID()}`).set({
-    accessToken: accessToken
-  }, { merge: true })
+
+  window.localStorage.setItem('token', accessToken)
+
+  // db.collection('users').doc(`${getCurrentLoggedInGithubID()}`).set({
+  //   accessToken: accessToken
+  // }, { merge: true })
+
+
 }
 
 /* 
@@ -78,14 +83,17 @@ Returns a "query" to the current users data from Firestore for getting the acces
 
 export const getGitHubToken = async () => {
 
-  let accessToken = await db.collection('users').doc(`${getCurrentLoggedInGithubID()}`).get().then(function (doc) {
-    if (doc.exists) {
-      return doc.data().accessToken
-    }
-  }).catch(error => {
-    console.log(`Error getting document:`, error)
-    return error
-  })
+  let accessToken = window.localStorage.getItem('token')
+
+
+  // let accessToken = await db.collection('users').doc(`${getCurrentLoggedInGithubID()}`).get().then(function (doc) {
+  //   if (doc.exists) {
+  //     return doc.data().accessToken
+  //   }
+  // }).catch(error => {
+  //   console.log(`Error getting document:`, error)
+  //   return error
+  // })
 
   return accessToken
 }
@@ -111,6 +119,7 @@ activeStatus controll the buttons status of the "Components/RepoList".
 
 export const addWebhook = async (repo) => {
 
+  console.log(repo)
   let githubParameters = { events: ['issues', 'push'], name: 'web', config: getConfigURL() }
 
   window

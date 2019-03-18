@@ -31,10 +31,6 @@ class Dashboard extends Component {
 
 	componentDidMount() {
 		this.props.fetchUserDataFromGithubAPI();
-		this.props.fetchReposDataGithubAPI()
-		this.props.fetchOrgsDataGithubAPI()
-		this.props.fetchNotifications()
-		this.props.fetchSubscriptions()
 	}
 
 	toggelComponentToRender = () => {

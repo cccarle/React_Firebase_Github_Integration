@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { signOutUser, showRepositories, showNotification, showOrganizations, showProfile, showSubscriptions, clearNotification } from '../../actions';
+import { signOutUser, showRepositories, showNotification, showOrganizations, showProfile, showSubscriptions, clearNotification, fetchReposDataGithubAPI, fetchOrgsDataGithubAPI, fetchNotifications, fetchSubscriptions } from '../../actions';
 import { updateNotifications } from '../../utils/firebaseHelpers'
 import _ from 'lodash';
 
@@ -17,6 +17,10 @@ import MailIcon from '@material-ui/icons/Mail';
 
 class Navbar extends Component {
 
+	componentWillMount() {
+		this.props.fetchNotifications()
+	}
+
 	signOutAttempt = () => {
 		this.props.signOutUser();
 	};
@@ -27,14 +31,19 @@ class Navbar extends Component {
 
 	toggelRepositories = () => {
 		this.props.showRepositories();
+		this.props.fetchReposDataGithubAPI()
+
 	};
 
 	toggelOrganizations = () => {
 		this.props.showOrganizations();
+		this.props.fetchOrgsDataGithubAPI()
+
 	};
 
 	toggelSubscriptions = () => {
 		this.props.showSubscriptions();
+		this.props.fetchSubscriptions()
 	};
 
 	toggelNotification = (prop) => {
@@ -121,5 +130,9 @@ export default connect(mapStateToProps, {
 	showOrganizations,
 	showSubscriptions,
 	showProfile,
-	clearNotification
+	clearNotification,
+	fetchReposDataGithubAPI,
+	fetchOrgsDataGithubAPI,
+	fetchNotifications,
+	fetchSubscriptions
 })(withStyles(styles)(Navbar));
