@@ -2,11 +2,6 @@ importScripts('https://www.gstatic.com/firebasejs/4.8.1/firebase-app.js')
 importScripts('https://www.gstatic.com/firebasejs/4.8.1/firebase-messaging.js')
 
 const config = {
-  apiKey: 'AIzaSyBr2zjlkIdRl2TwTN2OOsA85AW8NeHBI2k',
-  authDomain: 'guthubdashboard.firebaseapp.com',
-  databaseURL: 'https://guthubdashboard.firebaseio.com',
-  projectId: 'guthubdashboard',
-  storageBucket: 'guthubdashboard.appspot.com',
   messagingSenderId: '259327836521'
 }
 

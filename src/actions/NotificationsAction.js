@@ -34,9 +34,12 @@ export const fetchNotifications = () => {
           elementObject.avatar = element.avatar
           elementObject.repositoryName = element.repositoryName
           elementObject.time = element.time
+          elementObject.staus = element.staus
+
         }
 
         notificationsArray.push(elementObject)
+
 
         let latestNotifications = notificationsArray.filter(child => child.staus != true)
 
@@ -44,7 +47,7 @@ export const fetchNotifications = () => {
 
       });
 
-      dispatch({ type: FETCH_NOTIFICATIONS, payload: notificationsArray.reverse() })
+      dispatch({ type: FETCH_NOTIFICATIONS, payload: notificationsArray })
 
       notificationsArray = []
 
