@@ -142,7 +142,18 @@ let createMessagePayloadForComment = (notificationData, userID, msgToken) => {
       time: `${notificationData.time}`
     }
   }
-  firestore.doc(`users/${userID}`).update({ notifications: admin.firestore.FieldValue.arrayUnion(payloadForComment) })
+
+  firestore.collection('users').doc(`${userID}`).collection('notifications').add({
+    type: notificationData.type,
+    action: notificationData.action,
+    body: notificationData.body,
+    title: notificationData.title,
+    avatar: `${notificationData.avatarURL}`,
+    repositoryName: `${notificationData.repositoryName}`,
+    repoID: `${notificationData.repositoryID}`,
+    time: `${notificationData.time}`
+  })
+
   admin.messaging().sendToDevice(msgToken, payloadForComment)
 }
 
@@ -180,6 +191,5 @@ let createMessagePayloadForIssue = (notificationData, userID, msgToken) => {
     time: `${notificationData.time}`
   })
 
-  //firestore.doc(`users/${userID}`).update({ notifications: admin.firestore.FieldValue.arrayUnion(payloadForIssue) })
   admin.messaging().sendToDevice(msgToken, payloadForIssue)
 }

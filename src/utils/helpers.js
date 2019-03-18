@@ -18,18 +18,6 @@ Retrieve githubID from logged in user.
 
 export const getCurrentLoggedInGithubID = () => {
   let id = window.localStorage.getItem('loggedInUser')
-
-  // let githubID = await db.collection('users').doc(`${getCurrentLoggedInGithubID()}`).get().then(function (doc) {
-  //   if (doc.exists) {
-  //     return doc.data().accessToken
-  //   }
-  // }).catch(error => {
-  //   console.log(`Error getting document:`, error)
-  //   return error
-  // })
-
-  // return accessToken
-
   return id
 }
 
@@ -184,7 +172,6 @@ activeStatus controll the buttons status of the "Components/RepoList".
 */
 
 export const deleteWebhook = async (repo) => {
-  console.log(repo)
   window
     .fetch(repo.hooksID, {
       method: 'DELETE',
@@ -197,10 +184,8 @@ export const deleteWebhook = async (repo) => {
       let activeStatus = false
 
       if (repo.reposInOrgss) {
-        console.log('repi in org')
         updateReposInOrgs(repo, null, activeStatus)
       } else {
-        console.log('repo rätt')
         updateRepos(repo, null, activeStatus)
       }
 

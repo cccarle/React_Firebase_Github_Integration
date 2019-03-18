@@ -147,7 +147,6 @@ export const updateRepos = (repo, data, activeStatus) => {
     if (data === null) {
         data = repo
     }
-    console.log(activeStatus)
 
     let obj = {
         active: activeStatus,

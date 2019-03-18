@@ -8,7 +8,6 @@ export default function (state = initialState, action) {
       return action.payload
 
     case GET_REPOS_IN_ORGS:
-      console.log(action.payload)
       return action.payload
 
     default:
