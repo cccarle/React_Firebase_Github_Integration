@@ -1,7 +1,9 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
-import { addWebhook, deleteWebhook, deleteRepoFromSubscription } from '../../utils/helpers'
+import { addWebhook, deleteWebhook } from '../../utils/helpers'
+import { deleteRepoFromSubscription } from '../../utils/firebaseDB'
+
 import _ from 'lodash'
 
 // Material-UI components
@@ -53,32 +55,45 @@ class SubscriptionList extends React.Component {
 		}
 	}
 
+	checkIfSubscriptions = (subscription, classes) => {
+		if (subscription.length === 0) {
+			return (
+				<Typography className={classes.headerText2} variant="overline" gutterBottom>
+					You do not subscribe to any repository at the moment
+				</Typography>
+			)
+		}
+		return (
+			<GridList cellHeight={180} className={classes.gridList}>
+				<GridListTile key="header" cols={2} style={{ height: 'auto' }}>
+					<ListHeader component="div">
+						<div className={classes.hrContainer}>
+							<Typography className={classes.headerText} variant="overline" gutterBottom>
+								My Subscriptions
+							<hr />
+							</Typography>
+						</div>
+					</ListHeader>
+				</GridListTile>
+				{subscription.map((subscription) => (
+					<GridListTile key={subscription.id}>
+						<img src={subscription.avatarURL} alt={subscription.name} />
+						<GridListTileBar
+							title={subscription.name}
+							subtitle={<span>owner: {subscription.owner}</span>}
+							actionIcon={this.renderButton(subscription, classes)}
+						/>
+					</GridListTile>
+				))}
+			</GridList>
+		)
+	}
+
 	render() {
 		const { classes } = this.props
 		return (
 			<div className={classes.root}>
-				<GridList cellHeight={180} className={classes.gridList}>
-					<GridListTile key="header" cols={2} style={{ height: 'auto' }}>
-						<ListHeader component="div">
-							<div className={classes.hrContainer}>
-								<Typography className={classes.headerText} variant="overline" gutterBottom>
-									My Subscriptions
-									<hr />
-								</Typography>
-							</div>
-						</ListHeader>
-					</GridListTile>
-					{this.props.subscription.map((subscription) => (
-						<GridListTile key={subscription.id}>
-							<img src={subscription.avatarURL} alt={subscription.name} />
-							<GridListTileBar
-								title={subscription.name}
-								subtitle={<span>owner: {subscription.owner}</span>}
-								actionIcon={this.renderButton(subscription, classes)}
-							/>
-						</GridListTile>
-					))}
-				</GridList>
+				{this.checkIfSubscriptions(this.props.subscription, classes)}
 			</div>
 		)
 	}

@@ -17,6 +17,11 @@ const styles = {
     marginTop: '10%',
     marginBottom: '10%'
   },
+  headerText2: {
+    textAlign: 'center',
+    marginTop: '5%',
+    marginBottom: '10%'
+  },
   hrContainer: {
     display: 'flex',
     flexWrap: 'wrap',

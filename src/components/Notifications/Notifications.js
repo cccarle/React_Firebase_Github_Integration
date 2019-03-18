@@ -1,7 +1,7 @@
 import React from 'react'
 import { connect } from 'react-redux'
 import { } from '../../actions'
-import { deleteNotifications } from '../../utils/firebaseHelpers'
+import { deleteNotifications } from '../../utils/firebaseDB'
 import PropTypes from 'prop-types'
 import _ from 'lodash'
 

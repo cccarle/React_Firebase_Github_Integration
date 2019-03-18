@@ -1,5 +1,5 @@
 import firebase from '../config/firebase'
-import { updateReposInOrgs, updateRepos } from './firebaseHelpers'
+import { updateReposInOrgs, updateRepos, addToMySubscription } from './firebaseDB'
 let db = firebase.firestore()
 let messaging = firebase.messaging()
 
@@ -96,7 +96,6 @@ activeStatus controll the buttons status of the "Components/RepoList".
 */
 
 export const addWebhook = async (repo) => {
-  console.log(repo)
   let githubParameters = { events: ['issues', 'push'], name: 'web', config: getConfigURL() }
 
   window
@@ -125,29 +124,6 @@ export const addWebhook = async (repo) => {
     })
 }
 
-const addToMySubscription = (repo, data, activeStatus) => {
-  let value
-
-  if (repo.reposInOrgss) {
-    value = true
-  } else {
-    value = false
-  }
-
-  currentLoggedInUserFirestoreReference().collection('subscriptions').add({
-    active: activeStatus,
-    admin: repo.admin,
-    avatarURL: repo.avatarURL,
-    hooks_url: repo.hooks_url,
-    id: repo.id,
-    name: repo.name,
-    owner: repo.owner,
-    url: repo.url,
-    hooksID: data.url,
-    reposInOrgss: value
-  })
-}
-
 /*
 DELETE to Github API, attempt to delete a webhook from a repository.
 Update firestore with repo that the webhook has been removed from, from "activeStatus" true tpo false.
@@ -174,20 +150,4 @@ export const deleteWebhook = async (repo) => {
     }).catch((err) => {
       console.log('An error accoured when trying to delete webhook : ' + err)
     })
-}
-
-/*
-Delete repo from subscriptions, when a user unsubscribe/delete webhook.
-*/
-
-export const deleteRepoFromSubscription = (repo) => {
-  let batch = db.batch()
-
-  var jobskill_query = currentLoggedInUserFirestoreReference().collection('subscriptions').where('id', '==', repo.id)
-  jobskill_query.get().then(function (querySnapshot) {
-    querySnapshot.forEach(function (doc) {
-      batch.delete(doc.ref)
-    })
-    batch.commit()
-  })
 }

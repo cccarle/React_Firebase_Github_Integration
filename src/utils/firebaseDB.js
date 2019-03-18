@@ -189,3 +189,42 @@ export const deleteNotifications = () => {
     batch.commit()
   })
 }
+
+export const addToMySubscription = (repo, data, activeStatus) => {
+  let value
+
+  if (repo.reposInOrgss) {
+    value = true
+  } else {
+    value = false
+  }
+
+  currentLoggedInUserFirestoreReference().collection('subscriptions').add({
+    active: activeStatus,
+    admin: repo.admin,
+    avatarURL: repo.avatarURL,
+    hooks_url: repo.hooks_url,
+    id: repo.id,
+    name: repo.name,
+    owner: repo.owner,
+    url: repo.url,
+    hooksID: data.url,
+    reposInOrgss: value
+  })
+}
+
+/*
+Delete repo from subscriptions, when a user unsubscribe/delete webhook.
+*/
+
+export const deleteRepoFromSubscription = (repo) => {
+  let batch = db.batch()
+
+  let matchSubscription = currentLoggedInUserFirestoreReference().collection('subscriptions').where('id', '==', repo.id)
+  matchSubscription.get().then(function (querySnapshot) {
+    querySnapshot.forEach(function (doc) {
+      batch.delete(doc.ref)
+    })
+    batch.commit()
+  })
+}

@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import { allowNotifications } from '../../utils/helpers'
-import { saveReposToFireStore, saveOrgsToFireStore } from '../../utils/firebaseHelpers'
+import { saveReposToFireStore, saveOrgsToFireStore } from '../../utils/firebaseDB'
 import { withStyles } from '@material-ui/core/styles'
 // Components
 import Navbar from '../Navbar/Navbar'
