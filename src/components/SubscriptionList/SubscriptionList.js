@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import {  addWebhook, deleteWebhook } from '../../utils/helpers'
+import { addWebhook, deleteWebhook, deleteRepoFromSubscription } from '../../utils/helpers'
 import _ from 'lodash';
 
 // Material-UI components
@@ -19,8 +19,8 @@ import styles from './SubscriptionList.style';
 class SubscriptionList extends React.Component {
 
 	turnOffNotification = (subscription) => {
-		console.log('delete')
 		deleteWebhook(subscription)
+		deleteRepoFromSubscription(subscription)
 	};
 
 	turnOnNotification = (subscription) => {
@@ -53,14 +53,18 @@ class SubscriptionList extends React.Component {
 
 	render() {
 		const { classes } = this.props;
+		console.log(this.props.subscription)
 		return (
 			<div className={classes.root}>
 				<GridList cellHeight={180} className={classes.gridList}>
 					<GridListTile key="header" cols={2} style={{ height: 'auto' }}>
-						<ListHeader className={classes.headerText} component="div">
-							<Typography variant="overline" gutterBottom>
-								My Subscriptions
-					</Typography>
+						<ListHeader component="div">
+							<div className={classes.hrContainer}>
+								<Typography className={classes.headerText} variant="overline" gutterBottom>
+									My Subscriptions
+									<hr />
+								</Typography>
+							</div>
 						</ListHeader>
 					</GridListTile>
 					{this.props.subscription.map((subscription) => (

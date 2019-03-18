@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { signOutUser, showRepositories, showNotification, showOrganizations, showProfile, showSubscriptions } from '../../actions';
+import { signOutUser, showRepositories, showNotification, showOrganizations, showProfile, showSubscriptions, clearNotification } from '../../actions';
+import { updateNotifications } from '../../utils/firebaseHelpers'
 import _ from 'lodash';
 
 // Styles
@@ -36,8 +37,10 @@ class Navbar extends Component {
 		this.props.showSubscriptions();
 	};
 
-	toggelNotification = () => {
+	toggelNotification = (prop) => {
 		this.props.showNotification()
+		updateNotifications(prop)
+		//this.props.clearNotification()
 	}
 
 	render() {
@@ -76,11 +79,10 @@ class Navbar extends Component {
 									My Subscriptions
 					</Typography>
 							</Button>
-							<Button onClick={this.toggelNotification} color="inherit">
+							<Button onClick={() => this.toggelNotification(this.props)} color="inherit">
 								<Badge
 									className={classes.margin}
-									onClick={this.toggelNotification}
-									badgeContent={this.props.notifications.length}
+									badgeContent={this.props.notificationsLength.length}
 									color="secondary"
 								>
 									<MailIcon />
@@ -91,8 +93,6 @@ class Navbar extends Component {
 									Sign out
 							</Typography>
 							</Button>
-
-
 
 						</div>
 					</Toolbar>
@@ -107,11 +107,11 @@ Navbar.propTypes = {
 };
 
 const mapStateToProps = (state) => {
-	const notifications = _.map(state.notification, (val) => {
+	const notificationsLength = _.map(state.notificationLength, (val) => {
 		return { ...val };
 	});
 
-	return { notifications };
+	return { notificationsLength };
 };
 
 export default connect(mapStateToProps, {
@@ -120,5 +120,6 @@ export default connect(mapStateToProps, {
 	showNotification,
 	showOrganizations,
 	showSubscriptions,
-	showProfile
+	showProfile,
+	clearNotification
 })(withStyles(styles)(Navbar));

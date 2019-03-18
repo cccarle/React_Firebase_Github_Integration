@@ -1,8 +1,6 @@
 importScripts('https://www.gstatic.com/firebasejs/4.8.1/firebase-app.js')
 importScripts('https://www.gstatic.com/firebasejs/4.8.1/firebase-messaging.js')
 
-// import * as firebase from 'firebase'
-
 const config = {
   apiKey: 'AIzaSyBr2zjlkIdRl2TwTN2OOsA85AW8NeHBI2k',
   authDomain: 'guthubdashboard.firebaseapp.com',

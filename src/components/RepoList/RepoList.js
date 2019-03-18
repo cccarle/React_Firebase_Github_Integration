@@ -56,10 +56,13 @@ class RepoList extends React.Component {
 			<div className={classes.root}>
 				<GridList cellHeight={180} className={classes.gridList}>
 					<GridListTile key="header" cols={2} style={{ height: 'auto' }}>
-						<ListHeader className={classes.headerText} component="div">
-							<Typography variant="overline" gutterBottom>
-								Github Repositories
-					</Typography>
+						<ListHeader  component="div">
+							<div className={classes.hrContainer}>
+								<Typography className={classes.headerText} variant="overline" gutterBottom>
+									Github Repositories
+									<hr />
+								</Typography>
+							</div>
 						</ListHeader>
 					</GridListTile>
 					{this.props.repos.map((repos) => (

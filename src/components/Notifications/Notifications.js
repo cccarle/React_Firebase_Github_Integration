@@ -2,6 +2,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { } from '../../actions';
 import { currentLoggedInUserFirestoreReference, getCurrentLoggedInGithubID } from '../../utils/helpers'
+import { deleteNotifications } from '../../utils/firebaseHelpers'
 import PropTypes from 'prop-types';
 import _ from 'lodash';
 
@@ -21,8 +22,9 @@ class Notifications extends React.Component {
 
 
 	clearNotifications = () => {
-		console.log('clear noti')
+		deleteNotifications()
 	}
+
 
 	renderIfNotification = (notifications, classes) => {
 		if (notifications.length === 0) {
@@ -65,19 +67,14 @@ class Notifications extends React.Component {
 							</ListItem>
 
 							<ListItem>
-
 								<ListItemText
 									primary=''
 									secondary=''
 								/>
-
 								<Typography variant="overline" gutterBottom>
-									{notification.time.slice(0, 24)}
+									{notification.time.slice(0, 24)} - {' '}
 								</Typography>
-
-
 							</ListItem>
-
 						</List>
 
 					))}
@@ -90,8 +87,6 @@ class Notifications extends React.Component {
 
 	render() {
 		const { classes } = this.props;
-		console.log(this.props.notifications)
-
 		return <div className={classes.root}>{this.renderIfNotification(this.props.notifications, classes)}</div>;
 	}
 }

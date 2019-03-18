@@ -97,13 +97,11 @@ export const fetchSubscriptions = () => {
   let subscriptionArray = []
 
   return (dispatch) => {
-    currentLoggedInUserFirestoreReference().onSnapshot(function (doc) {
-      if (doc.exists && doc.data().subscriptions) {
-        let subscription = doc.data().subscriptions
-        for (let key in subscription) {
-          subscriptionArray.push(subscription[key])
-        }
-      }
+    currentLoggedInUserFirestoreReference().collection('subscriptions').onSnapshot(function (querySnapshot) {
+      querySnapshot.forEach(function (doc) {
+        let subscription = doc.data()
+        subscriptionArray.push(subscription)
+      })
 
       dispatch({ type: GET_SUBSCRIPTIONS, payload: subscriptionArray })
       subscriptionArray = []

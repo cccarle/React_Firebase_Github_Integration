@@ -1,4 +1,4 @@
-import { FETCH_NOTIFICATIONS } from './types'
+import { FETCH_NOTIFICATIONS, FETCH_NOTIFICATIONS_LENGTH } from './types'
 import { currentLoggedInUserFirestoreReference } from '../utils/helpers'
 
 /* 
@@ -8,34 +8,57 @@ import { currentLoggedInUserFirestoreReference } from '../utils/helpers'
 export const fetchNotifications = () => {
   var notificationsArray = []
   return async (dispatch) => {
+    await currentLoggedInUserFirestoreReference().collection('notifications').onSnapshot(function (querySnapshot) {
 
-    await currentLoggedInUserFirestoreReference().onSnapshot(function (doc) {
-      if (doc.exists && doc.data().notifications) {
-        let notifications = doc.data().notifications
-        notifications.forEach(notification => {
-          let notificationObject = {}
-          if (notification.notification.type === 'issue') {
-            notificationObject.title = notification.notification.title
-            notificationObject.body = notification.notification.body
-            notificationObject.createdBy = notification.notification.header + notification.notification.type
-            notificationObject.avatar = notification.notification.avatar
-            notificationObject.repositoryName = notification.notification.repositoryName
-            notificationObject.time = notification.notification.time
-          } else {
-            notificationObject.title = notification.notification.type
-            notificationObject.body = notification.notification.body
-            notificationObject.createdBy = notification.notification.title + ' ' + notification.notification.action
-            notificationObject.avatar = notification.notification.avatar
-            notificationObject.repositoryName = notification.notification.repositoryName
-            notificationObject.time = notification.notification.time
-          }
+      querySnapshot.forEach(function (doc) {
 
-          notificationsArray.push(notificationObject)
-        })
-        dispatch({ type: FETCH_NOTIFICATIONS, payload: notificationsArray.reverse() })
-        notificationsArray = []
-      }
+        let element = doc.data()
+
+        let elementObject = {}
+
+        if (element.type === 'issue') {
+          elementObject.title = element.title
+          elementObject.body = element.body
+          elementObject.createdBy = element.header + element.type
+          elementObject.avatar = element.avatar
+          elementObject.repositoryName = element.repositoryName
+          elementObject.time = element.time
+          elementObject.repoID = element.repoID
+          elementObject.staus = element.staus
+
+
+        } else {
+          elementObject.title = element.type
+          elementObject.body = element.body
+          elementObject.createdBy = element.title + ' ' + element.action
+          elementObject.avatar = element.avatar
+          elementObject.repositoryName = element.repositoryName
+          elementObject.time = element.time
+        }
+
+        notificationsArray.push(elementObject)
+
+        let latestNotifications = notificationsArray.filter(child => child.staus != true)
+
+        dispatch({ type: FETCH_NOTIFICATIONS_LENGTH, payload: latestNotifications.reverse() })
+
+      });
+
+      dispatch({ type: FETCH_NOTIFICATIONS, payload: notificationsArray.reverse() })
+
+      notificationsArray = []
+
     })
   }
 }
 
+// om repo är true lägg till FETCH_NOTIFICATIONS
+// om repo inte är true lägg till i FETCH_NOTIFICATIONS_LENGTH
+
+export const clearNotification = () => {
+
+  return (dispatch) => {
+    let notificationsArray = []
+    dispatch({ type: FETCH_NOTIFICATIONS_LENGTH, payload: notificationsArray.reverse() })
+  }
+}

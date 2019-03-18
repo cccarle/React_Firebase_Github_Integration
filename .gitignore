@@ -44,6 +44,10 @@ Temporary Items
 # Ignore all local history of files
 .history
 
+
+### Firebase 
+/firebase.json
+
 *.env
 
 # End of https://www.gitignore.io/api/macos,visualstudiocode

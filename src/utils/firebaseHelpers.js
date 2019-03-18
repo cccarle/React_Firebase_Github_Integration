@@ -115,7 +115,6 @@ export const saveOrgsToFireStore = async () => {
 
 export const updateReposInOrgs = (repo, data, activeStatus) => {
     let update = {}
-    let subscriptions = {}
 
     if (data === null) {
         data = repo
@@ -135,10 +134,7 @@ export const updateReposInOrgs = (repo, data, activeStatus) => {
     }
 
     update[`reposInOrgs.${repo.id}`] = obj
-    subscriptions[`subscriptions.${repo.id}`] = obj
-
     currentLoggedInUserFirestoreReference().update(update)
-    currentLoggedInUserFirestoreReference().update(subscriptions)
 }
 
 /* 
@@ -147,11 +143,11 @@ export const updateReposInOrgs = (repo, data, activeStatus) => {
 
 export const updateRepos = (repo, data, activeStatus) => {
     let update = {}
-    let subscriptions = {}
 
     if (data === null) {
         data = repo
     }
+    console.log(activeStatus)
 
     let obj = {
         active: activeStatus,
@@ -165,8 +161,30 @@ export const updateRepos = (repo, data, activeStatus) => {
         hooksID: data.url
     }
     update[`repos.${repo.id}`] = obj
-    subscriptions[`subscriptions.${repo.id}`] = obj
 
     currentLoggedInUserFirestoreReference().update(update)
-    currentLoggedInUserFirestoreReference().update(subscriptions)
 }
+
+export const updateNotifications = (repo) => {
+    let batch = db.batch()
+    currentLoggedInUserFirestoreReference().collection('notifications').get().then(data => {
+        data.forEach(element => {
+            batch.update(element.ref, { staus: true })
+        })
+        batch.commit()
+    })
+}
+
+export const deleteNotifications = () => {
+    let batch = db.batch()
+    currentLoggedInUserFirestoreReference().collection('notifications').get().then(data => {
+        data.forEach(element => {
+            batch.delete(element.ref)
+        })
+        batch.commit()
+    })
+}
+
+
+
+

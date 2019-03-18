@@ -3,15 +3,21 @@ import { updateReposInOrgs, updateRepos } from './firebaseHelpers'
 let db = firebase.firestore()
 let messaging = firebase.messaging()
 
+/* 
+Retrieve firebaseID from logged in user.
+*/
+
 export const getCurrentLoggedInUserID = () => {
   let user = firebase.auth().currentUser
   return user.uid
 }
 
-export const getCurrentLoggedInGithubID =  () => {
+/* 
+Retrieve githubID from logged in user.
+*/
+
+export const getCurrentLoggedInGithubID = () => {
   let id = window.localStorage.getItem('loggedInUser')
-
-
 
   // let githubID = await db.collection('users').doc(`${getCurrentLoggedInGithubID()}`).get().then(function (doc) {
   //   if (doc.exists) {
@@ -24,10 +30,13 @@ export const getCurrentLoggedInGithubID =  () => {
 
   // return accessToken
 
-
-
   return id
 }
+
+
+/* 
+Saves GithubID of logged in user to firestore
+*/
 
 export const saveGithubIDToFireStore = (githubID) => {
   db.collection('users').doc(`${githubID}`).set({
@@ -35,10 +44,21 @@ export const saveGithubIDToFireStore = (githubID) => {
   }, { merge: true })
 }
 
+/* 
+Returns a "query" to the current users data from Firestore
+*/
+
 export const currentLoggedInUserFirestoreReference = () => {
 
   return db.collection('users').doc(`${getCurrentLoggedInGithubID()}`)
 }
+
+/* 
+Ask for permission to send notifications.
+If accepted, store nsgToken to the users firestore collection.
+msgToken will be used to send notification when a user if offline.
+*/
+
 export const allowNotifications = () => {
   messaging
     .requestPermission()
@@ -53,11 +73,20 @@ export const allowNotifications = () => {
     })
 }
 
+/* 
+Save githuvToken to the users Firestore collection.
+accesToken will be used to fetch data from the github API
+*/
+
 export const setGitHubToken = (accessToken) => {
   db.collection('users').doc(`${getCurrentLoggedInGithubID()}`).set({
     accessToken: accessToken
   }, { merge: true })
 }
+
+/* 
+Returns a "query" to the current users data from Firestore for getting the accesToken
+*/
 
 export const getGitHubToken = async () => {
 
@@ -73,6 +102,10 @@ export const getGitHubToken = async () => {
   return accessToken
 }
 
+/* 
+Returns an object with config settings for creating a hook
+*/
+
 export const getConfigURL = () => {
   let config = {
     url: `https://us-central1-guthubdashboard.cloudfunctions.net/events?id=${getCurrentLoggedInUserID()}`,
@@ -81,7 +114,14 @@ export const getConfigURL = () => {
   return config
 }
 
-export const addWebhook =  async (repo) => {
+/* 
+POST to Github API, attempt to add a webhook to a repository.
+Update firestore with repo that the webhook has been created  to with a "activeStatus" set to true.
+activeStatus controll the buttons status of the "Components/RepoList".
+*/
+
+
+export const addWebhook = async (repo) => {
 
   let githubParameters = { events: ['issues', 'push'], name: 'web', config: getConfigURL() }
 
@@ -104,13 +144,47 @@ export const addWebhook =  async (repo) => {
         updateRepos(repo, data, activeStatus)
       }
 
+      addToMySubscription(repo, data, activeStatus)
+
     })
     .catch((err) => {
       console.log('An error accoured when trying to add webhook : ' + err)
     })
 }
 
-export const deleteWebhook = async  (repo) => {
+
+const addToMySubscription = (repo, data, activeStatus) => {
+
+  let value
+
+  if (repo.reposInOrgss) {
+    value = true
+  } else {
+    value = false
+  }
+
+  currentLoggedInUserFirestoreReference().collection('subscriptions').add({
+    active: activeStatus,
+    admin: repo.admin,
+    avatarURL: repo.avatarURL,
+    hooks_url: repo.hooks_url,
+    id: repo.id,
+    name: repo.name,
+    owner: repo.owner,
+    url: repo.url,
+    hooksID: data.url,
+    reposInOrgss: value
+  })
+}
+
+/* 
+DELETE to Github API, attempt to delete a webhook from a repository.
+Update firestore with repo that the webhook has been removed from, from "activeStatus" true tpo false.
+activeStatus controll the buttons status of the "Components/RepoList".
+*/
+
+export const deleteWebhook = async (repo) => {
+  console.log(repo)
   window
     .fetch(repo.hooksID, {
       method: 'DELETE',
@@ -123,12 +197,31 @@ export const deleteWebhook = async  (repo) => {
       let activeStatus = false
 
       if (repo.reposInOrgss) {
+        console.log('repi in org')
         updateReposInOrgs(repo, null, activeStatus)
       } else {
+        console.log('repo rätt')
         updateRepos(repo, null, activeStatus)
       }
+
 
     }).catch((err) => {
       console.log('An error accoured when trying to delete webhook : ' + err)
     })
+}
+
+
+export const deleteRepoFromSubscription = (repo) => {
+  let batch = db.batch()
+
+  var jobskill_query = currentLoggedInUserFirestoreReference().collection('subscriptions').where('id', '==', repo.id)
+  jobskill_query.get().then(function (querySnapshot) {
+    querySnapshot.forEach(function (doc) {
+
+      batch.delete(doc.ref)
+
+    })
+    batch.commit()
+
+  });
 }
