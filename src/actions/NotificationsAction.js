@@ -1,7 +1,7 @@
 import { FETCH_NOTIFICATIONS, FETCH_NOTIFICATIONS_LENGTH } from './types'
 import { currentLoggedInUserFirestoreReference } from '../utils/helpers'
 
-/* 
+/*
   Fetches all notifications in realtime from authenticated users firestore & update the state with the new data
 */
 
@@ -9,57 +9,50 @@ export const fetchNotifications = () => {
   var notificationsArray = []
   return async (dispatch) => {
     await currentLoggedInUserFirestoreReference().collection('notifications').onSnapshot(function (querySnapshot) {
-
       querySnapshot.forEach(function (doc) {
+        let notification = doc.data()
 
-        let element = doc.data()
+        let notificationObject = {}
 
-        let elementObject = {}
-
-        if (element.type === 'issue') {
-          elementObject.title = element.title
-          elementObject.body = element.body
-          elementObject.createdBy = element.header + element.type
-          elementObject.avatar = element.avatar
-          elementObject.repositoryName = element.repositoryName
-          elementObject.time = element.time
-          elementObject.repoID = element.repoID
-          elementObject.staus = element.staus
-
-
+        if (notification.type === 'issue') {
+          notificationObject.title = notification.title
+          notificationObject.body = notification.body
+          notificationObject.createdBy = notification.header + notification.type
+          notificationObject.avatar = notification.avatar
+          notificationObject.repositoryName = notification.repositoryName
+          notificationObject.time = notification.time
+          notificationObject.repoID = notification.repoID
+          notificationObject.staus = notification.staus
         } else {
-          elementObject.title = element.type
-          elementObject.body = element.body
-          elementObject.createdBy = element.title + ' ' + element.action
-          elementObject.avatar = element.avatar
-          elementObject.repositoryName = element.repositoryName
-          elementObject.time = element.time
-          elementObject.staus = element.staus
-
+          notificationObject.title = notification.type
+          notificationObject.body = notification.body
+          notificationObject.createdBy = notification.title + ' ' + notification.action
+          notificationObject.avatar = notification.avatar
+          notificationObject.repositoryName = notification.repositoryName
+          notificationObject.time = notification.time
+          notificationObject.staus = notification.staus
         }
 
-        notificationsArray.push(elementObject)
+        notificationsArray.push(notificationObject)
 
-
-        let latestNotifications = notificationsArray.filter(child => child.staus != true)
+        let latestNotifications = notificationsArray.filter(child => child.staus !== true)
 
         dispatch({ type: FETCH_NOTIFICATIONS_LENGTH, payload: latestNotifications.reverse() })
-
-      });
+      })
 
       dispatch({ type: FETCH_NOTIFICATIONS, payload: notificationsArray })
 
       notificationsArray = []
-
     })
   }
 }
 
-// om repo är true lägg till FETCH_NOTIFICATIONS
-// om repo inte är true lägg till i FETCH_NOTIFICATIONS_LENGTH
+/*
+Update the state of notification to an empty array.
+Clears the notification counter
+*/
 
 export const clearNotification = () => {
-
   return (dispatch) => {
     let notificationsArray = []
     dispatch({ type: FETCH_NOTIFICATIONS_LENGTH, payload: notificationsArray.reverse() })

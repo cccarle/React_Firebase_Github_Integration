@@ -40,4 +40,3 @@ export const showSubscriptions = () => {
     dispatch({ type: SHOW_ORGANIZATION, payload: false })
   }
 }
-

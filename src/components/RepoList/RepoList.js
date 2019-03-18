@@ -1,30 +1,30 @@
-import React from 'react';
-import PropTypes from 'prop-types';
-import { connect } from 'react-redux';
+import React from 'react'
+import PropTypes from 'prop-types'
+import { connect } from 'react-redux'
 import { addWebhook, deleteWebhook } from '../../utils/helpers'
-import _ from 'lodash';
+import _ from 'lodash'
 
 // Material-UI components
-import { withStyles } from '@material-ui/core/styles';
-import GridList from '@material-ui/core/GridList';
-import GridListTile from '@material-ui/core/GridListTile';
-import GridListTileBar from '@material-ui/core/GridListTileBar';
-import ListHeader from '@material-ui/core/ListSubheader';
-import Button from '@material-ui/core/Button';
-import Typography from '@material-ui/core/Typography';
+import { withStyles } from '@material-ui/core/styles'
+import GridList from '@material-ui/core/GridList'
+import GridListTile from '@material-ui/core/GridListTile'
+import GridListTileBar from '@material-ui/core/GridListTileBar'
+import ListHeader from '@material-ui/core/ListSubheader'
+import Button from '@material-ui/core/Button'
+import Typography from '@material-ui/core/Typography'
 
 // Styles
-import styles from './RepoList.Style';
+import styles from './RepoList.Style'
 
 class RepoList extends React.Component {
 
 	turnOffNotification = (repo) => {
 		deleteWebhook(repo)
-	};
+	}
 
 	turnOnNotification = (repo) => {
-		addWebhook(repo);
-	};
+		addWebhook(repo)
+	}
 
 	renderButton = (repos, classes) => {
 		if (repos.active) {
@@ -36,7 +36,7 @@ class RepoList extends React.Component {
 				>
 					Unsubscribe
 				</Button>
-			);
+			)
 		} else {
 			return (
 				<Button
@@ -46,17 +46,17 @@ class RepoList extends React.Component {
 				>
 					Subscribe
 				</Button>
-			);
+			)
 		}
-	};
+	}
 
 	render() {
-		const { classes } = this.props;
+		const { classes } = this.props
 		return (
 			<div className={classes.root}>
 				<GridList cellHeight={180} className={classes.gridList}>
 					<GridListTile key="header" cols={2} style={{ height: 'auto' }}>
-						<ListHeader  component="div">
+						<ListHeader component="div">
 							<div className={classes.hrContainer}>
 								<Typography className={classes.headerText} variant="overline" gutterBottom>
 									Github Repositories
@@ -77,23 +77,23 @@ class RepoList extends React.Component {
 					))}
 				</GridList>
 			</div>
-		);
+		)
 	}
 }
 
 RepoList.propTypes = {
 	classes: PropTypes.object.isRequired
-};
+}
 
 const mapStateToProps = (state) => {
 	const repos = _.map(state.repos, (val) => {
-		return { ...val };
-	});
+		return { ...val }
+	})
 
-	return { repos };
-};
+	return { repos }
+}
 
-export default connect(mapStateToProps, {})(withStyles(styles)(RepoList));
+export default connect(mapStateToProps, {})(withStyles(styles)(RepoList))
 
 
 

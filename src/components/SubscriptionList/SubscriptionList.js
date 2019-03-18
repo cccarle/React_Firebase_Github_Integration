@@ -1,15 +1,15 @@
-import React from 'react';
-import PropTypes from 'prop-types';
-import { connect } from 'react-redux';
+import React from 'react'
+import PropTypes from 'prop-types'
+import { connect } from 'react-redux'
 import { addWebhook, deleteWebhook, deleteRepoFromSubscription } from '../../utils/helpers'
-import _ from 'lodash';
+import _ from 'lodash'
 
 // Material-UI components
-import { withStyles } from '@material-ui/core/styles';
-import GridList from '@material-ui/core/GridList';
-import GridListTile from '@material-ui/core/GridListTile';
-import GridListTileBar from '@material-ui/core/GridListTileBar';
-import ListHeader from '@material-ui/core/ListSubheader';
+import { withStyles } from '@material-ui/core/styles'
+import GridList from '@material-ui/core/GridList'
+import GridListTile from '@material-ui/core/GridListTile'
+import GridListTileBar from '@material-ui/core/GridListTileBar'
+import ListHeader from '@material-ui/core/ListSubheader'
 import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
 
@@ -23,11 +23,11 @@ class SubscriptionList extends React.Component {
 	turnOffNotification = (subscription) => {
 		deleteWebhook(subscription)
 		deleteRepoFromSubscription(subscription)
-	};
+	}
 
 	turnOnNotification = (subscription) => {
-		addWebhook(subscription);
-	};
+		addWebhook(subscription)
+	}
 
 	renderButton = (subscription, classes) => {
 		if (subscription.active) {
@@ -39,7 +39,7 @@ class SubscriptionList extends React.Component {
 				>
 					Unsubscribe
 				</Button>
-			);
+			)
 		} else {
 			return (
 				<Button
@@ -49,12 +49,12 @@ class SubscriptionList extends React.Component {
 				>
 					Subscribe
 				</Button>
-			);
+			)
 		}
-	};
+	}
 
 	render() {
-		const { classes } = this.props;
+		const { classes } = this.props
 		return (
 			<div className={classes.root}>
 				<GridList cellHeight={180} className={classes.gridList}>
@@ -80,24 +80,24 @@ class SubscriptionList extends React.Component {
 					))}
 				</GridList>
 			</div>
-		);
+		)
 	}
 }
 
 SubscriptionList.propTypes = {
 	classes: PropTypes.object.isRequired
-};
+}
 
 const mapStateToProps = (state) => {
 	const subscription = _.map(state.subscription, (val) => {
-		return { ...val };
-	});
+		return { ...val }
+	})
 
-	return { subscription };
-};
+	return { subscription }
+}
 
 export default connect(mapStateToProps, {
-})(withStyles(styles)(SubscriptionList));
+})(withStyles(styles)(SubscriptionList))
 
 
 

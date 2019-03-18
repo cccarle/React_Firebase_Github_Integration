@@ -34,7 +34,7 @@ export default function (state = initialState, action) {
         showProfile: action.payload
       }
 
-      case SHOW_SUBSCRIPTIONS:
+    case SHOW_SUBSCRIPTIONS:
       return {
         ...state,
         showSubscription: action.payload

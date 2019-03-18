@@ -26,8 +26,7 @@ class Main extends React.Component {
 					Welcome To Guthub Dashboard
 				</Typography>
 				<Typography className={classes.underText} component="h2" variant="overline" gutterBottom>
-				never miss a commit or issue again  
-
+					never miss a commit or issue again
 			</Typography>
 				<div>
 					<Button onClick={this.signInAttempt} color="primary" size="large" variant="outlined">

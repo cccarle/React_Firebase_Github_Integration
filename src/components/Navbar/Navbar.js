@@ -1,19 +1,19 @@
-import React, { Component } from 'react';
-import PropTypes from 'prop-types';
-import { connect } from 'react-redux';
-import { signOutUser, showRepositories, showNotification, showOrganizations, showProfile, showSubscriptions, clearNotification, fetchReposDataGithubAPI, fetchOrgsDataGithubAPI, fetchNotifications, fetchSubscriptions } from '../../actions';
+import React, { Component } from 'react'
+import PropTypes from 'prop-types'
+import { connect } from 'react-redux'
+import { signOutUser, showRepositories, showNotification, showOrganizations, showProfile, showSubscriptions, clearNotification, fetchReposDataGithubAPI, fetchOrgsDataGithubAPI, fetchNotifications, fetchSubscriptions } from '../../actions'
 import { updateNotifications } from '../../utils/firebaseHelpers'
-import _ from 'lodash';
+import _ from 'lodash'
 
 // Styles
-import { withStyles } from '@material-ui/core/styles';
-import AppBar from '@material-ui/core/AppBar';
-import Toolbar from '@material-ui/core/Toolbar';
-import Typography from '@material-ui/core/Typography';
-import Button from '@material-ui/core/Button';
-import styles from './Navbar.style';
-import Badge from '@material-ui/core/Badge';
-import MailIcon from '@material-ui/icons/Mail';
+import { withStyles } from '@material-ui/core/styles'
+import AppBar from '@material-ui/core/AppBar'
+import Toolbar from '@material-ui/core/Toolbar'
+import Typography from '@material-ui/core/Typography'
+import Button from '@material-ui/core/Button'
+import styles from './Navbar.style'
+import Badge from '@material-ui/core/Badge'
+import MailIcon from '@material-ui/icons/Mail'
 
 class Navbar extends Component {
 
@@ -22,38 +22,37 @@ class Navbar extends Component {
 	}
 
 	signOutAttempt = () => {
-		this.props.signOutUser();
-	};
+		this.props.signOutUser()
+	}
 
 	toggelProfile = () => {
 		this.props.showProfile()
 	}
 
 	toggelRepositories = () => {
-		this.props.showRepositories();
+		this.props.showRepositories()
 		this.props.fetchReposDataGithubAPI()
 
-	};
+	}
 
 	toggelOrganizations = () => {
-		this.props.showOrganizations();
+		this.props.showOrganizations()
 		this.props.fetchOrgsDataGithubAPI()
 
-	};
+	}
 
 	toggelSubscriptions = () => {
-		this.props.showSubscriptions();
+		this.props.showSubscriptions()
 		this.props.fetchSubscriptions()
-	};
+	}
 
 	toggelNotification = (prop) => {
 		this.props.showNotification()
 		updateNotifications(prop)
-		//this.props.clearNotification()
 	}
 
 	render() {
-		const { classes } = this.props;
+		const { classes } = this.props
 		return (
 			<div className={classes.root}>
 				<AppBar color="primary" className={classes.navbarColor} position="static">
@@ -107,21 +106,21 @@ class Navbar extends Component {
 					</Toolbar>
 				</AppBar>
 			</div>
-		);
+		)
 	}
 }
 
 Navbar.propTypes = {
 	classes: PropTypes.object.isRequired
-};
+}
 
 const mapStateToProps = (state) => {
 	const notificationsLength = _.map(state.notificationLength, (val) => {
-		return { ...val };
-	});
+		return { ...val }
+	})
 
-	return { notificationsLength };
-};
+	return { notificationsLength }
+}
 
 export default connect(mapStateToProps, {
 	signOutUser,
@@ -135,4 +134,4 @@ export default connect(mapStateToProps, {
 	fetchOrgsDataGithubAPI,
 	fetchNotifications,
 	fetchSubscriptions
-})(withStyles(styles)(Navbar));
+})(withStyles(styles)(Navbar))

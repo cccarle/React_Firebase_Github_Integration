@@ -4,7 +4,7 @@ import { setGitHubToken, saveGithubIDToFireStore } from '../utils/helpers'
 import firebase from '../config/firebase'
 import history from '../config/history'
 
-/* 
+/*
 Check if user is logged in, if a user exist display dashboard else loginpage
 */
 
@@ -21,7 +21,7 @@ export const checkIfUserIsLoggedIn = () => dispatch => {
   })
 }
 
-/* 
+/*
 Sign in a user with firebase Oauth
 Opens popup window, if success token will be retrived
 */
@@ -37,7 +37,7 @@ export const signInUser = userData => dispatch => {
     .signInWithPopup(provider)
     .then(function (result) {
       const { accessToken } = result.credential
-      
+
       setGitHubToken(accessToken)
       dispatch({ type: LOGGED_IN_SUCCES, payload: true })
       history.push('/dashboard')
@@ -50,7 +50,7 @@ export const signInUser = userData => dispatch => {
     })
 }
 
-/* 
+/*
 Sign out user and display loginpage
 */
 

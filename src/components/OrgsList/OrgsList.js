@@ -1,35 +1,34 @@
-import React from 'react';
-import PropTypes from 'prop-types';
-import { connect } from 'react-redux';
-import { fetchOrgsDataGithubAPI, fetchReposInOrg } from '../../actions';
+import React from 'react'
+import PropTypes from 'prop-types'
+import { connect } from 'react-redux'
+import { fetchOrgsDataGithubAPI, fetchReposInOrg } from '../../actions'
 import { addWebhook, deleteWebhook } from '../../utils/helpers'
-import _ from 'lodash';
+import _ from 'lodash'
 
 // Material-UI components
-import { withStyles } from '@material-ui/core/styles';
-import GridList from '@material-ui/core/GridList';
-import GridListTile from '@material-ui/core/GridListTile';
-import GridListTileBar from '@material-ui/core/GridListTileBar';
-import ListHeader from '@material-ui/core/ListSubheader';
-import Button from '@material-ui/core/Button';
-import Typography from '@material-ui/core/Typography';
+import { withStyles } from '@material-ui/core/styles'
+import GridList from '@material-ui/core/GridList'
+import GridListTile from '@material-ui/core/GridListTile'
+import GridListTileBar from '@material-ui/core/GridListTileBar'
+import ListHeader from '@material-ui/core/ListSubheader'
+import Button from '@material-ui/core/Button'
+import Typography from '@material-ui/core/Typography'
 
-// Styles
-import styles from './OrgsList.style';
+import styles from './OrgsList.style'
 
 class RepoList extends React.Component {
 
 	viewReposInOrg = (org) => {
-		this.props.fetchReposInOrg(org);
-	};
+		this.props.fetchReposInOrg(org)
+	}
 
 	renderOrgs = () => {
-		this.props.fetchOrgsDataGithubAPI();
-	};
+		this.props.fetchOrgsDataGithubAPI()
+	}
 
 	addWebhook = (org) => {
-		addWebhook(org);
-	};
+		addWebhook(org)
+	}
 
 	deleteHook = (org) => {
 		deleteWebhook(org)
@@ -44,39 +43,39 @@ class RepoList extends React.Component {
 						View
 					</Button>
 				</div>
-			);
+			)
 		} else if (orgs.reposURL && !orgs.admin || orgs.reposInOrgss && !orgs.admin) {
 			return (
 				<Button variant="contained" className={classes.button}>
 					Not admin
 				</Button>
-			);
+			)
 		} else if (orgs.active) {
 			return (
 				<Button onClick={() => this.deleteHook(orgs)} variant="contained" className={classes.button}>
 					Unsubscribe
 				</Button>
-			);
+			)
 		} else {
 			return (
 				<Button onClick={() => this.addWebhook(orgs)} variant="contained" className={classes.button}>
 					Subscribe
 				</Button>
-			);
+			)
 		}
 
-	};
+	}
 
 	checkWhichAvatarToRender = (orgs) => {
 		if (orgs.avatarIMG) {
-			return orgs.avatarIMG;
+			return orgs.avatarIMG
 		} else {
-			return orgs.avatarURL;
+			return orgs.avatarURL
 		}
-	};
+	}
 
 	render() {
-		const { classes } = this.props;
+		const { classes } = this.props
 		return (
 			<div className={classes.root}>
 				<GridList cellHeight={180} className={classes.gridList}>
@@ -108,23 +107,23 @@ class RepoList extends React.Component {
 					</Button>
 				</GridList>
 			</div>
-		);
+		)
 	}
 }
 
 RepoList.propTypes = {
 	classes: PropTypes.object.isRequired
-};
+}
 
 const mapStateToProps = (state) => {
 	const orgs = _.map(state.orgs, (val) => {
-		return { ...val };
-	});
+		return { ...val }
+	})
 
-	return { orgs };
-};
+	return { orgs }
+}
 
 export default connect(mapStateToProps, {
 	fetchOrgsDataGithubAPI,
 	fetchReposInOrg
-})(withStyles(styles)(RepoList));
+})(withStyles(styles)(RepoList))

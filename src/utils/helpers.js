@@ -3,7 +3,7 @@ import { updateReposInOrgs, updateRepos } from './firebaseHelpers'
 let db = firebase.firestore()
 let messaging = firebase.messaging()
 
-/* 
+/*
 Retrieve firebaseID from logged in user.
 */
 
@@ -12,7 +12,7 @@ export const getCurrentLoggedInUserID = () => {
   return user.uid
 }
 
-/* 
+/*
 Retrieve githubID from logged in user.
 */
 
@@ -21,8 +21,7 @@ export const getCurrentLoggedInGithubID = () => {
   return id
 }
 
-
-/* 
+/*
 Saves GithubID of logged in user to firestore
 */
 
@@ -32,16 +31,15 @@ export const saveGithubIDToFireStore = (githubID) => {
   }, { merge: true })
 }
 
-/* 
+/*
 Returns a "query" to the current users data from Firestore
 */
 
 export const currentLoggedInUserFirestoreReference = () => {
-
   return db.collection('users').doc(`${getCurrentLoggedInGithubID()}`)
 }
 
-/* 
+/*
 Ask for permission to send notifications.
 If accepted, store nsgToken to the users firestore collection.
 msgToken will be used to send notification when a user if offline.
@@ -61,44 +59,25 @@ export const allowNotifications = () => {
     })
 }
 
-/* 
+/*
 Save githuvToken to the users Firestore collection.
 accesToken will be used to fetch data from the github API
 */
 
 export const setGitHubToken = (accessToken) => {
-
   window.localStorage.setItem('token', accessToken)
-
-  // db.collection('users').doc(`${getCurrentLoggedInGithubID()}`).set({
-  //   accessToken: accessToken
-  // }, { merge: true })
-
-
 }
 
-/* 
+/*
 Returns a "query" to the current users data from Firestore for getting the accesToken
 */
 
 export const getGitHubToken = async () => {
-
   let accessToken = window.localStorage.getItem('token')
-
-
-  // let accessToken = await db.collection('users').doc(`${getCurrentLoggedInGithubID()}`).get().then(function (doc) {
-  //   if (doc.exists) {
-  //     return doc.data().accessToken
-  //   }
-  // }).catch(error => {
-  //   console.log(`Error getting document:`, error)
-  //   return error
-  // })
-
   return accessToken
 }
 
-/* 
+/*
 Returns an object with config settings for creating a hook
 */
 
@@ -110,15 +89,13 @@ export const getConfigURL = () => {
   return config
 }
 
-/* 
+/*
 POST to Github API, attempt to add a webhook to a repository.
 Update firestore with repo that the webhook has been created  to with a "activeStatus" set to true.
 activeStatus controll the buttons status of the "Components/RepoList".
 */
 
-
 export const addWebhook = async (repo) => {
-
   console.log(repo)
   let githubParameters = { events: ['issues', 'push'], name: 'web', config: getConfigURL() }
 
@@ -142,16 +119,13 @@ export const addWebhook = async (repo) => {
       }
 
       addToMySubscription(repo, data, activeStatus)
-
     })
     .catch((err) => {
       console.log('An error accoured when trying to add webhook : ' + err)
     })
 }
 
-
 const addToMySubscription = (repo, data, activeStatus) => {
-
   let value
 
   if (repo.reposInOrgss) {
@@ -174,7 +148,7 @@ const addToMySubscription = (repo, data, activeStatus) => {
   })
 }
 
-/* 
+/*
 DELETE to Github API, attempt to delete a webhook from a repository.
 Update firestore with repo that the webhook has been removed from, from "activeStatus" true tpo false.
 activeStatus controll the buttons status of the "Components/RepoList".
@@ -197,13 +171,14 @@ export const deleteWebhook = async (repo) => {
       } else {
         updateRepos(repo, null, activeStatus)
       }
-
-
     }).catch((err) => {
       console.log('An error accoured when trying to delete webhook : ' + err)
     })
 }
 
+/*
+Delete repo from subscriptions, when a user unsubscribe/delete webhook.
+*/
 
 export const deleteRepoFromSubscription = (repo) => {
   let batch = db.batch()
@@ -211,11 +186,8 @@ export const deleteRepoFromSubscription = (repo) => {
   var jobskill_query = currentLoggedInUserFirestoreReference().collection('subscriptions').where('id', '==', repo.id)
   jobskill_query.get().then(function (querySnapshot) {
     querySnapshot.forEach(function (doc) {
-
       batch.delete(doc.ref)
-
     })
     batch.commit()
-
-  });
+  })
 }

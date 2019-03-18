@@ -9,7 +9,7 @@ import Typography from '@material-ui/core/Typography'
 import styles from './Profile.style'
 
 class Profile extends React.Component {
-  render() {
+  render () {
     const { classes } = this.props
     return (
 
@@ -21,7 +21,6 @@ class Profile extends React.Component {
             <Typography variant='overline' color='inherit'>
               Github Overview
             </Typography>
-
 
             <Typography variant='overline' color='inherit'>
               Logged in user : {this.props.profile.login}
@@ -38,7 +37,7 @@ class Profile extends React.Component {
 
               <Typography className={classes.text} variant='overline' color='inherit'>
                 Public Repos
-                 <hr />
+                <hr />
 
                 <Typography className={classes.numberText} variant='overline' color='inherit'>
                   {this.props.profile.public_repos}
@@ -54,7 +53,6 @@ class Profile extends React.Component {
               </Typography>
             </div>
           </div>
-
 
         </div>
       </div>

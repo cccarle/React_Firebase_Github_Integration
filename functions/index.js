@@ -9,8 +9,7 @@ Save repository to the user that created the webhook
 */
 
 exports.events = functions.https.onRequest((req, res) => {
-
-  const listOfAsyncJobs = [];
+  const listOfAsyncJobs = []
 
   if (req.body.zen) {
     listOfAsyncJobs.push(saveRepoIDToUser(req.body.sender.id, req.body.repository.id))
@@ -35,13 +34,11 @@ let saveRepoIDToUser = (userID, repoID) => {
   firestore.doc(`users/${userID}`).update({ repositoryID: admin.firestore.FieldValue.arrayUnion(repoID) })
 }
 
-
 /*
 Create a notification object for comments and store it to notifications collection
 */
 
 let createNotificationForComment = (webhookData) => {
-
   let commit = {}
   commit.type = 'commit'
   commit.action = 'made commit'
@@ -54,9 +51,7 @@ let createNotificationForComment = (webhookData) => {
   commit.time = admin.firestore.FieldValue.serverTimestamp()
 
   admin.firestore().collection('notifications').add({ notification: commit })
-
 }
-
 
 /*
 Create a notification object for issues and store it to notifications collection
@@ -84,13 +79,11 @@ Send Notification to serivce worker
 */
 
 exports.sendNotification = functions.firestore.document('notifications/{notification}').onCreate((snap, context) => {
-
   let newNotificationData = snap.data()
   let repoID = newNotificationData.notification.repositoryID
   let listOfAsyncJobs = []
 
   firestore.collection('users').get().then((querySnapshot) => {
-
     let users = []
     querySnapshot.forEach((doc) => {
       users.push(doc.data())
@@ -98,16 +91,13 @@ exports.sendNotification = functions.firestore.document('notifications/{notifica
 
     return users
   }).then((users) => {
-
     users.forEach((element) => {
-
       let usersRepositoriesIDS = element.repositoryID
       let userID = element.userID
       let msgToken = element.msgToken
 
       usersRepositoriesIDS.forEach((repoIDss) => {
         if (repoIDss === repoID) {
-
           if (newNotificationData.notification.type === 'issue') {
             listOfAsyncJobs.push(createMessagePayloadForIssue(newNotificationData.notification, userID, msgToken))
           } else {
@@ -162,9 +152,6 @@ Create a payload from issue data, and send it to the service worker
 */
 
 let createMessagePayloadForIssue = (notificationData, userID, msgToken) => {
-
-  let update = {}
-
   let payloadForIssue = {
     notification: {
       type: notificationData.type,
@@ -177,8 +164,6 @@ let createMessagePayloadForIssue = (notificationData, userID, msgToken) => {
       time: `${notificationData.time}`
     }
   }
-
-
 
   firestore.collection('users').doc(`${userID}`).collection('notifications').add({
     type: notificationData.type,

@@ -47,6 +47,8 @@ Temporary Items
 
 ### Firebase 
 /firebase.json
+/database.rules.json
+/firebase.js
 
 *.env
 

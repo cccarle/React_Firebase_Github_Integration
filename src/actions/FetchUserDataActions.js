@@ -1,7 +1,7 @@
 import { GET_USER_PROFILE_DATA, GET_REPOS_DATA, GET_ORGS_DATA, GET_REPOS_IN_ORGS, GET_SUBSCRIPTIONS } from './types'
 import { getGitHubToken, currentLoggedInUserFirestoreReference } from '../utils/helpers'
 
-/* 
+/*
 Retrieve github repositories from authenticated user and saves it as objects to firestore under field "repos"
 */
 
@@ -18,7 +18,7 @@ export const fetchUserDataFromGithubAPI = () => {
   }
 }
 
-/* 
+/*
   Fetches all organizations in realtime from authenticated users firestore & update the state with the new data
 */
 
@@ -26,7 +26,6 @@ export const fetchOrgsDataGithubAPI = () => {
   let adminReposInOrg = []
 
   return (dispatch) => {
-
     currentLoggedInUserFirestoreReference().onSnapshot(function (doc) {
       if (doc.exists && doc.data().orgs) {
         let org = doc.data().orgs
@@ -41,7 +40,7 @@ export const fetchOrgsDataGithubAPI = () => {
   }
 }
 
-/* 
+/*
   Fetches all repositories in realtime from authenticated users firestore & update the state with the new data
 */
 
@@ -51,7 +50,6 @@ export const fetchReposDataGithubAPI = () => {
   return (dispatch) => {
     currentLoggedInUserFirestoreReference().onSnapshot(function (doc) {
       if (doc.exists && doc.data().repos) {
-
         let repo = doc.data().repos
 
         for (let key in repo) {
@@ -65,7 +63,7 @@ export const fetchReposDataGithubAPI = () => {
   }
 }
 
-/* 
+/*
   Fetches all repositories in organizations in realtime from the authenticated users firestore & update the state with the new data
 */
 
@@ -89,7 +87,7 @@ export const fetchReposInOrg = (org) => {
   }
 }
 
-/* 
+/*
   Fetches all subscription in realtime from authenticated users firestore & update the state with the new data
 */
 
@@ -108,4 +106,3 @@ export const fetchSubscriptions = () => {
     })
   }
 }
-

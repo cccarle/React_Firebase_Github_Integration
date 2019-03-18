@@ -1,30 +1,27 @@
-import React from 'react';
-import { connect } from 'react-redux';
-import { } from '../../actions';
-import { currentLoggedInUserFirestoreReference, getCurrentLoggedInGithubID } from '../../utils/helpers'
+import React from 'react'
+import { connect } from 'react-redux'
+import { } from '../../actions'
 import { deleteNotifications } from '../../utils/firebaseHelpers'
-import PropTypes from 'prop-types';
-import _ from 'lodash';
+import PropTypes from 'prop-types'
+import _ from 'lodash'
 
-import { withStyles } from '@material-ui/core/styles';
-import List from '@material-ui/core/List';
-import ListItem from '@material-ui/core/ListItem';
-import ListItemText from '@material-ui/core/ListItemText';
-import Avatar from '@material-ui/core/Avatar';
-import Typography from '@material-ui/core/Typography';
-import DeleteIcon from '@material-ui/icons/Delete';
-import Tooltip from '@material-ui/core/Tooltip';
-import IconButton from '@material-ui/core/IconButton';
+import { withStyles } from '@material-ui/core/styles'
+import List from '@material-ui/core/List'
+import ListItem from '@material-ui/core/ListItem'
+import ListItemText from '@material-ui/core/ListItemText'
+import Avatar from '@material-ui/core/Avatar'
+import Typography from '@material-ui/core/Typography'
+import DeleteIcon from '@material-ui/icons/Delete'
+import Tooltip from '@material-ui/core/Tooltip'
+import IconButton from '@material-ui/core/IconButton'
 
-import styles from './Notifications.style';
+import styles from './Notifications.style'
 
 class Notifications extends React.Component {
-
 
 	clearNotifications = () => {
 		deleteNotifications()
 	}
-
 
 	renderIfNotification = (notifications, classes) => {
 		if (notifications.length === 0) {
@@ -32,7 +29,7 @@ class Notifications extends React.Component {
 				<Typography variant="overline" gutterBottom>
 					No new notifications
 				</Typography>
-			);
+			)
 		} else {
 			return (
 				<div key={notifications}>
@@ -79,28 +76,28 @@ class Notifications extends React.Component {
 
 					))}
 				</div>
-			);
+			)
 		}
-	};
+	}
 
 
 
 	render() {
-		const { classes } = this.props;
-		return <div className={classes.root}>{this.renderIfNotification(this.props.notifications, classes)}</div>;
+		const { classes } = this.props
+		return <div className={classes.root}>{this.renderIfNotification(this.props.notifications, classes)}</div>
 	}
 }
 
 Notifications.propTypes = {
 	classes: PropTypes.object.isRequired
-};
+}
 
 const mapStateToProps = (state) => {
 	const notifications = _.map(state.notification, (val) => {
-		return { ...val };
-	});
+		return { ...val }
+	})
 
-	return { notifications };
-};
+	return { notifications }
+}
 
-export default connect(mapStateToProps, {})(withStyles(styles)(Notifications));
+export default connect(mapStateToProps, {})(withStyles(styles)(Notifications))
