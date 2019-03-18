@@ -1,0 +1,65 @@
+[debug] [2019-03-05T08:45:31.079Z] ----------------------------------------------------------------------
+[debug] [2019-03-05T08:45:31.081Z] Command:       /usr/local/bin/node /usr/local/bin/firebase functions:shell
+[debug] [2019-03-05T08:45:31.082Z] CLI Version:   4.1.0
+[debug] [2019-03-05T08:45:31.082Z] Platform:      darwin
+[debug] [2019-03-05T08:45:31.082Z] Node Version:  v11.0.0
+[debug] [2019-03-05T08:45:31.083Z] Time:          Tue Mar 05 2019 09:45:31 GMT+0100 (GMT+01:00)
+[debug] [2019-03-05T08:45:31.083Z] ----------------------------------------------------------------------
+[debug] 
+[debug] [2019-03-05T08:45:31.093Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2019-03-05T08:45:31.093Z] > authorizing via signed-in user
+[debug] [2019-03-05T08:45:31.094Z] > refreshing access token with scopes: ["email","https://www.googleapis.com/auth/cloud-platform","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","openid"]
+[debug] [2019-03-05T08:45:31.095Z] >>> HTTP REQUEST POST https://www.googleapis.com/oauth2/v3/token  
+
+[debug] [2019-03-05T08:45:31.285Z] <<< HTTP RESPONSE 200
+[debug] [2019-03-05T08:45:31.314Z] >>> HTTP REQUEST GET https://admin.firebase.com/v1/projects/guthubdashboard  
+ 
+[debug] [2019-03-05T08:45:31.950Z] <<< HTTP RESPONSE 200
+[debug] [2019-03-05T08:45:31.951Z] >>> HTTP REQUEST GET https://admin.firebase.com/v1/database/guthubdashboard/tokens  
+ 
+[debug] [2019-03-05T08:45:32.777Z] <<< HTTP RESPONSE 200
+[debug] [2019-03-05T08:45:34.083Z] Error: EACCES: permission denied, mkdir '/usr/local/lib/node_modules/firebase-tools/node_modules/@google-cloud/functions-emulator/logs'
+    at Object.mkdirSync (fs.js:768:3)
+    at Object.assertLogsPath (/usr/local/lib/node_modules/firebase-tools/node_modules/@google-cloud/functions-emulator/src/emulator/logs.js:65:10)
+    at new Controller (/usr/local/lib/node_modules/firebase-tools/node_modules/@google-cloud/functions-emulator/src/cli/controller.js:77:32)
+    at FunctionsEmulator.start (/usr/local/lib/node_modules/firebase-tools/lib/functionsEmulator.js:113:21)
+    at Command.module.exports [as _action] (/usr/local/lib/node_modules/firebase-tools/lib/functionsShellCommandAction.js:18:6)
+    at /usr/local/lib/node_modules/firebase-tools/lib/command.js:202:29
+    at process.internalTickCallback (internal/process/next_tick.js:77:7)
+[error] 
+[error] Error: An unexpected error has occurred.
+[debug] [2019-03-07T20:22:04.614Z] ----------------------------------------------------------------------
+[debug] [2019-03-07T20:22:04.616Z] Command:       /usr/local/bin/node /usr/local/bin/firebase serve --only functions
+[debug] [2019-03-07T20:22:04.616Z] CLI Version:   4.1.0
+[debug] [2019-03-07T20:22:04.616Z] Platform:      darwin
+[debug] [2019-03-07T20:22:04.616Z] Node Version:  v11.0.0
+[debug] [2019-03-07T20:22:04.617Z] Time:          Thu Mar 07 2019 21:22:04 GMT+0100 (GMT+01:00)
+[debug] [2019-03-07T20:22:04.617Z] ----------------------------------------------------------------------
+[debug] 
+[debug] [2019-03-07T20:22:04.625Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2019-03-07T20:22:04.626Z] > authorizing via signed-in user
+[debug] [2019-03-07T20:22:04.627Z] >>> HTTP REQUEST GET https://admin.firebase.com/v1/projects/guthubdashboard  
+ 
+[debug] [2019-03-07T20:22:05.331Z] <<< HTTP RESPONSE 200
+[debug] [2019-03-07T20:22:05.332Z] >>> HTTP REQUEST GET https://admin.firebase.com/v1/database/guthubdashboard/tokens  
+ 
+[debug] [2019-03-07T20:22:05.964Z] <<< HTTP RESPONSE 200
+[debug] [2019-03-07T20:22:05.965Z] >>> HTTP REQUEST GET https://cloudresourcemanager.googleapis.com/v1/projects/guthubdashboard  
+ 
+[debug] [2019-03-07T20:22:06.948Z] <<< HTTP RESPONSE 200
+[info] 
+[info] === Serving from '/Users/carleinarsson/Documents/School/ce222qw-examination'...
+[info] 
+[debug] [2019-03-07T20:22:07.565Z] Error: EACCES: permission denied, mkdir '/usr/local/lib/node_modules/firebase-tools/node_modules/@google-cloud/functions-emulator/logs'
+    at Object.mkdirSync (fs.js:768:3)
+    at Object.assertLogsPath (/usr/local/lib/node_modules/firebase-tools/node_modules/@google-cloud/functions-emulator/src/emulator/logs.js:65:10)
+    at new Controller (/usr/local/lib/node_modules/firebase-tools/node_modules/@google-cloud/functions-emulator/src/cli/controller.js:77:32)
+    at FunctionsEmulator.start (/usr/local/lib/node_modules/firebase-tools/lib/functionsEmulator.js:113:21)
+    at Object.start (/usr/local/lib/node_modules/firebase-tools/lib/serve/functions.js:9:29)
+    at /usr/local/lib/node_modules/firebase-tools/lib/serve/index.js:17:21
+    at arrayMap (/usr/local/lib/node_modules/firebase-tools/node_modules/lodash/lodash.js:639:23)
+    at Function.map (/usr/local/lib/node_modules/firebase-tools/node_modules/lodash/lodash.js:9554:14)
+    at _serve (/usr/local/lib/node_modules/firebase-tools/lib/serve/index.js:15:7)
+    at Command._action (/usr/local/lib/node_modules/firebase-tools/commands/serve.js:48:12)
+[error] 
+[error] Error: An unexpected error has occurred.
