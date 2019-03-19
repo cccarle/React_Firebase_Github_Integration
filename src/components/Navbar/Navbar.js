@@ -4,7 +4,6 @@ import { connect } from 'react-redux'
 import { signOutUser, showRepositories, showNotification, showOrganizations, showProfile, showSubscriptions, clearNotification, fetchReposDataGithubAPI, fetchOrgsDataGithubAPI, fetchNotifications, fetchSubscriptions } from '../../actions'
 import { updateNotifications } from '../../utils/firebaseDB'
 import _ from 'lodash'
-
 // Styles
 import { withStyles } from '@material-ui/core/styles'
 import AppBar from '@material-ui/core/AppBar'

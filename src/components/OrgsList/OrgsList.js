@@ -4,7 +4,6 @@ import { connect } from 'react-redux'
 import { fetchOrgsDataGithubAPI, fetchReposInOrg } from '../../actions'
 import { addWebhook, deleteWebhook } from '../../utils/helpers'
 import _ from 'lodash'
-
 // Material-UI components
 import { withStyles } from '@material-ui/core/styles'
 import GridList from '@material-ui/core/GridList'

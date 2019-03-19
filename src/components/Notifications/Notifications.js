@@ -14,7 +14,6 @@ import Typography from '@material-ui/core/Typography'
 import DeleteIcon from '@material-ui/icons/Delete'
 import Tooltip from '@material-ui/core/Tooltip'
 import IconButton from '@material-ui/core/IconButton'
-
 import styles from './Notifications.style'
 
 class Notifications extends React.Component {

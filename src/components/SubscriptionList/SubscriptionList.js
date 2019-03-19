@@ -3,7 +3,6 @@ import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import { addWebhook, deleteWebhook } from '../../utils/helpers'
 import { deleteRepoFromSubscription } from '../../utils/firebaseDB'
-
 import _ from 'lodash'
 
 // Material-UI components
