@@ -7,6 +7,8 @@ Retrieve github repositories from authenticated user and saves it as objects to 
 */
 
 export const saveReposToFireStore = async () => {
+
+  
   window
     .fetch('https://api.github.com/user/repos', {
       headers: { Authorization: 'token ' + await getGitHubToken() }

@@ -25,9 +25,10 @@ export const getCurrentLoggedInGithubID = () => {
 Saves GithubID of logged in user to firestore
 */
 
-export const saveGithubIDToFireStore = (githubID) => {
-  db.collection('users').doc(`${githubID}`).set({
-    userID: githubID
+export const saveGithubIDToFireStore = async () => {
+  let id = await window.localStorage.getItem('loggedInUser')
+  currentLoggedInUserFirestoreReference().set({
+    userID: id
   }, { merge: true })
 }
 
@@ -52,7 +53,7 @@ export const allowNotifications = () => {
       return messaging.getToken()
     })
     .then((token) => {
-      db.collection('users').doc(`${getCurrentLoggedInGithubID()}`).set({ msgToken: token }, { merge: true })
+      currentLoggedInUserFirestoreReference().set({ msgToken: token }, { merge: true })
     })
     .catch((err) => {
       console.log('An error accured : ' + err)
@@ -64,8 +65,10 @@ Save githuvToken to the users Firestore collection.
 accesToken will be used to fetch data from the github API
 */
 
-export const setGitHubToken = (accessToken) => {
-  window.localStorage.setItem('token', accessToken)
+export const setGitHubToken = async (accessToken) => {
+  return currentLoggedInUserFirestoreReference().set({
+    accessToken: accessToken
+  }, { merge: true })
 }
 
 /*
@@ -73,8 +76,16 @@ Returns a "query" to the current users data from Firestore for getting the acces
 */
 
 export const getGitHubToken = async () => {
-  let accessToken = window.localStorage.getItem('token')
-  return accessToken
+
+  let token = await currentLoggedInUserFirestoreReference().get().then(function (doc) {
+    if (doc.exists) {
+      return doc.data().accessToken
+    }
+  }).catch(function (error) {
+    console.log(`Something went wrong ` + error)
+  })
+
+  return token
 }
 
 /*

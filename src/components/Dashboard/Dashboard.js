@@ -20,12 +20,13 @@ import {
 
 class Dashboard extends Component {
 	componentWillMount() {
-		allowNotifications()
-		saveReposToFireStore()
-		saveOrgsToFireStore()
+
 	}
 
 	componentDidMount() {
+		allowNotifications()
+		saveReposToFireStore()
+		saveOrgsToFireStore()
 		this.props.fetchUserDataFromGithubAPI()
 	}
 

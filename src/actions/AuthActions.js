@@ -11,8 +11,6 @@ Check if user is logged in, if a user exist display dashboard else loginpage
 export const checkIfUserIsLoggedIn = () => dispatch => {
   firebase.auth().onAuthStateChanged(function (user) {
     if (user) {
-      window.localStorage.setItem('loggedInUser', user.providerData[0].uid)
-      saveGithubIDToFireStore(user.providerData[0].uid)
       dispatch({ type: LOGGED_IN_SUCCES, payload: true })
       history.push('/dashboard')
     } else {
@@ -37,7 +35,11 @@ export const signInUser = userData => dispatch => {
     .signInWithPopup(provider)
     .then(function (result) {
       const { accessToken } = result.credential
-
+      window.localStorage.setItem('loggedInUser', result.user.providerData[0].uid)
+      saveGithubIDToFireStore()
+      
+      return accessToken
+    }).then((accessToken) => {
       setGitHubToken(accessToken)
       dispatch({ type: LOGGED_IN_SUCCES, payload: true })
       history.push('/dashboard')
